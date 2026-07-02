@@ -248,8 +248,7 @@
 
     <script>
         // -------------------------------------------------------------
-        // PWA Service Worker (Offline Support)
-        // -------------------------------------------------------------
+        //        // -------------------------------------------------------------
         try {
             const swCode = `
                 const CACHE_NAME = 'mfo-offline-v3';
@@ -273,8 +272,7 @@
         if(!navigator.onLine) document.getElementById('offline-banner').classList.remove('hidden');
 
         // -------------------------------------------------------------
-        // Language & UI Config
-        // -------------------------------------------------------------
+        //        // -------------------------------------------------------------
         const htmlElement = document.documentElement;
         function setLang(langCode) { htmlElement.lang = langCode; document.getElementById('current-lang-label').innerText = langCode; localStorage.setItem('lang', langCode); }
         setLang(localStorage.getItem('lang') || 'en');
@@ -324,8 +322,7 @@
         revealElements.forEach(el => revealObserver.observe(el));
 
         // -------------------------------------------------------------
-        // 3D Generative Object (Three.js)
-        // -------------------------------------------------------------
+        //        // -------------------------------------------------------------
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -350,8 +347,7 @@
         animate3D();
 
         // -------------------------------------------------------------
-        // Globe (World Map) Animation
-        // -------------------------------------------------------------
+        //        // -------------------------------------------------------------
         const globeCanvas = document.getElementById('globe-canvas');
         const globeCtx = globeCanvas.getContext('2d');
         let globeAngle = 0;
@@ -403,8 +399,7 @@
         });
 
         // -------------------------------------------------------------
-        // EASTER EGG: TOPOLOGY RUNNER GAME (Konami Code)
-        // -------------------------------------------------------------
+        //        // -------------------------------------------------------------
         const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
         let konamiBuffer = [];
         
