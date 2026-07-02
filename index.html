@@ -338,14 +338,19 @@
         // -------------------------------------------------------------
         // EASTER EGG: TOPOLOGY RUNNER GAME (Konami Code)
         // -------------------------------------------------------------
-        const konamiSequence = 'arrowuparrowuparrowdownarrowdownarrowleftarrowrightarrowleftarrowrightba';
-        let konamiInput = '';
+        const konamiSequence = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
+        let konamiBuffer = [];
         
         window.addEventListener('keydown', (e) => {
             if (e.key) {
-                konamiInput += e.key.toLowerCase();
-                if (konamiInput.length > konamiSequence.length) konamiInput = konamiInput.substring(konamiInput.length - konamiSequence.length);
-                if (konamiInput === konamiSequence) { startEasterEggGame(); konamiInput = ''; }
+                konamiBuffer.push(e.key.toLowerCase());
+                if (konamiBuffer.length > konamiSequence.length) {
+                    konamiBuffer.shift();
+                }
+                if (konamiBuffer.join('') === konamiSequence.join('')) {
+                    startEasterEggGame(); 
+                    konamiBuffer = []; 
+                }
             }
         });
 
