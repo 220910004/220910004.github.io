@@ -1,530 +1,233 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="tr" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO & GEO Optimization -->
-    <title>Mustafa Furkan Özel | Computational Mechanics & FEA</title>
-    <meta name="description" content="Mustafa Furkan Özel - M.Sc. Mechanical Engineer. Ostim Teknik Üniversitesi & Selçuk Üniversitesi. Computational Mechanics, FEA, CFD, Python Optimization. Akifsan Makina, Fixus Solar, Theta Clean Energy.">
-    
-    <!-- PWA Manifest (Offline & App Support) -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTUZPIFBvcnRmb2xpbyIsInNob3J0X25hbWUiOiJNRk8iLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzAyMDIwMyIsInRoZW1lX2NvbG9yIjoiIzAwZjBmZiJ9">
-    
-    <!-- Mastodon WebFinger / Verification -->
-    <link rel="me" href="https://mastodon.social/@furkanisme">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-    
-    <!-- Three.js & Tailwind -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <title>Mustafa Furkan Özel | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], display: ['Syncopate', 'sans-serif'] }, colors: { brand: { accent: '#0369a1', accentDark: '#0ea5e9' } } } }
-        }
-    </script>
-
     <style>
-        :root { --bg-color: #f4f4f5; --card-bg: rgba(255, 255, 255, 0.65); --border-color: rgba(0, 0, 0, 0.05); --stroke-color: rgba(17, 24, 39, 0.8); --stroke-hover: #0369a1; --noise-blend: multiply; }
-        .dark { --bg-color: #09090b; --card-bg: rgba(24, 24, 27, 0.65); --border-color: rgba(255, 255, 255, 0.08); --stroke-color: rgba(255, 255, 255, 0.3); --stroke-hover: #0ea5e9; --noise-blend: screen; }
-
-        [lang]:not([lang="en"]) .lang-en, [lang]:not([lang="tr"]) .lang-tr { display: none !important; }
-
-        body { background-color: var(--bg-color); transition: background-color 0.5s ease; overflow-x: hidden; cursor: none; }
-
-        /* Terminals & Noise */
-        #preloader { position: fixed; inset: 0; background: var(--bg-color); z-index: 100000; display: flex; flex-direction: column; justify-content: flex-end; padding: 4vw; font-family: 'JetBrains Mono', monospace; transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); }
-        .preloader-hidden { transform: translateY(-100%); }
-        .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.02; background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E'); mix-blend-mode: var(--noise-blend); }
-
-        #mesh-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: auto; }
-        #three-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.8; transition: opacity 0.5s; }
-        .dark #three-container { opacity: 0.95; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap');
         
-        main { position: relative; z-index: 10; pointer-events: none; }
-        section, nav, footer, .interactive { pointer-events: auto; }
-
-        .cursor-dot { width: 6px; height: 6px; background-color: #ef4444; position: fixed; border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.1s, height 0.1s; }
-        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--stroke-hover); position: fixed; border-radius: 50%; pointer-events: none; z-index: 99998; transform: translate(-50%, -50%); opacity: 0.5; transition: width 0.15s, height 0.15s; }
-
-        .text-stroke { color: transparent; -webkit-text-stroke: 1px var(--stroke-color); transition: all 0.3s ease; }
-        .text-stroke:hover { color: var(--stroke-hover); -webkit-text-stroke: 1px transparent; }
-
-        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        /* Game Overlay Styles */
-        #game-overlay { position: fixed; inset: 0; z-index: 200000; background: #0a0a0c; display: none; flex-direction: column; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; }
-        #game-overlay::before { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 4px, 3px 100%; pointer-events: none; z-index: 10; }
-        #game-canvas { border-bottom: 2px solid #0ea5e9; background: #050505; max-width: 100%; }
-        .game-active #game-overlay { display: flex; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0a0a0c; 
+            color: #e5e7eb; 
+            overflow-x: hidden; 
+        }
         
-        .marquee-wrapper { width: 100vw; overflow: hidden; white-space: nowrap; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 1.5rem 0; background: var(--card-bg); }
-        .marquee-inner { display: inline-block; animation: marquee 35s linear infinite; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        @media (hover: none) and (pointer: coarse) { body { cursor: auto; } .cursor-dot, .cursor-outline, .noise-overlay { display: none; } }
+        .font-mono { 
+            font-family: 'JetBrains Mono', monospace; 
+        }
+        
+        /* Arka Plan Ağ Efekti */
+        #network-canvas { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            z-index: -1; 
+            opacity: 0.4; 
+        }
+        
+        /* Scrollbar Tasarımı */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0c; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        
+        /* Sekme (Tab) Geçiş Animasyonları */
+        .tab-content { 
+            display: none; 
+            animation: fadeIn 0.4s ease-in-out; 
+        }
+        .tab-content.active { 
+            display: block; 
+        }
+        .tab-btn.active { 
+            border-bottom: 2px solid #e5e7eb; 
+            color: #e5e7eb; 
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(5px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
     </style>
 </head>
-<body class="text-gray-800 dark:text-gray-200 selection:bg-brand-accent dark:selection:bg-brand-accentDark selection:text-white">
+<body class="antialiased min-h-screen flex flex-col">
 
-    <!-- Offline PWA & Game Logic Alert -->
-    <div id="offline-banner" class="fixed top-0 w-full bg-red-600 text-white font-mono text-xs text-center py-1 z-[99999] hidden">
-        SYSTEM OFFLINE - RUNNING FROM CACHE. PRESS [↑ ↑ ↓ ↓ ← → ← → B A] TO PLAY MINI-GAME.
-    </div>
+    <!-- Dinamik Arka Plan -->
+    <canvas id="network-canvas"></canvas>
 
-    <!-- Retro Mini Game Overlay -->
-    <div id="game-overlay">
-        <div class="absolute top-8 w-full px-8 flex justify-between items-center text-[#0ea5e9] z-20">
-            <div>
-                <span class="font-bold">SCORE: </span><span id="score-val">00000</span>
-                <span class="ml-6 text-gray-500">HI: <span id="hi-val">00000</span></span>
-            </div>
-            <button onclick="closeGame()" class="text-gray-500 hover:text-red-500 hover:scale-110 transition-all uppercase text-xs font-bold interactive">
-                [X] Terminate Simulation
-            </button>
-        </div>
-        <canvas id="game-canvas" width="800" height="250"></canvas>
-        <div id="game-over-text" class="absolute hidden flex-col items-center z-20">
-            <h2 class="text-4xl text-red-500 font-display font-bold mb-4 tracking-widest">STRESS OVERLOAD</h2>
-            <p class="text-gray-400 mb-6 text-sm">Structure collapsed due to high tension.</p>
-            <button onclick="resetGame()" class="px-6 py-2 border border-[#0ea5e9] text-[#0ea5e9] hover:bg-[#0ea5e9] hover:text-black uppercase text-xs font-bold interactive transition-colors">
-                Re-mesh & Restart
-            </button>
-        </div>
-        <div class="absolute bottom-10 text-gray-600 text-[10px] uppercase text-center w-full z-20">
-            Press [SPACE] or [UP] to jump over stress spikes.<br>This simulation runs entirely offline.
-        </div>
-    </div>
-
-    <!-- Loading Screen -->
-    <div id="preloader">
-        <div class="max-w-3xl">
-            <div id="term-text" class="text-sm md:text-base leading-relaxed opacity-80 text-brand-accent dark:text-brand-accentDark font-medium"></div>
-        </div>
-    </div>
-
-    <div class="noise-overlay"></div>
-    <canvas id="mesh-canvas"></canvas>
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-outline" id="cursor-outline"></div>
-
-    <main class="w-full flex flex-col items-center">
-        <!-- Navigation -->
-        <nav class="fixed top-0 w-full flex justify-between items-center px-6 md:px-12 py-8 z-50 interactive">
-            <div class="text-xl font-display font-bold tracking-widest text-gray-900 dark:text-white uppercase bg-white/50 dark:bg-black/50 backdrop-blur-md px-4 py-2 rounded-md">MFÖ_</div>
-            
-            <div class="flex items-center gap-4">
-                <div class="hidden lg:flex gap-8 text-xs font-mono text-gray-600 dark:text-gray-400 tracking-widest uppercase bg-white/50 dark:bg-black/50 backdrop-blur-md px-6 py-3 rounded-md">
-                    <a href="#about" class="hover:text-[#0ea5e9] transition-colors"><span class="lang-en">SYS.INFO</span><span class="lang-tr">SİS.BİLGİ</span></a>
-                    <a href="#experience" class="hover:text-[#0ea5e9] transition-colors"><span class="lang-en">EXP.LOGS</span><span class="lang-tr">DENEYİM</span></a>
-                    <a href="#metrics" class="hover:text-[#0ea5e9] transition-colors"><span class="lang-en">METRICS</span><span class="lang-tr">METRİKLER</span></a>
-                </div>
-                
-                <div class="flex items-center gap-2 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-md p-1 relative group">
-                    <button class="px-3 py-2 rounded-md text-xs font-bold text-gray-600 dark:text-gray-400 hover:text-[#0ea5e9]">
-                        <span id="current-lang-label">EN</span>
-                    </button>
-                    <div class="absolute right-0 top-full mt-2 hidden group-hover:flex flex-col bg-black/90 backdrop-blur-xl rounded-md overflow-hidden text-xs w-20 text-white">
-                        <button onclick="setLang('en')" class="px-4 py-3 hover:bg-[#0ea5e9] text-left">EN</button>
-                        <button onclick="setLang('tr')" class="px-4 py-3 hover:bg-[#0ea5e9] text-left">TR</button>
-                    </div>
-                    <div class="w-[1px] h-4 bg-gray-700"></div>
-                    <button id="theme-toggle" class="p-2 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-[#0ea5e9]">
-                        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                    </button>
-                </div>
-            </div>
+    <!-- Üst Bilgi ve Navigasyon -->
+    <header class="w-full max-w-4xl mx-auto px-6 py-16">
+        <h1 class="text-4xl font-semibold tracking-tight text-white mb-2">Mustafa Furkan Özel</h1>
+        <p class="text-gray-400 text-sm font-mono tracking-widest uppercase">Tasarımcı &bull; Web Geliştirici &bull; Kurumsal Araştırmacı</p>
+        
+        <nav class="mt-12 flex gap-8 border-b border-white/10 font-mono text-sm">
+            <button class="tab-btn active pb-3 text-gray-400 hover:text-white transition-colors" onclick="switchTab('about')">HAKKIMDA</button>
+            <button class="tab-btn pb-3 text-gray-400 hover:text-white transition-colors" onclick="switchTab('projects')">PROJELER</button>
+            <button class="tab-btn pb-3 text-gray-400 hover:text-white transition-colors" onclick="switchTab('contact')">İLETİŞİM</button>
         </nav>
+    </header>
 
-        <!-- Hero Section -->
-        <section id="about" class="min-h-screen w-full flex flex-col justify-center px-6 md:px-12 lg:px-24 pt-20 relative overflow-hidden">
-            <div id="three-container"></div>
-            <div class="max-w-7xl w-full mx-auto relative z-10">
-                <div class="reveal">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="w-2 h-2 bg-[#0ea5e9] animate-pulse"></div>
-                        <p class="font-mono text-gray-500 text-xs tracking-[0.2em] uppercase font-semibold">
-                            <span class="lang-en">Topology Optimized Structure Loaded</span><span class="lang-tr">Topoloji Optimize Edilmiş Yapı Yüklendi</span>
-                        </p>
-                    </div>
-                    <h1 class="text-[11vw] lg:text-[7vw] font-display font-bold leading-[0.9] tracking-tighter uppercase mb-6 relative">
-                        <span class="text-gray-900 dark:text-white block">Mustafa</span>
-                        <span class="text-stroke block">Furkan Özel.</span>
-                    </h1>
-                </div>
-                
-                <div class="reveal delay-100 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mt-12 md:mt-24">
-                    <h2 class="text-xl md:text-3xl font-light text-gray-600 dark:text-gray-300 max-w-2xl leading-tight">
-                        <span class="lang-en">M.Sc. Mechanical Engineer specializing in <span class="text-[#0ea5e9] font-semibold">Computational Mechanics</span> & <span class="text-gray-900 dark:text-white font-semibold">FEA</span>.</span>
-                        <span class="lang-tr"><span class="text-[#0ea5e9] font-semibold">Hesaplamalı Mekanik</span> ve <span class="text-gray-900 dark:text-white font-semibold">FEA</span> alanında uzman Yüksek Makine Mühendisi.</span>
-                    </h2>
-                </div>
+    <!-- Ana İçerik Alanı -->
+    <main class="flex-1 w-full max-w-4xl mx-auto px-6 pb-24">
+        
+        <!-- Hakkımda Sekmesi -->
+        <div id="about" class="tab-content active space-y-6 text-gray-300 leading-relaxed text-sm">
+            <p>
+                Ankara merkezli bir tasarımcı, web geliştiricisi ve araştırmacıyım. Estetik vizyonumu teknik altyapıyla birleştirerek hem dijital hem de fiziksel ürünler tasarlıyorum. Minimalist tasarım prensiplerini benimsiyor, projelerimde kalabalıktan uzak, net ve temiz bir duruş sergiliyorum.
+            </p>
+            <p>
+                Tekstil alanında pique lacoste ve DryTouch kumaşların yapısını inceleyerek profesyonel giysi üretim süreçlerini koordine ediyorum. Kalite kontrol süreçlerinde, tasarımlardaki ufak bir harf hatasının (örneğin teknik bir çizimde "GÜÇLENDİRİLMİŞ" ibaresinin yanlış yazılması gibi) bile marka algısını etkilediğini bildiğimden ince detaylara maksimum özen gösteririm. Ayrıca tasarımlarımı 8K çözünürlüklü ve yüksek DPI kalitesine sahip görsellerle desteklerim.
+            </p>
+            <p>
+                Dijital dünyada ise Ubuntu tabanlı VDS sunucularını yönetiyor, en yeni yapay zeka araçlarını iş akışlarıma entegre ediyor ve markaların arka planındaki yapıları inceleyen detaylı kurumsal araştırmalar yürütüyorum.
+            </p>
+        </div>
+
+        <!-- Projeler Sekmesi -->
+        <div id="projects" class="tab-content space-y-8">
+            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
+                <h3 class="text-white font-semibold mb-2">Polarvar.com Yönetimi & Geliştirme</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Özel polar giyim ve iş kıyafetleri odaklı e-ticaret platformunun teknik altyapısını ve marka kimliğini yönetiyorum. Minimalist logo tasarımından, yüksek çözünürlüklü ürün fotoğrafçılığına ve Ubuntu VDS sunucu optimizasyonlarına kadar uçtan uca bir sistem mimarisi kurdum.</p>
             </div>
-        </section>
+            
+            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
+                <h3 class="text-white font-semibold mb-2">Maya Okulları Kurumsal Koleksiyonu</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Polo yaka tişörtler ve kapüşonlu sweatshirtler içeren geniş çaplı bir tasarım projesine liderlik ettim. Marka bütünlüğünü korumak adına, tasarımlardaki belirli tarihi sloganların ve harici logoların kaldırılmasını bizzat yönlendirerek koleksiyonu kurumsal bir sadeliğe kavuşturdum.</p>
+            </div>
 
-        <!-- Marquee -->
-        <div class="marquee-wrapper reveal my-12 z-20">
-            <div class="marquee-inner font-display font-bold text-4xl md:text-6xl text-stroke uppercase tracking-widest opacity-70">
-                <span class="lang-en">COMPUTATIONAL MECHANICS // FINITE ELEMENT ANALYSIS // FLUID DYNAMICS // PYTHON OPTIMIZATION // STRUCTURAL DYNAMICS // R&D ENGINEERING // </span>
-                <span class="lang-tr">HESAPLAMALI MEKANİK // SONLU ELEMANLAR ANALİZİ // AKIŞKANLAR DİNAMİĞİ // PYTHON OPTİMİZASYONU // YAPISAL DİNAMİKLER // AR-GE MÜHENDİSLİĞİ // </span>
-                <span class="lang-en">COMPUTATIONAL MECHANICS // FINITE ELEMENT ANALYSIS // FLUID DYNAMICS // PYTHON OPTIMIZATION // STRUCTURAL DYNAMICS // R&D ENGINEERING // </span>
+            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
+                <h3 class="text-white font-semibold mb-2">Kurumsal Araştırma (bykt.org)</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Küresel markaların mülkiyet ve operasyonel bağlarını araştıran adli nitelikte dosyalar hazırlıyorum. Iveco, Penti ve Tetra Pak gibi şirketlerin kurumsal yapılarını detaylı bir şekilde haritalandırdım.</p>
+            </div>
+            
+            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
+                <h3 class="text-white font-semibold mb-2">Batıkent Yerel Derneği Markalaşması</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">Ankara'nın Batıkent ilçesinde kurulan bir yerel sivil toplum kuruluşunun profesyonel logo tasarımlarını ve kurumsal kimlik yönergelerini oluşturdum.</p>
             </div>
         </div>
 
-        <!-- Experience Timeline -->
-        <section id="experience" class="py-24 w-full px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto z-20">
-            <h2 class="font-display text-3xl md:text-5xl font-bold uppercase mb-16 text-gray-900 dark:text-white reveal">
-                <span class="lang-en">Experience <span class="text-stroke">Logs</span></span><span class="lang-tr">Deneyim <span class="text-stroke">Kayıtları</span></span>
-            </h2>
-
-            <div class="relative border-l border-gray-300 dark:border-white/10 ml-2 space-y-12 pb-12">
-                <!-- Exp 1 -->
-                <div class="reveal relative pl-8 md:pl-16 group">
-                    <div class="absolute left-[-5px] top-2 w-[9px] h-[9px] bg-gray-500 rounded-full"></div>
-                    <div class="flex flex-col md:flex-row justify-between items-start mb-2">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-[#0ea5e9] transition-colors">
-                            <span class="lang-en">Sales Engineer (Technical Consultant)</span><span class="lang-tr">Satış Mühendisi (Teknik Danışman)</span>
-                        </h3>
-                        <span class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-white/5 px-3 py-1 rounded-md mt-2 md:mt-0">FEB 2024 - SEP 2025</span>
-                    </div>
-                    <h4 class="font-mono text-sm font-semibold text-gray-500 dark:text-gray-400 mb-6 uppercase">Akifsan Makina | Ankara, TR</h4>
+        <!-- İletişim Sekmesi -->
+        <div id="contact" class="tab-content">
+            <div class="border border-white/10 p-8 bg-white/5 text-center">
+                <p class="text-gray-300 text-sm mb-6">Projeleriniz veya işbirlikleri için benimle iletişime geçebilirsiniz.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="mailto:hello@furkanis.me" class="px-6 py-3 border border-white/20 text-white font-mono text-sm hover:bg-white hover:text-black transition-colors">hello@furkanis.me</a>
+                    <a href="Academic CV.pdf" target="_blank" class="px-6 py-3 border border-white/20 text-white font-mono text-sm hover:bg-white hover:text-black transition-colors">Özgeçmişi Görüntüle (PDF)</a>
                 </div>
-                <!-- Exp 2 -->
-                <div class="reveal relative pl-8 md:pl-16 group">
-                    <div class="absolute left-[-5px] top-2 w-[9px] h-[9px] bg-gray-500 rounded-full"></div>
-                    <div class="flex flex-col md:flex-row justify-between items-start mb-2">
-                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-[#0ea5e9] transition-colors">
-                            <span class="lang-en">R&D and Project Coordinator</span><span class="lang-tr">Ar-Ge ve Proje Koordinatörü</span>
-                        </h3>
-                        <span class="font-mono text-xs font-bold text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-white/5 px-3 py-1 rounded-md mt-2 md:mt-0">MAY 2023 - FEB 2024</span>
-                    </div>
-                    <h4 class="font-mono text-sm font-semibold text-gray-500 dark:text-gray-400 mb-6 uppercase">Fixus Solar Mounting Systems | Ankara, TR</h4>
-                </div>
-            </div>
-        </section>
-
-        <!-- Global Metrics Panel -->
-        <section id="metrics" class="py-12 w-full px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto z-20 reveal">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border border-gray-300 dark:border-white/10 p-8 rounded-xl bg-white/30 dark:bg-black/30 backdrop-blur-md">
-                <div class="flex flex-col justify-center">
-                    <span class="text-gray-500 font-mono text-xs mb-2 uppercase">Canlı Sistem Gerilimi</span>
-                    <span id="stress-counter" class="text-5xl font-mono font-bold text-gray-900 dark:text-white">0.00 <span class="text-lg text-red-500">MN</span></span>
-                    <span class="text-gray-600 dark:text-gray-400 font-mono text-xs mt-4">Ağdaki kinetik enerji (fare hareketi) anlık ölçülmektedir.</span>
-                </div>
-                <div class="relative h-[200px] w-full flex items-center justify-center border-l border-gray-300 dark:border-white/10 pl-8">
-                    <canvas id="globe-canvas" class="w-full h-full"></canvas>
-                    <div class="absolute bottom-0 right-0 text-[10px] font-mono text-gray-500">GLOBAL TELEMETRY NODE: ANKARA</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- AI Terminal Button & Window -->
-        <button id="cli-toggle-btn" class="fixed bottom-6 right-6 z-[100] interactive group flex items-center gap-3 bg-[#0a0a0c] border border-white/10 text-white px-5 py-3 rounded-full shadow-2xl hover:border-[#0ea5e9] transition-all">
-            <svg class="w-5 h-5 text-[#0ea5e9]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-            <span class="font-mono text-xs font-bold tracking-widest hidden md:block text-[#0ea5e9]">AI_TERMINAL</span>
-        </button>
-
-        <div id="ai-terminal" class="fixed bottom-24 right-6 w-[90vw] md:w-[500px] h-[400px] bg-[#0a0a0c]/95 backdrop-blur-3xl border border-white/10 rounded-xl z-[100] flex flex-col shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none" dir="ltr">
-            <div class="flex justify-between items-center px-4 py-3 border-b border-white/10 bg-white/5 rounded-t-xl cursor-move interactive" id="cli-header">
-                <span class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">MFÖ_OS // Neural_Core</span>
-                <button id="cli-close-btn" class="text-gray-500 hover:text-white interactive">[X]</button>
-            </div>
-            <div id="cli-output" class="flex-1 p-4 overflow-y-auto font-mono text-xs text-gray-300 space-y-3">
-                <div class="text-[#0ea5e9]">> System linked to M. Furkan Özel's DB. Type 'help' to start.</div>
-            </div>
-            <div class="p-4 border-t border-white/10 flex items-center gap-2 bg-black/50 rounded-b-xl">
-                <span class="text-[#0ea5e9] font-mono text-sm">~$&nbsp;</span>
-                <input type="text" id="cli-input" class="flex-1 bg-transparent border-none outline-none font-mono text-xs text-white interactive" autocomplete="off">
             </div>
         </div>
     </main>
 
+    <!-- AI Terminal Penceresi -->
+    <div id="ai-terminal" class="fixed bottom-6 right-6 w-80 md:w-96 bg-[#0a0a0c] border border-white/10 shadow-2xl flex flex-col font-mono text-xs transition-transform transform translate-y-0" style="height: 300px;">
+        <div class="flex justify-between items-center px-3 py-2 border-b border-white/10 bg-white/5">
+            <span class="text-gray-400 uppercase tracking-widest text-[10px]">MFÖ // Terminal</span>
+            <button onclick="document.getElementById('ai-terminal').style.display='none'" class="text-gray-500 hover:text-white">&times;</button>
+        </div>
+        <div id="cli-output" class="flex-1 p-3 overflow-y-auto text-gray-300 space-y-2">
+            <div class="text-green-500">> Sistem çevrimiçi.</div>
+            <div class="text-green-500">> Portfolyo verileri yüklendi...</div>
+            <div class="text-gray-400">> İletişim kurmak için komut girin.</div>
+        </div>
+        <div class="p-3 border-t border-white/10 flex items-center bg-black">
+            <span class="text-green-500 mr-2">~$</span>
+            <input type="text" id="cli-input" class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-600" placeholder="Komut yazın..." autocomplete="off">
+        </div>
+    </div>
+
+    <!-- JavaScript İşlevleri -->
     <script>
-        // -------------------------------------------------------------
-        //        // -------------------------------------------------------------
-        try {
-            const swCode = `
-                const CACHE_NAME = 'mfo-offline-v3';
-                self.addEventListener('install', event => { 
-                    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['/'])));
-                    self.skipWaiting(); 
-                });
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        fetch(event.request).catch(() => caches.match(event.request).then(res => res || caches.match('/')))
-                    );
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            if ('serviceWorker' in navigator) { navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{}); }
-        } catch (e) {}
-
-        // Network Status Monitor
-        window.addEventListener('offline', () => document.getElementById('offline-banner').classList.remove('hidden'));
-        window.addEventListener('online', () => document.getElementById('offline-banner').classList.add('hidden'));
-        if(!navigator.onLine) document.getElementById('offline-banner').classList.remove('hidden');
-
-        // -------------------------------------------------------------
-        //        // -------------------------------------------------------------
-        const htmlElement = document.documentElement;
-        function setLang(langCode) { htmlElement.lang = langCode; document.getElementById('current-lang-label').innerText = langCode; localStorage.setItem('lang', langCode); }
-        setLang(localStorage.getItem('lang') || 'en');
-        
-        document.getElementById('theme-toggle').addEventListener('click', function() {
-            htmlElement.classList.toggle('dark');
-            localStorage.setItem('color-theme', htmlElement.classList.contains('dark') ? 'dark' : 'light');
-        });
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) htmlElement.classList.add('dark');
-
-        // Terminal Boot
-        const bootText = ["Initiating systems...", "Loading models...", "Synthesizing Topology...", "System nominal."];
-        let termIndex = 0;
-        function bootSequence() {
-            if (termIndex < bootText.length) {
-                document.getElementById('term-text').innerHTML += `> ${bootText[termIndex]}<br/>`;
-                termIndex++; setTimeout(bootSequence, 200);
-            } else {
-                setTimeout(() => { document.getElementById('preloader').classList.add('preloader-hidden'); }, 500);
-            }
+        // Sekme Değiştirme Fonksiyonu
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
         }
-        window.addEventListener('load', () => setTimeout(bootSequence, 200));
 
-        // Cursor & Scroll Reveal
-        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
-        let lastMouseX = mouseX, lastMouseY = mouseY;
-        let currentStress = 0;
-        
-        window.addEventListener('mousemove', e => { 
-            mouseX = e.clientX; mouseY = e.clientY; 
-            document.getElementById('cursor-dot').style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`; 
-            
-            // Calculate Stress based on speed
-            let speed = Math.abs(mouseX - lastMouseX) + Math.abs(mouseY - lastMouseY);
-            currentStress += speed * 0.05;
-            if(currentStress > 999.99) currentStress = 999.99;
-            document.getElementById('stress-counter').innerHTML = currentStress.toFixed(2) + ' <span class="text-lg text-red-500">MN</span>';
-            
-            lastMouseX = mouseX; lastMouseY = mouseY;
-        });
-        
-        // Decay stress slowly
-        setInterval(() => { if(currentStress > 0) currentStress *= 0.95; }, 100);
-
-        const revealElements = document.querySelectorAll('.reveal');
-        const revealObserver = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
-        revealElements.forEach(el => revealObserver.observe(el));
-
-        // -------------------------------------------------------------
-        //        // -------------------------------------------------------------
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('three-container').appendChild(renderer.domElement);
-
-        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-        const keyLight = new THREE.DirectionalLight(0xffffff, 1.2); keyLight.position.set(10, 20, 10); scene.add(keyLight);
-        
-        const material = new THREE.MeshPhysicalMaterial({ color: 0x0ea5e9, metalness: 0.9, roughness: 0.15, clearcoat: 1.0 });
-        const topoMesh = new THREE.Mesh(new THREE.TorusKnotGeometry(1.6, 0.35, 256, 64, 3, 5), material);
-        topoMesh.position.set(6, -1, -10); scene.add(topoMesh); camera.position.z = 5;
-
-        function animate3D() {
-            topoMesh.rotation.x += 0.003; topoMesh.rotation.y += 0.005;
-            let targetX = (mouseX / window.innerWidth - 0.5) * 2; let targetY = -(mouseY / window.innerHeight - 0.5) * 2;
-            topoMesh.position.x += (6 + targetX * 1.5 - topoMesh.position.x) * 0.05;
-            topoMesh.position.y += (-1 + targetY * 1.5 - topoMesh.position.y) * 0.05;
-            renderer.render(scene, camera);
-            requestAnimationFrame(animate3D);
-        }
-        animate3D();
-
-        // -------------------------------------------------------------
-        //        // -------------------------------------------------------------
-        const globeCanvas = document.getElementById('globe-canvas');
-        const globeCtx = globeCanvas.getContext('2d');
-        let globeAngle = 0;
-        
-        function drawGlobe() {
-            globeCanvas.width = globeCanvas.clientWidth;
-            globeCanvas.height = globeCanvas.clientHeight;
-            let cx = globeCanvas.width / 2, cy = globeCanvas.height / 2, r = Math.min(cx, cy) - 10;
-            
-            globeCtx.clearRect(0,0, globeCanvas.width, globeCanvas.height);
-            globeCtx.strokeStyle = 'rgba(14, 165, 233, 0.3)'; globeCtx.lineWidth = 1;
-            
-            // Draw Latitudes & Longitudes
-            for(let i=0; i<12; i++) {
-                globeCtx.beginPath();
-                globeCtx.ellipse(cx, cy, r, r * Math.abs(Math.cos(globeAngle + (i*Math.PI/6))), 0, 0, Math.PI*2);
-                globeCtx.stroke();
-            }
-            globeCtx.beginPath(); globeCtx.arc(cx, cy, r, 0, Math.PI*2); globeCtx.stroke();
-            
-            // Main Hub (Ankara)
-            let ankaraX = cx + r * Math.cos(globeAngle); let ankaraY = cy - r*0.3;
-            if(Math.sin(globeAngle) > 0) { // Only draw if on front side
-                globeCtx.fillStyle = '#ef4444';
-                globeCtx.beginPath(); globeCtx.arc(ankaraX, ankaraY, 4, 0, Math.PI*2); globeCtx.fill();
-                globeCtx.shadowBlur = 10; globeCtx.shadowColor = '#ef4444';
-            }
-            
-            globeAngle += 0.01;
-            requestAnimationFrame(drawGlobe);
-        }
-        drawGlobe();
-
-        // -------------------------------------------------------------
-        // AI Terminal Logic
-        // -------------------------------------------------------------
-        const aiTerminal = document.getElementById('ai-terminal');
+        // Terminal Mantığı
         const cliInput = document.getElementById('cli-input');
-        let cliIsOpen = false;
-        document.getElementById('cli-toggle-btn').addEventListener('click', () => { cliIsOpen = !cliIsOpen; aiTerminal.classList.toggle('opacity-0', !cliIsOpen); aiTerminal.classList.toggle('pointer-events-none', !cliIsOpen); if(cliIsOpen) cliInput.focus(); });
-        document.getElementById('cli-close-btn').addEventListener('click', () => { cliIsOpen = false; aiTerminal.classList.add('opacity-0', 'pointer-events-none'); });
-
-        cliInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter' && cliInput.value.trim() !== '') {
-                let val = cliInput.value; cliInput.value = '';
-                document.getElementById('cli-output').innerHTML += `<div class="text-white mt-2"><span class="text-[#0ea5e9]">~$</span> ${val}</div>`;
-                setTimeout(() => { document.getElementById('cli-output').innerHTML += `<div class="text-gray-400">> Processing vector... API integration pending.</div>`; document.getElementById('cli-output').scrollTop = 9999; }, 500);
+        const cliOutput = document.getElementById('cli-output');
+        
+        cliInput.addEventListener('keypress', function(e) {
+            if(e.key === 'Enter' && this.value.trim() !== '') {
+                const val = this.value;
+                cliOutput.innerHTML += `<div class="text-white">> ${val}</div>`;
+                cliOutput.innerHTML += `<div class="text-gray-500">> Komut alındı, işleniyor...</div>`;
+                this.value = '';
+                cliOutput.scrollTop = cliOutput.scrollHeight;
             }
         });
 
-        // -------------------------------------------------------------
-        //        // -------------------------------------------------------------
-        const konamiSequence = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-        let konamiBuffer = [];
-        
-        window.addEventListener('keydown', (e) => {
-            if (e.key) {
-                konamiBuffer.push(e.key);
-                if (konamiBuffer.length > konamiSequence.length) konamiBuffer.shift();
+        // Arka Plan Ağ (Network) Animasyonu
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        function initParticles() {
+            particles = [];
+            // Ekran boyutuna göre parçacık sayısı
+            const count = Math.floor((width * height) / 12000);
+            for(let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 1.5 + 0.5
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
                 
-                // Case insensitive check
-                let isMatch = konamiBuffer.length === konamiSequence.length && konamiBuffer.every((val, index) => val.toLowerCase() === konamiSequence[index].toLowerCase());
+                // Ekran sınırlarından sekme
+                if(p.x < 0 || p.x > width) p.vx *= -1;
+                if(p.y < 0 || p.y > height) p.vy *= -1;
                 
-                if (isMatch) {
-                    startEasterEggGame(); 
-                    konamiBuffer = []; 
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Parçacıkları birbirine bağlayan çizgiler
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            for(let i = 0; i < particles.length; i++) {
+                for(let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = dx * dx + dy * dy;
+                    
+                    if(dist < 12000) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
                 }
             }
-        });
-
-        // Game Variables
-        const gameCanvas = document.getElementById('game-canvas');
-        const gCtx = gameCanvas.getContext('2d');
-        let gameLoopId, gameActive = false, score = 0, hiScore = parseInt(localStorage.getItem('mfo_hi_score')) || 0;
-        let gameSpeed = 5, frameCount = 0;
-        
-        const player = { x: 50, y: 150, w: 20, h: 20, dy: 0, jumpPower: -10, gravity: 0.6, grounded: true };
-        let obstacles = [];
-
-        function startEasterEggGame() {
-            if(gameActive) return;
-            document.body.classList.add('game-active');
-            document.getElementById('hi-val').innerText = hiScore.toString().padStart(5, '0');
-            gameActive = true; resetGame();
-            window.addEventListener('keydown', gameInput);
+            requestAnimationFrame(draw);
         }
 
-        function closeGame() {
-            gameActive = false;
-            document.body.classList.remove('game-active');
-            cancelAnimationFrame(gameLoopId);
-            window.removeEventListener('keydown', gameInput);
-        }
-
-        function resetGame() {
-            player.y = 150; player.dy = 0; obstacles = []; score = 0; gameSpeed = 5; frameCount = 0;
-            document.getElementById('game-over-text').classList.add('hidden');
-            gameLoopId = requestAnimationFrame(updateGame);
-        }
-
-        function gameInput(e) {
-            if(!gameActive) return;
-            if(e.code === 'Space' || e.code === 'ArrowUp') {
-                e.preventDefault();
-                if(document.getElementById('game-over-text').classList.contains('hidden')) {
-                    if(player.grounded) { player.dy = player.jumpPower; player.grounded = false; }
-                } else { resetGame(); }
-            }
-            if(e.code === 'Escape') closeGame();
-        }
-
-        function spawnObstacle() {
-            let type = Math.random();
-            let obs = { x: gameCanvas.width, y: 150, w: 15, h: 20 };
-            if(type > 0.8) { obs.h = 40; obs.y = 130; } // Tall stress spike
-            obstacles.push(obs);
-        }
-
-        function updateGame() {
-            if(!gameActive) return;
-            gCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-            
-            // Draw Blueprint Grid (Background)
-            gCtx.strokeStyle = 'rgba(14, 165, 233, 0.1)'; gCtx.lineWidth = 1;
-            for(let i=0; i<gameCanvas.width; i+=40) { gCtx.beginPath(); gCtx.moveTo(i,0); gCtx.lineTo(i,gameCanvas.height); gCtx.stroke(); }
-            
-            // Physics
-            player.dy += player.gravity; player.y += player.dy;
-            if(player.y >= 150) { player.y = 150; player.dy = 0; player.grounded = true; }
-
-            // Draw Player (Node)
-            gCtx.fillStyle = '#0ea5e9'; gCtx.shadowBlur = 15; gCtx.shadowColor = '#0ea5e9';
-            gCtx.fillRect(player.x, player.y, player.w, player.h);
-            gCtx.shadowBlur = 0;
-
-            // Manage Obstacles
-            if(frameCount % Math.floor(Math.random() * 60 + 60) === 0) spawnObstacle();
-            
-            for(let i = 0; i < obstacles.length; i++) {
-                let obs = obstacles[i];
-                obs.x -= gameSpeed;
-                
-                // Draw Obstacle (Red Stress Spike)
-                gCtx.fillStyle = '#ef4444';
-                gCtx.beginPath();
-                gCtx.moveTo(obs.x, obs.y + obs.h);
-                gCtx.lineTo(obs.x + obs.w/2, obs.y);
-                gCtx.lineTo(obs.x + obs.w, obs.y + obs.h);
-                gCtx.fill();
-
-                // Collision
-                if(player.x < obs.x + obs.w && player.x + player.w > obs.x && player.y < obs.y + obs.h && player.y + player.h > obs.y) {
-                    gameOver(); return;
-                }
-            }
-            // Cleanup
-            obstacles = obstacles.filter(o => o.x > -20);
-
-            // Ground Line
-            gCtx.strokeStyle = '#0ea5e9'; gCtx.lineWidth = 2;
-            gCtx.beginPath(); gCtx.moveTo(0, 170); gCtx.lineTo(gameCanvas.width, 170); gCtx.stroke();
-
-            // Score Logic
-            frameCount++;
-            if(frameCount % 5 === 0) {
-                score++; gameSpeed += 0.002;
-                document.getElementById('score-val').innerText = score.toString().padStart(5, '0');
-            }
-
-            gameLoopId = requestAnimationFrame(updateGame);
-        }
-
-        function gameOver() {
-            document.getElementById('game-over-text').classList.remove('hidden');
-            document.getElementById('game-over-text').classList.add('flex');
-            if(score > hiScore) { hiScore = score; localStorage.setItem('mfo_hi_score', hiScore); document.getElementById('hi-val').innerText = hiScore.toString().padStart(5, '0'); }
-        }
+        window.addEventListener('resize', resize);
+        resize();
+        draw();
     </script>
 </body>
 </html>
