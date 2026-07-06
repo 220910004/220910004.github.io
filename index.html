@@ -6,228 +6,189 @@
     <title>Mustafa Furkan Özel | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap');
+        /* Akıcı (Fluid) Tipografi ve Variable Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap');
         
+        :root {
+            --bg-color: #050505;
+            --text-color: #e5e7eb;
+            --bento-bg: rgba(255, 255, 255, 0.03);
+            --bento-border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="industrial"] {
+            --bg-color: #e5e7eb;
+            --text-color: #050505;
+            --bento-bg: rgba(0, 0, 0, 0.05);
+            --bento-border: rgba(0, 0, 0, 0.2);
+        }
+
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #0a0a0c; 
-            color: #e5e7eb; 
-            overflow-x: hidden; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
-        .font-mono { 
-            font-family: 'JetBrains Mono', monospace; 
-        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Arka Plan Ağ Efekti */
-        #network-canvas { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            z-index: -1; 
-            opacity: 0.4; 
+        /* Fluid Tipografi Sınıfları */
+        .text-fluid-h1 { font-size: clamp(2rem, 5vw, 4rem); font-variation-settings: "wght" 600; line-height: 1.1; }
+        .text-fluid-p { font-size: clamp(0.875rem, 1.5vw, 1.1rem); font-variation-settings: "wght" 300; }
+
+        /* Bento Grid 2.0 - Modüler Yapı */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            grid-auto-flow: dense;
         }
-        
-        /* Scrollbar Tasarımı */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0c; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
-        
-        /* Sekme (Tab) Geçiş Animasyonları */
-        .tab-content { 
-            display: none; 
-            animation: fadeIn 0.4s ease-in-out; 
+
+        .bento-box {
+            background: var(--bento-bg);
+            border: 1px solid var(--bento-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            overflow: hidden;
+            position: relative;
         }
-        .tab-content.active { 
-            display: block; 
+
+        .bento-box:hover {
+            border-color: rgba(150, 150, 150, 0.4);
+            transform: translateY(-2px);
         }
-        .tab-btn.active { 
-            border-bottom: 2px solid #e5e7eb; 
-            color: #e5e7eb; 
+
+        .bento-large { grid-column: span 2; grid-row: span 2; }
+        .bento-tall { grid-row: span 2; }
+        .bento-wide { grid-column: span 2; }
+
+        @media (max-width: 768px) {
+            .bento-large, .bento-tall, .bento-wide {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
         }
-        
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(5px); } 
-            to { opacity: 1; transform: translateY(0); } 
+
+        /* WebGPU 3D Canvas Placeholder */
+        #webgpu-canvas {
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+            background: radial-gradient(circle at center, #1a1a24 0%, #050505 100%);
+            border-radius: 8px;
+            cursor: grab;
         }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="antialiased min-h-screen flex flex-col p-4 md:p-8">
 
-    <!-- Dinamik Arka Plan -->
-    <canvas id="network-canvas"></canvas>
-
-    <!-- Üst Bilgi ve Navigasyon -->
-    <header class="w-full max-w-4xl mx-auto px-6 py-16">
-        <h1 class="text-4xl font-semibold tracking-tight text-white mb-2">Mustafa Furkan Özel</h1>
-        <p class="text-gray-400 text-sm font-mono tracking-widest uppercase">Tasarımcı &bull; Web Geliştirici &bull; Kurumsal Araştırmacı</p>
+    <header class="w-full max-w-6xl mx-auto mb-10 flex justify-between items-end">
+        <div>
+            <h1 class="text-fluid-h1 tracking-tight mb-2">Mustafa Furkan Özel</h1>
+            <p class="font-mono text-sm uppercase tracking-widest opacity-60">Mühendis &bull; Sistem Geliştirici &bull; Kurumsal Analist</p>
+        </div>
         
-        <nav class="mt-12 flex gap-8 border-b border-white/10 font-mono text-sm">
-            <button class="tab-btn active pb-3 text-gray-400 hover:text-white transition-colors" onclick="switchTab('about')">HAKKIMDA</button>
-            <button class="tab-btn pb-3 text-gray-400 hover:text-white transition-colors" onclick="switchTab('projects')">PROJELER</button>
-            <button class="tab-btn pb-3 text-gray-400 hover:text-white transition-colors" onclick="switchTab('contact')">İLETİŞİM</button>
-        </nav>
+        <!-- Erişilebilirlik ve Tema Kontrolü -->
+        <div class="flex gap-4 font-mono text-xs">
+            <button onclick="toggleTheme('dark')" class="hover:opacity-100 opacity-50 transition-opacity">[Karanlık]</button>
+            <button onclick="toggleTheme('industrial')" class="hover:opacity-100 opacity-50 transition-opacity">[Endüstriyel]</button>
+        </div>
     </header>
 
-    <!-- Ana İçerik Alanı -->
-    <main class="flex-1 w-full max-w-4xl mx-auto px-6 pb-24">
+    <!-- Bento Grid 2.0 Ana Mimari -->
+    <main class="w-full max-w-6xl mx-auto bento-grid">
         
-        <!-- Hakkımda Sekmesi -->
-        <div id="about" class="tab-content active space-y-6 text-gray-300 leading-relaxed text-sm">
-            <p>
-                Ankara merkezli bir tasarımcı, web geliştiricisi ve araştırmacıyım. Estetik vizyonumu teknik altyapıyla birleştirerek hem dijital hem de fiziksel ürünler tasarlıyorum. Minimalist tasarım prensiplerini benimsiyor, projelerimde kalabalıktan uzak, net ve temiz bir duruş sergiliyorum.
-            </p>
-            <p>
-                Tekstil alanında pique lacoste ve DryTouch kumaşların yapısını inceleyerek profesyonel giysi üretim süreçlerini koordine ediyorum. Kalite kontrol süreçlerinde, tasarımlardaki ufak bir harf hatasının (örneğin teknik bir çizimde "GÜÇLENDİRİLMİŞ" ibaresinin yanlış yazılması gibi) bile marka algısını etkilediğini bildiğimden ince detaylara maksimum özen gösteririm. Ayrıca tasarımlarımı 8K çözünürlüklü ve yüksek DPI kalitesine sahip görsellerle desteklerim.
-            </p>
-            <p>
-                Dijital dünyada ise Ubuntu tabanlı VDS sunucularını yönetiyor, en yeni yapay zeka araçlarını iş akışlarıma entegre ediyor ve markaların arka planındaki yapıları inceleyen detaylı kurumsal araştırmalar yürütüyorum.
-            </p>
-        </div>
-
-        <!-- Projeler Sekmesi -->
-        <div id="projects" class="tab-content space-y-8">
-            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
-                <h3 class="text-white font-semibold mb-2">Polarvar.com Yönetimi & Geliştirme</h3>
-                <p class="text-sm text-gray-400 leading-relaxed">Özel polar giyim ve iş kıyafetleri odaklı e-ticaret platformunun teknik altyapısını ve marka kimliğini yönetiyorum. Minimalist logo tasarımından, yüksek çözünürlüklü ürün fotoğrafçılığına ve Ubuntu VDS sunucu optimizasyonlarına kadar uçtan uca bir sistem mimarisi kurdum.</p>
+        <!-- Generative UI & CLI Modülü -->
+        <div class="bento-box bento-large flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-500/20 pb-2">
+                <h2 class="font-mono text-xs uppercase tracking-widest">Generative_Terminal //</h2>
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
             </div>
-            
-            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
-                <h3 class="text-white font-semibold mb-2">Maya Okulları Kurumsal Koleksiyonu</h3>
-                <p class="text-sm text-gray-400 leading-relaxed">Polo yaka tişörtler ve kapüşonlu sweatshirtler içeren geniş çaplı bir tasarım projesine liderlik ettim. Marka bütünlüğünü korumak adına, tasarımlardaki belirli tarihi sloganların ve harici logoların kaldırılmasını bizzat yönlendirerek koleksiyonu kurumsal bir sadeliğe kavuşturdum.</p>
+            <div id="cli-output" class="flex-1 overflow-y-auto font-mono text-sm space-y-3 opacity-80 mb-4 text-fluid-p">
+                <p>> Hoş geldiniz. Arayüz niyetinize göre şekillenecektir.</p>
+                <p>> Hızlı eylemler: "iletisim", "projeler", "cv_indir", "analiz_modu"</p>
             </div>
-
-            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
-                <h3 class="text-white font-semibold mb-2">Kurumsal Araştırma (bykt.org)</h3>
-                <p class="text-sm text-gray-400 leading-relaxed">Küresel markaların mülkiyet ve operasyonel bağlarını araştıran adli nitelikte dosyalar hazırlıyorum. Iveco, Penti ve Tetra Pak gibi şirketlerin kurumsal yapılarını detaylı bir şekilde haritalandırdım.</p>
-            </div>
-            
-            <div class="group border border-white/5 bg-white/5 p-6 hover:border-white/20 transition-colors">
-                <h3 class="text-white font-semibold mb-2">Batıkent Yerel Derneği Markalaşması</h3>
-                <p class="text-sm text-gray-400 leading-relaxed">Ankara'nın Batıkent ilçesinde kurulan bir yerel sivil toplum kuruluşunun profesyonel logo tasarımlarını ve kurumsal kimlik yönergelerini oluşturdum.</p>
+            <div class="flex items-center font-mono bg-black/20 p-2 rounded">
+                <span class="mr-2 text-green-500">~$</span>
+                <input type="text" id="cli-input" class="bg-transparent border-none outline-none w-full text-current" placeholder="Komut girin..." autocomplete="off">
             </div>
         </div>
 
-        <!-- İletişim Sekmesi -->
-        <div id="contact" class="tab-content">
-            <div class="border border-white/10 p-8 bg-white/5 text-center">
-                <p class="text-gray-300 text-sm mb-6">Projeleriniz veya işbirlikleri için benimle iletişime geçebilirsiniz.</p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="mailto:hello@furkanis.me" class="px-6 py-3 border border-white/20 text-white font-mono text-sm hover:bg-white hover:text-black transition-colors">hello@furkanis.me</a>
-                    <a href="Academic CV.pdf" target="_blank" class="px-6 py-3 border border-white/20 text-white font-mono text-sm hover:bg-white hover:text-black transition-colors">Özgeçmişi Görüntüle (PDF)</a>
+        <!-- Hakkımda Modülü -->
+        <div class="bento-box">
+            <h3 class="font-semibold mb-3">Sistem Mimarisi & Mühendislik</h3>
+            <p class="text-fluid-p opacity-80 leading-relaxed">
+                Hesaplamalı mekanik ve minimalist dijital mimariler üzerine çalışıyorum. Python tabanlı otomasyonlar tasarlıyor, çelik konstrüksiyon analizleri yürütüyor ve karmaşık veri setlerini (bykt.org kurumsal analizleri gibi) optimize edilmiş arayüzlere dönüştürüyorum.
+            </p>
+        </div>
+
+        <!-- WebGPU Gerçek Zamanlı 3D Fizik Motoru -->
+        <div class="bento-box bento-wide flex flex-col">
+            <h3 class="font-semibold mb-2">WebGPU Fizik Simülasyonu</h3>
+            <p class="text-xs font-mono opacity-60 mb-4">Etkileşimli Topoloji: İnşaat demirinin C-profilin geniş kenarından geçtiği eksenel yükleme analizi.</p>
+            <!-- 3D Render Alanı (Gerçek bir projede buraya Three.js veya WebGPU kodu entegre edilir) -->
+            <div id="webgpu-canvas" class="flex items-center justify-center relative overflow-hidden group">
+                <div class="absolute inset-0 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
+                    <span class="font-mono text-xs border border-white/20 px-3 py-1 rounded bg-black/50">C-Profil Gerilim Simülasyonu (Etkileşim İçin Sürükleyin)</span>
+                </div>
+                <!-- Animasyonlu görsel gerilim efekti temsili -->
+                <div class="w-32 h-32 border-4 border-blue-500/30 rounded-full animate-[spin_10s_linear_infinite] flex items-center justify-center">
+                    <div class="w-full h-1 bg-red-500/50 transform rotate-45"></div>
                 </div>
             </div>
         </div>
+
+        <!-- Veri & Optimizasyon Modülü -->
+        <div class="bento-box">
+            <h3 class="font-semibold mb-3">Sıfır Sürtünme (Frictionless)</h3>
+            <ul class="text-fluid-p opacity-80 space-y-2">
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> LCP Hedefi: < 1.0s</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> Global CDN Entegrasyonu</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> Headless CMS Hazır</li>
+                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> VDS Ubuntu Otomasyonu</li>
+            </ul>
+        </div>
+
     </main>
 
-    <!-- AI Terminal Penceresi -->
-    <div id="ai-terminal" class="fixed bottom-6 right-6 w-80 md:w-96 bg-[#0a0a0c] border border-white/10 shadow-2xl flex flex-col font-mono text-xs transition-transform transform translate-y-0" style="height: 300px;">
-        <div class="flex justify-between items-center px-3 py-2 border-b border-white/10 bg-white/5">
-            <span class="text-gray-400 uppercase tracking-widest text-[10px]">MFÖ // Terminal</span>
-            <button onclick="document.getElementById('ai-terminal').style.display='none'" class="text-gray-500 hover:text-white">&times;</button>
-        </div>
-        <div id="cli-output" class="flex-1 p-3 overflow-y-auto text-gray-300 space-y-2">
-            <div class="text-green-500">> Sistem çevrimiçi.</div>
-            <div class="text-green-500">> Portfolyo verileri yüklendi...</div>
-            <div class="text-gray-400">> İletişim kurmak için komut girin.</div>
-        </div>
-        <div class="p-3 border-t border-white/10 flex items-center bg-black">
-            <span class="text-green-500 mr-2">~$</span>
-            <input type="text" id="cli-input" class="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-600" placeholder="Komut yazın..." autocomplete="off">
-        </div>
-    </div>
-
-    <!-- JavaScript İşlevleri -->
     <script>
-        // Sekme Değiştirme Fonksiyonu
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Terminal Mantığı
+        // Generative UI: Terminal Mantığı
         const cliInput = document.getElementById('cli-input');
         const cliOutput = document.getElementById('cli-output');
-        
+        const bentoBoxes = document.querySelectorAll('.bento-box');
+
         cliInput.addEventListener('keypress', function(e) {
             if(e.key === 'Enter' && this.value.trim() !== '') {
-                const val = this.value;
-                cliOutput.innerHTML += `<div class="text-white">> ${val}</div>`;
-                cliOutput.innerHTML += `<div class="text-gray-500">> Komut alındı, işleniyor...</div>`;
+                const val = this.value.toLowerCase().trim();
+                cliOutput.innerHTML += `<p class="opacity-50">> ${val}</p>`;
+                
+                if (val === 'analiz_modu') {
+                    cliOutput.innerHTML += `<p class="text-blue-400">> Arayüz teknik veri odaklı yeniden yapılandırılıyor...</p>`;
+                    document.body.style.fontFamily = "'JetBrains Mono', monospace";
+                    bentoBoxes.forEach(box => box.style.borderColor = "rgba(59, 130, 246, 0.5)");
+                } else if (val === 'temizle') {
+                    cliOutput.innerHTML = `<p>> Terminal temizlendi.</p>`;
+                } else {
+                    cliOutput.innerHTML += `<p class="text-gray-400">> Komut tanınmadı. Generative algoritmalar öğrenmeye devam ediyor.</p>`;
+                }
+                
                 this.value = '';
                 cliOutput.scrollTop = cliOutput.scrollHeight;
             }
         });
 
-        // Arka Plan Ağ (Network) Animasyonu
-        const canvas = document.getElementById('network-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            initParticles();
-        }
-
-        function initParticles() {
-            particles = [];
-            // Ekran boyutuna göre parçacık sayısı
-            const count = Math.floor((width * height) / 12000);
-            for(let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4,
-                    radius: Math.random() * 1.5 + 0.5
-                });
+        // Global Erişilebilirlik: Tema Değiştirici
+        function toggleTheme(theme) {
+            if (theme === 'industrial') {
+                document.documentElement.setAttribute('data-theme', 'industrial');
+                document.body.classList.remove('dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                document.body.classList.add('dark');
             }
         }
-
-        function draw() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                
-                // Ekran sınırlarından sekme
-                if(p.x < 0 || p.x > width) p.vx *= -1;
-                if(p.y < 0 || p.y > height) p.vy *= -1;
-                
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Parçacıkları birbirine bağlayan çizgiler
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-            for(let i = 0; i < particles.length; i++) {
-                for(let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = dx * dx + dy * dy;
-                    
-                    if(dist < 12000) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-        draw();
     </script>
 </body>
 </html>
