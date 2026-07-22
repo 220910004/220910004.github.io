@@ -3,44 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mustafa Furkan Özel | Portfolio</title>
+    <title>Mustafa Furkan Özel | Hesaplamalı Mekanik Mühendisi</title>
+
+    <!-- SEO & Open Graph -->
+    <meta name="description" content="Mustafa Furkan Özel — Hesaplamalı Mekanik, FEA, CFD ve Python tabanlı yapısal analiz uzmanı. MSc Mechanical Engineering, CRC Press yayın yazarı.">
+    <meta name="author" content="Mustafa Furkan Özel">
+    <meta property="og:title" content="Mustafa Furkan Özel | Portfolio">
+    <meta property="og:description" content="Hesaplamalı Mekanik Mühendisi — FEA, CFD, Python, ANSYS">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://furkanis.me">
+    <link rel="canonical" href="https://furkanis.me">
+
+    <!-- Favicon (SVG inline) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Akıcı (Fluid) Tipografi ve Variable Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400..700&display=swap');
-        
+
         :root {
             --bg-color: #050505;
             --text-color: #e5e7eb;
-            --bento-bg: rgba(255, 255, 255, 0.03);
-            --bento-border: rgba(255, 255, 255, 0.1);
+            --bento-bg: rgba(255,255,255,0.03);
+            --bento-border: rgba(255,255,255,0.1);
+            --accent: #3b82f6;
+            --accent-glow: rgba(59,130,246,0.15);
         }
 
         [data-theme="industrial"] {
             --bg-color: #e5e7eb;
             --text-color: #050505;
-            --bento-bg: rgba(0, 0, 0, 0.05);
-            --bento-border: rgba(0, 0, 0, 0.2);
+            --bento-bg: rgba(0,0,0,0.04);
+            --bento-border: rgba(0,0,0,0.15);
+            --accent: #1d4ed8;
+            --accent-glow: rgba(29,78,216,0.1);
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
-        /* Fluid Tipografi Sınıfları */
-        .text-fluid-h1 { font-size: clamp(2rem, 5vw, 4rem); font-variation-settings: "wght" 600; line-height: 1.1; }
-        .text-fluid-p { font-size: clamp(0.875rem, 1.5vw, 1.1rem); font-variation-settings: "wght" 300; }
 
-        /* Bento Grid 2.0 - Modüler Yapı */
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .text-fluid-h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-variation-settings: "wght" 700; line-height: 1.1; }
+        .text-fluid-h2 { font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-variation-settings: "wght" 600; }
+        .text-fluid-p  { font-size: clamp(0.85rem, 1.4vw, 1.05rem); font-variation-settings: "wght" 300; }
+
+        /* Bento Grid */
         .bento-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
             grid-auto-flow: dense;
         }
 
@@ -50,19 +68,20 @@
             border-radius: 16px;
             padding: 1.5rem;
             backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             overflow: hidden;
             position: relative;
         }
 
         .bento-box:hover {
-            border-color: rgba(150, 150, 150, 0.4);
+            border-color: var(--accent);
             transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--accent-glow);
         }
 
         .bento-large { grid-column: span 2; grid-row: span 2; }
-        .bento-tall { grid-row: span 2; }
-        .bento-wide { grid-column: span 2; }
+        .bento-tall  { grid-row: span 2; }
+        .bento-wide  { grid-column: span 2; }
 
         @media (max-width: 768px) {
             .bento-large, .bento-tall, .bento-wide {
@@ -71,124 +90,479 @@
             }
         }
 
-        /* WebGPU 3D Canvas Placeholder */
-        #webgpu-canvas {
+        /* FEA Canvas */
+        #fea-canvas {
             width: 100%;
             height: 100%;
-            min-height: 250px;
-            background: radial-gradient(circle at center, #1a1a24 0%, #050505 100%);
+            min-height: 280px;
             border-radius: 8px;
-            cursor: grab;
+            cursor: crosshair;
+            display: block;
         }
+
+        /* CLI Scrollbar */
+        #cli-output::-webkit-scrollbar { width: 4px; }
+        #cli-output::-webkit-scrollbar-track { background: transparent; }
+        #cli-output::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+        /* Tag / Badge */
+        .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--bento-border);
+            opacity: 0.8;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Timeline */
+        .timeline-item { position: relative; padding-left: 1.25rem; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 6px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 3.5px; top: 18px;
+            width: 1px; height: calc(100% - 12px);
+            background: var(--bento-border);
+        }
+        .timeline-item:last-child::after { display: none; }
+
+        /* Smooth scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Section anchor offset */
+        section[id] { scroll-margin-top: 1rem; }
     </style>
 </head>
+
 <body class="antialiased min-h-screen flex flex-col p-4 md:p-8">
 
-    <header class="w-full max-w-6xl mx-auto mb-10 flex justify-between items-end">
+    <!-- ==================== HEADER ==================== -->
+    <header class="w-full max-w-6xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
             <h1 class="text-fluid-h1 tracking-tight mb-2">Mustafa Furkan Özel</h1>
-            <p class="font-mono text-sm uppercase tracking-widest opacity-60">Mühendis &bull; Sistem Geliştirici &bull; Kurumsal Analist</p>
+            <p class="font-mono text-sm uppercase tracking-widest opacity-60">
+                Hesaplamalı Mekanik &bull; FEA/CFD &bull; Python &bull; R&D
+            </p>
         </div>
-        
-        <!-- Erişilebilirlik ve Tema Kontrolü -->
-        <div class="flex gap-4 font-mono text-xs">
-            <button onclick="toggleTheme('dark')" class="hover:opacity-100 opacity-50 transition-opacity">[Karanlık]</button>
-            <button onclick="toggleTheme('industrial')" class="hover:opacity-100 opacity-50 transition-opacity">[Endüstriyel]</button>
+        <div class="flex gap-3 font-mono text-xs items-center">
+            <a href="Academic CV.pdf" download
+               class="px-3 py-1.5 rounded border border-current/20 hover:border-blue-500 hover:text-blue-400 transition-colors"
+               aria-label="CV indir (PDF)">
+                ⬇ CV İndir
+            </a>
+            <button onclick="toggleTheme('dark')" class="hover:opacity-100 opacity-50 transition-opacity" aria-label="Karanlık tema">[Karanlık]</button>
+            <button onclick="toggleTheme('industrial')" class="hover:opacity-100 opacity-50 transition-opacity" aria-label="Endüstriyel tema">[Endüstriyel]</button>
         </div>
     </header>
 
-    <!-- Bento Grid 2.0 Ana Mimari -->
+    <!-- ==================== BENTO GRID ==================== -->
     <main class="w-full max-w-6xl mx-auto bento-grid">
-        
-        <!-- Generative UI & CLI Modülü -->
-        <div class="bento-box bento-large flex flex-col">
+
+        <!-- ===== 1. GENERATIVE TERMINAL (CLI) ===== -->
+        <div class="bento-box bento-large flex flex-col" id="terminal">
             <div class="flex justify-between items-center mb-4 border-b border-gray-500/20 pb-2">
                 <h2 class="font-mono text-xs uppercase tracking-widest">Generative_Terminal //</h2>
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true"></span>
             </div>
-            <div id="cli-output" class="flex-1 overflow-y-auto font-mono text-sm space-y-3 opacity-80 mb-4 text-fluid-p">
-                <p>> Hoş geldiniz. Arayüz niyetinize göre şekillenecektir.</p>
-                <p>> Hızlı eylemler: "iletisim", "projeler", "cv_indir", "analiz_modu"</p>
+            <div id="cli-output" class="flex-1 overflow-y-auto font-mono text-sm space-y-2 opacity-80 mb-4 text-fluid-p max-h-72" role="log" aria-live="polite" aria-label="Terminal çıktı alanı">
+                <p>> Hoş geldiniz. Sistem hazır.</p>
+                <p>> Komutlar: <span class="text-blue-400">yardim</span>, <span class="text-blue-400">hakkimda</span>, <span class="text-blue-400">deneyim</span>, <span class="text-blue-400">yayinlar</span>, <span class="text-blue-400">yetkinlikler</span>, <span class="text-blue-400">iletisim</span>, <span class="text-blue-400">cv_indir</span>, <span class="text-blue-400">analiz_modu</span>, <span class="text-blue-400">temizle</span></p>
             </div>
             <div class="flex items-center font-mono bg-black/20 p-2 rounded">
-                <span class="mr-2 text-green-500">~$</span>
-                <input type="text" id="cli-input" class="bg-transparent border-none outline-none w-full text-current" placeholder="Komut girin..." autocomplete="off">
+                <span class="mr-2 text-green-500" aria-hidden="true">~$</span>
+                <label for="cli-input" class="sr-only">Terminal komut girişi</label>
+                <input type="text" id="cli-input" class="bg-transparent border-none outline-none w-full text-current" placeholder="Komut girin..." autocomplete="off" aria-label="Terminal komut girişi">
             </div>
         </div>
 
-        <!-- Hakkımda Modülü -->
-        <div class="bento-box">
-            <h3 class="font-semibold mb-3">Sistem Mimarisi & Mühendislik</h3>
-            <p class="text-fluid-p opacity-80 leading-relaxed">
-                Hesaplamalı mekanik ve minimalist dijital mimariler üzerine çalışıyorum. Python tabanlı otomasyonlar tasarlıyor, çelik konstrüksiyon analizleri yürütüyor ve karmaşık veri setlerini (bykt.org kurumsal analizleri gibi) optimize edilmiş arayüzlere dönüştürüyorum.
+        <!-- ===== 2. HAKKIMDA ===== -->
+        <div class="bento-box" id="hakkimda">
+            <h3 class="text-fluid-h2 mb-3">Hakkımda</h3>
+            <p class="text-fluid-p opacity-80 leading-relaxed mb-4">
+                Hesaplamalı mekanik, sonlu elemanlar analizi (FEA) ve Python tabanlı yapısal optimizasyon alanında uzmanlaşmış Makine Mühendisi. Teorik yapısal modelleme ile pratik R&D çözümlerini birleştirme konusunda kanıtlanmış deneyim. CRC Press / Taylor & Francis'te yayınlanmış kitap bölümü ortak yazarı.
             </p>
+            <div class="flex flex-wrap gap-2">
+                <span class="tag">MSc — OSTİM Teknik Üni.</span>
+                <span class="tag">BSc — Selçuk Üni.</span>
+                <span class="tag">BSc — Anadolu Üni. (İşletme)</span>
+            </div>
         </div>
 
-        <!-- WebGPU Gerçek Zamanlı 3D Fizik Motoru -->
-        <div class="bento-box bento-wide flex flex-col">
-            <h3 class="font-semibold mb-2">WebGPU Fizik Simülasyonu</h3>
-            <p class="text-xs font-mono opacity-60 mb-4">Etkileşimli Topoloji: İnşaat demirinin C-profilin geniş kenarından geçtiği eksenel yükleme analizi.</p>
-            <!-- 3D Render Alanı (Gerçek bir projede buraya Three.js veya WebGPU kodu entegre edilir) -->
-            <div id="webgpu-canvas" class="flex items-center justify-center relative overflow-hidden group">
-                <div class="absolute inset-0 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
-                    <span class="font-mono text-xs border border-white/20 px-3 py-1 rounded bg-black/50">C-Profil Gerilim Simülasyonu (Etkileşim İçin Sürükleyin)</span>
+        <!-- ===== 3. FEA CANVAS SİMÜLASYONU ===== -->
+        <div class="bento-box bento-wide flex flex-col" id="simulasyon">
+            <h3 class="text-fluid-h2 mb-1">FEA Gerilim Simülasyonu</h3>
+            <p class="text-xs font-mono opacity-60 mb-3">C-Profil Kesit — Von Mises Gerilme Dağılımı | Fare ile etkileşim: yükleme noktasını taşıyın</p>
+            <canvas id="fea-canvas" aria-label="Sonlu elemanlar gerilim simülasyonu — etkileşimli canvas"></canvas>
+        </div>
+
+        <!-- ===== 4. DENEYİM ===== -->
+        <div class="bento-box bento-tall" id="deneyim">
+            <h3 class="text-fluid-h2 mb-4">Deneyim</h3>
+            <div class="space-y-5">
+                <div class="timeline-item">
+                    <p class="font-semibold text-sm">Satış Mühendisi (Teknik Danışman)</p>
+                    <p class="font-mono text-xs opacity-50">Akifsan Makina — Ankara</p>
+                    <p class="font-mono text-xs opacity-40 mb-1">Şub 2024 – Eyl 2025</p>
+                    <p class="text-fluid-p opacity-70">Endüstriyel müşterilere ileri işleme, kesici takımlar ve ekipman konusunda teknik danışmanlık. Teknik katalog ve mühendislik dokümantasyonu yönetimi.</p>
                 </div>
-                <!-- Animasyonlu görsel gerilim efekti temsili -->
-                <div class="w-32 h-32 border-4 border-blue-500/30 rounded-full animate-[spin_10s_linear_infinite] flex items-center justify-center">
-                    <div class="w-full h-1 bg-red-500/50 transform rotate-45"></div>
+                <div class="timeline-item">
+                    <p class="font-semibold text-sm">R&D ve Proje Koordinatörü</p>
+                    <p class="font-mono text-xs opacity-50">Fixus Solar Montaj Sistemleri — Ankara</p>
+                    <p class="font-mono text-xs opacity-40 mb-1">May 2023 – Şub 2024</p>
+                    <p class="text-fluid-p opacity-70">Güneş montaj sistemlerinin rüzgâr/kar dinamik yüklerine karşı yapısal optimizasyonu. Uluslararası standartlara uygunluk analizi ve maliyet düşürücü tasarım çözümleri.</p>
+                </div>
+                <div class="timeline-item">
+                    <p class="font-semibold text-sm">Tasarım & Analiz Mühendisi</p>
+                    <p class="font-mono text-xs opacity-50">Theta Temiz Enerji Teknolojileri — Ankara</p>
+                    <p class="font-mono text-xs opacity-40 mb-1">Oca 2022 – Kas 2022</p>
+                    <p class="text-fluid-p opacity-70">TÜBİTAK destekli projelerde ANSYS Fluent & Mechanical ile CFD ve yapısal analiz. Matematiksel modellerin 3D tasarım ve prototiplere dönüştürülmesi.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Veri & Optimizasyon Modülü -->
-        <div class="bento-box">
-            <h3 class="font-semibold mb-3">Sıfır Sürtünme (Frictionless)</h3>
-            <ul class="text-fluid-p opacity-80 space-y-2">
-                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> LCP Hedefi: < 1.0s</li>
-                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> Global CDN Entegrasyonu</li>
-                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> Headless CMS Hazır</li>
-                <li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-current"></span> VDS Ubuntu Otomasyonu</li>
+        <!-- ===== 5. YAYINLAR & EĞİTİM ===== -->
+        <div class="bento-box" id="yayinlar">
+            <h3 class="text-fluid-h2 mb-3">Yayın & Araştırma</h3>
+            <div class="border-l-2 border-blue-500/40 pl-3 mb-4">
+                <p class="text-sm font-medium leading-snug">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"</p>
+                <p class="text-xs font-mono opacity-50 mt-1">Özel, M. F. & Girard, H. (2025)</p>
+                <p class="text-xs font-mono opacity-40">Advances in Aerospace Engineering — CRC Press / Taylor & Francis, pp. 35–46</p>
+            </div>
+            <div class="border-l-2 border-green-500/40 pl-3">
+                <p class="text-sm font-medium leading-snug">Yüksek Lisans Tezi</p>
+                <p class="text-xs opacity-60 mt-1">"Prevention of Shear Buckling in Thin-Walled Closed-Section Beams: Insights from Python-Based Structural Analysis"</p>
+                <p class="text-xs font-mono opacity-40 mt-1">Danışman: Doç. Dr. Hande Girard — OSTİM Teknik Üni.</p>
+            </div>
+        </div>
+
+        <!-- ===== 6. TEKNİK YETKİNLİKLER ===== -->
+        <div class="bento-box" id="yetkinlikler">
+            <h3 class="text-fluid-h2 mb-3">Teknik Yetkinlikler</h3>
+            <div class="space-y-3 text-fluid-p opacity-80">
+                <div>
+                    <p class="font-mono text-xs uppercase tracking-wider text-blue-400 mb-1">Hesaplamalı Mekanik</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="tag">FEA</span><span class="tag">CFD</span><span class="tag">Yapısal Dinamik</span><span class="tag">Kırılma Mekaniği</span><span class="tag">Çok Ölçekli Modelleme</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-mono text-xs uppercase tracking-wider text-green-400 mb-1">Yazılım</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="tag">ANSYS Mechanical</span><span class="tag">ANSYS Fluent</span><span class="tag">Fusion 360</span><span class="tag">SolidWorks</span><span class="tag">MATLAB</span><span class="tag">AutoCAD</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-mono text-xs uppercase tracking-wider text-yellow-400 mb-1">Programlama</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="tag">Python (FEA Scripting)</span><span class="tag">Yapısal Optimizasyon</span><span class="tag">Otomasyon</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-mono text-xs uppercase tracking-wider text-purple-400 mb-1">R&D</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="tag">Prototipleme</span><span class="tag">TÜBİTAK Proje Koordinasyonu</span><span class="tag">Teknik Dokümantasyon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 7. SERTİFİKALAR ===== -->
+        <div class="bento-box" id="sertifikalar">
+            <h3 class="text-fluid-h2 mb-3">Sertifikalar</h3>
+            <ul class="text-fluid-p opacity-70 space-y-2 text-sm">
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span> ANSYS Fluent — CFD Analiz Mühendisliği (2022)</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span> Fusion 360 — Generative Design (2022)</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span> Multi-Body Dynamics: Teori & Uygulama (2021)</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span> TEI Havacılık Motorları Okulu (2021)</li>
+                <li class="flex items-start gap-2"><span class="text-blue-400 mt-0.5">▸</span> SolidWorks & ANSYS Parametrik Tasarım (2020)</li>
             </ul>
+        </div>
+
+        <!-- ===== 8. İLETİŞİM ===== -->
+        <div class="bento-box" id="iletisim">
+            <h3 class="text-fluid-h2 mb-3">İletişim</h3>
+            <div class="space-y-3 text-fluid-p">
+                <a href="mailto:furkan.ozel@yahoo.com" class="flex items-center gap-3 hover:text-blue-400 transition-colors group">
+                    <span class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-sm group-hover:bg-blue-500/20 transition-colors">✉</span>
+                    <span class="font-mono text-sm">furkan.ozel@yahoo.com</span>
+                </a>
+                <a href="tel:+905432209980" class="flex items-center gap-3 hover:text-green-400 transition-colors group">
+                    <span class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-sm group-hover:bg-green-500/20 transition-colors">☎</span>
+                    <span class="font-mono text-sm">+90 543 220 9980</span>
+                </a>
+                <div class="flex items-center gap-3 opacity-60">
+                    <span class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-sm">📍</span>
+                    <span class="font-mono text-sm">Ankara, Türkiye</span>
+                </div>
+                <a href="Academic CV.pdf" download class="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors font-mono text-sm">
+                    ⬇ Akademik CV İndir (PDF)
+                </a>
+            </div>
         </div>
 
     </main>
 
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="w-full max-w-6xl mx-auto mt-10 pt-4 border-t border-gray-500/10 flex flex-col md:flex-row justify-between items-center gap-2 font-mono text-xs opacity-40">
+        <p>© 2026 Mustafa Furkan Özel — Tüm hakları saklıdır.</p>
+        <p>Hesaplamalı Mekanik • FEA • CFD • Python</p>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
     <script>
-        // Generative UI: Terminal Mantığı
-        const cliInput = document.getElementById('cli-input');
-        const cliOutput = document.getElementById('cli-output');
-        const bentoBoxes = document.querySelectorAll('.bento-box');
+    // ===== CLI TERMINAL =====
+    const cliInput  = document.getElementById('cli-input');
+    const cliOutput = document.getElementById('cli-output');
 
-        cliInput.addEventListener('keypress', function(e) {
-            if(e.key === 'Enter' && this.value.trim() !== '') {
-                const val = this.value.toLowerCase().trim();
-                cliOutput.innerHTML += `<p class="opacity-50">> ${val}</p>`;
-                
-                if (val === 'analiz_modu') {
-                    cliOutput.innerHTML += `<p class="text-blue-400">> Arayüz teknik veri odaklı yeniden yapılandırılıyor...</p>`;
-                    document.body.style.fontFamily = "'JetBrains Mono', monospace";
-                    bentoBoxes.forEach(box => box.style.borderColor = "rgba(59, 130, 246, 0.5)");
-                } else if (val === 'temizle') {
-                    cliOutput.innerHTML = `<p>> Terminal temizlendi.</p>`;
-                } else {
-                    cliOutput.innerHTML += `<p class="text-gray-400">> Komut tanınmadı. Generative algoritmalar öğrenmeye devam ediyor.</p>`;
-                }
-                
-                this.value = '';
-                cliOutput.scrollTop = cliOutput.scrollHeight;
-            }
-        });
-
-        // Global Erişilebilirlik: Tema Değiştirici
-        function toggleTheme(theme) {
-            if (theme === 'industrial') {
-                document.documentElement.setAttribute('data-theme', 'industrial');
-                document.body.classList.remove('dark');
-            } else {
-                document.documentElement.removeAttribute('data-theme');
-                document.body.classList.add('dark');
-            }
+    const commands = {
+        yardim() {
+            return [
+                '> Kullanılabilir komutlar:',
+                '>   hakkimda      — Hakkımda bölümüne git',
+                '>   deneyim       — Deneyim bölümüne git',
+                '>   yayinlar      — Yayınlar bölümüne git',
+                '>   yetkinlikler  — Teknik yetkinlikler',
+                '>   sertifikalar  — Sertifikalar',
+                '>   iletisim      — İletişim bilgileri',
+                '>   cv_indir      — Akademik CV indir',
+                '>   analiz_modu   — Teknik görünüm modu',
+                '>   temizle       — Terminali temizle'
+            ];
+        },
+        hakkimda()     { scrollToSection('hakkimda');     return ['> Hakkımda bölümüne yönlendiriliyorsunuz...']; },
+        deneyim()      { scrollToSection('deneyim');      return ['> Deneyim bölümüne yönlendiriliyorsunuz...']; },
+        yayinlar()     { scrollToSection('yayinlar');     return ['> Yayınlar bölümüne yönlendiriliyorsunuz...']; },
+        yetkinlikler() { scrollToSection('yetkinlikler'); return ['> Teknik yetkinlikler bölümüne yönlendiriliyorsunuz...']; },
+        sertifikalar() { scrollToSection('sertifikalar'); return ['> Sertifikalar bölümüne yönlendiriliyorsunuz...']; },
+        iletisim()     { scrollToSection('iletisim');     return ['> İletişim: furkan.ozel@yahoo.com | +90 543 220 9980']; },
+        cv_indir() {
+            const a = document.createElement('a');
+            a.href = 'Academic CV.pdf';
+            a.download = 'Mustafa_Furkan_Ozel_CV.pdf';
+            a.click();
+            return ['> CV indirme başlatıldı: Mustafa_Furkan_Ozel_CV.pdf'];
+        },
+        analiz_modu() {
+            document.body.style.fontFamily = "'JetBrains Mono', monospace";
+            document.querySelectorAll('.bento-box').forEach(box => {
+                box.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+                box.style.boxShadow = '0 0 20px rgba(59,130,246,0.1)';
+            });
+            return ['> ANALİZ MODU AKTİF — Tüm kutular teknik görünüme geçirildi.'];
+        },
+        temizle() {
+            cliOutput.innerHTML = '';
+            return ['> Terminal temizlendi.'];
         }
+    };
+
+    function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function addOutput(text, className = '') {
+        const p = document.createElement('p');
+        p.textContent = text;
+        if (className) p.className = className;
+        cliOutput.appendChild(p);
+    }
+
+    cliInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && this.value.trim() !== '') {
+            const val = this.value.toLowerCase().trim();
+            addOutput('> ' + val, 'opacity-50');
+
+            if (commands[val]) {
+                const lines = commands[val]();
+                lines.forEach(line => addOutput(line, 'text-blue-400'));
+            } else {
+                addOutput('> Komut tanınmadı. "yardim" yazarak komutları görebilirsiniz.', 'text-red-400/70');
+            }
+
+            this.value = '';
+            cliOutput.scrollTop = cliOutput.scrollHeight;
+        }
+    });
+
+    // ===== TEMA DEĞİŞTİRİCİ =====
+    function toggleTheme(theme) {
+        if (theme === 'industrial') {
+            document.documentElement.setAttribute('data-theme', 'industrial');
+            document.body.classList.remove('dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            document.body.classList.add('dark');
+        }
+    }
+
+    // ===== FEA CANVAS SİMÜLASYONU (Von Mises) =====
+    (function() {
+        const canvas = document.getElementById('fea-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let W, H, mouseX = -1, mouseY = -1, isDragging = false;
+        let loadX = 0.5, loadY = 0.3; // Normalize yük pozisyonu
+
+        function resize() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            W = canvas.width  = rect.width;
+            H = canvas.height = Math.max(280, rect.height - 60);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // C-Profil geometrisi (normalize)
+        function getCProfile() {
+            const cx = W * 0.5, cy = H * 0.5;
+            const w = W * 0.28, h = H * 0.55, t = Math.max(8, W * 0.025);
+            return { cx, cy, w, h, t };
+        }
+
+        // Von Mises renk haritası
+        function vonMisesColor(stress) {
+            // 0 → mavi, 0.5 → yeşil/sarı, 1 → kırmızı
+            const s = Math.min(1, Math.max(0, stress));
+            let r, g, b;
+            if (s < 0.25) {
+                r = 0; g = Math.round(s * 4 * 255); b = 255;
+            } else if (s < 0.5) {
+                r = 0; g = 255; b = Math.round((1 - (s - 0.25) * 4) * 255);
+            } else if (s < 0.75) {
+                r = Math.round((s - 0.5) * 4 * 255); g = 255; b = 0;
+            } else {
+                r = 255; g = Math.round((1 - (s - 0.75) * 4) * 255); b = 0;
+            }
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            const { cx, cy, w, h, t } = getCProfile();
+
+            // Arka plan grid
+            ctx.strokeStyle = 'rgba(100,100,100,0.08)';
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x < W; x += 20) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = 0; y < H; y += 20) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+            // Mesh noktaları ve gerilme hesaplama
+            const cols = 24, rows = 18;
+            const cellW = (w * 2) / cols, cellH = (h * 1.4) / rows;
+            const startX = cx - w, startY = cy - h * 0.7;
+
+            const lx = mouseX >= 0 ? mouseX : cx + (loadX - 0.5) * w * 2;
+            const ly = mouseY >= 0 ? mouseY : cy + (loadY - 0.5) * h * 1.4;
+
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    const px = startX + i * cellW + cellW / 2;
+                    const py = startY + j * cellH + cellH / 2;
+
+                    // C-profil içinde mi?
+                    const inFlangeTop = py > cy - h/2 - t && py < cy - h/2 + t && px > cx - w/2 && px < cx + w/2;
+                    const inFlangeBot = py > cy + h/2 - t && py < cy + h/2 + t && px > cx - w/2 && px < cx + w/2;
+                    const inWeb = px > cx - t/2 && px < cx + t/2 && py > cy - h/2 && py < cy + h/2;
+                    const inLipTop = px > cx + w/2 - t && px < cx + w/2 && py > cy - h/2 - t && py < cy - h/2 + t * 2;
+                    const inLipBot = px > cx + w/2 - t && px < cx + w/2 && py > cy + h/2 - t * 2 && py < cy + h/2 + t;
+
+                    if (inFlangeTop || inFlangeBot || inWeb || inLipTop || inLipBot) {
+                        const dist = Math.sqrt((px - lx) ** 2 + (py - ly) ** 2);
+                        const maxDist = Math.sqrt(W * W + H * H) * 0.5;
+                        const stress = Math.max(0, 1 - dist / maxDist);
+
+                        ctx.fillStyle = vonMisesColor(stress);
+                        ctx.globalAlpha = 0.7 + stress * 0.3;
+                        ctx.fillRect(px - cellW/2, py - cellH/2, cellW - 1, cellH - 1);
+                    }
+                }
+            }
+            ctx.globalAlpha = 1;
+
+            // C-Profil kontur çizgisi
+            ctx.strokeStyle = 'rgba(200,200,200,0.6)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            // Üst flanş
+            ctx.moveTo(cx - w/2, cy - h/2);
+            ctx.lineTo(cx + w/2, cy - h/2);
+            // Sağ üst dudak
+            ctx.lineTo(cx + w/2, cy - h/2 - t);
+            ctx.moveTo(cx + w/2, cy - h/2);
+            // Web
+            ctx.moveTo(cx, cy - h/2);
+            ctx.lineTo(cx, cy + h/2);
+            // Alt flanş
+            ctx.moveTo(cx - w/2, cy + h/2);
+            ctx.lineTo(cx + w/2, cy + h/2);
+            ctx.stroke();
+
+            // Yük oku
+            const arrowX = lx, arrowY = ly;
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(arrowX, arrowY - 30);
+            ctx.lineTo(arrowX, arrowY);
+            ctx.stroke();
+            // Ok başı
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.moveTo(arrowX, arrowY + 5);
+            ctx.lineTo(arrowX - 6, arrowY - 8);
+            ctx.lineTo(arrowX + 6, arrowY - 8);
+            ctx.closePath();
+            ctx.fill();
+
+            // Yük etiketi
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.font = '11px "JetBrains Mono", monospace';
+            ctx.fillText('F = 12.5 kN', arrowX + 10, arrowY - 20);
+
+            // Renk skalası (legend)
+            const legendX = W - 30, legendY = H * 0.2, legendH = H * 0.6;
+            for (let i = 0; i < legendH; i++) {
+                ctx.fillStyle = vonMisesColor(1 - i / legendH);
+                ctx.fillRect(legendX, legendY + i, 12, 1);
+            }
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.font = '9px "JetBrains Mono", monospace';
+            ctx.fillText('σ_max', legendX - 5, legendY - 6);
+            ctx.fillText('σ_min', legendX - 5, legendY + legendH + 14);
+
+            // Başlık
+            ctx.fillStyle = 'rgba(255,255,255,0.3)';
+            ctx.font = '10px "JetBrains Mono", monospace';
+            ctx.fillText('Von Mises Stress Distribution [MPa]', 10, H - 10);
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // Fare etkileşimi
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        canvas.addEventListener('mouseleave', () => { mouseX = -1; mouseY = -1; });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.touches[0].clientX - rect.left;
+            mouseY = e.touches[0].clientY - rect.top;
+        }, { passive: false });
+        canvas.addEventListener('touchend', () => { mouseX = -1; mouseY = -1; });
+    })();
     </script>
 </body>
 </html>
