@@ -9,834 +9,391 @@
 <meta property="og:description" content="FEA · CFD · Python · ANSYS · Structural Optimization">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://furkanis.me">
+<meta property="og:image" content="https://furkanis.me/og-image.png">
 <link rel="canonical" href="https://furkanis.me">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+:root{
+  --bg:#08080a;--bg2:#0e0e11;--text:#e8e6e1;--dim:#55555a;--faint:#222226;
+  --accent:#ff4d00;--accent2:#3b5bff;--green:#4ecb8d;--amber:#f0a03c;
+  --syne:'Syne',sans-serif;--grot:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--grot);overflow-x:hidden;cursor:none}
+::selection{background:var(--accent);color:#fff}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
-/* ═══════════════════════════════════════
-   TOKENS
-   ═══════════════════════════════════════ */
-:root {
-  --bg:      #08080a;
-  --bg2:     #0e0e11;
-  --text:    #e8e6e1;
-  --dim:     #55555a;
-  --faint:   #2a2a2e;
-  --accent:  #ff4d00;
-  --accent2: #3b5bff;
-  --syne:    'Syne', sans-serif;
-  --grot:    'Space Grotesk', sans-serif;
-  --mono:    'JetBrains Mono', monospace;
-  --ease:    cubic-bezier(0.16, 1, 0.3, 1);
-}
+/* Skip link */
+.skip-link{position:fixed;top:-100%;left:16px;z-index:100000;background:var(--accent);color:#fff;
+  font-family:var(--mono);font-size:.7rem;padding:8px 16px;transition:top .2s}
+.skip-link:focus{top:12px}
 
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body {
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--grot);
-  overflow-x:hidden;
-  cursor:none;
-}
-::selection { background:var(--accent); color:#fff; }
-a { color:inherit; text-decoration:none; }
+/* Cursor */
+#cursor-dot,#cursor-ring{position:fixed;z-index:99999;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)}
+#cursor-dot{width:6px;height:6px;background:var(--accent)}
+#cursor-ring{width:36px;height:36px;border:1px solid rgba(255,77,0,.35);transition:width .3s var(--ease),height .3s var(--ease),background .3s,border-color .3s}
+#cursor-ring.hov{width:56px;height:56px;background:rgba(255,77,0,.06);border-color:var(--accent)}
+@media(pointer:coarse){#cursor-dot,#cursor-ring{display:none}body{cursor:auto}}
 
-/* ═══════════════════════════════════════
-   CUSTOM CURSOR
-   ═══════════════════════════════════════ */
-#cursor-dot, #cursor-ring {
-  position:fixed; z-index:99999;
-  border-radius:50%;
-  pointer-events:none;
-  transform:translate(-50%,-50%);
-  transition: opacity 0.3s;
-}
-#cursor-dot {
-  width:6px; height:6px;
-  background:var(--accent);
-}
-#cursor-ring {
-  width:36px; height:36px;
-  border:1px solid rgba(255,77,0,0.4);
-  transition: width 0.3s var(--ease), height 0.3s var(--ease),
-              border-color 0.3s, background 0.3s, transform 0.08s linear;
-}
-#cursor-ring.hovering {
-  width:56px; height:56px;
-  background:rgba(255,77,0,0.06);
-  border-color:var(--accent);
-}
-@media (pointer:coarse) {
-  #cursor-dot, #cursor-ring { display:none; }
-  body { cursor:auto; }
+/* Grain */
+#grain{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px}
+
+/* Scroll progress */
+#scroll-progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:9999;width:0;transition:width .1s linear}
+
+/* Page intro */
+#page-intro{position:fixed;inset:0;z-index:99990;background:var(--bg);display:flex;align-items:center;justify-content:center;
+  transition:opacity .6s ease,visibility .6s ease}
+#page-intro.hide{opacity:0;visibility:hidden;pointer-events:none}
+#page-intro span{font-family:var(--syne);font-size:clamp(1.5rem,4vw,2.5rem);font-weight:800;color:var(--text);
+  letter-spacing:.1em;animation:introPulse 1.2s ease-in-out infinite alternate}
+@keyframes introPulse{0%{opacity:.3;transform:scale(.97)}100%{opacity:1;transform:scale(1)}}
+
+/* 3D FEA canvas */
+#fea-3d{position:fixed;top:0;right:0;width:52%;height:100vh;z-index:0;transition:opacity .3s}
+#load-control{position:fixed;bottom:36px;right:36px;z-index:2;display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.08em;transition:opacity .3s}
+#load-slider{-webkit-appearance:none;width:120px;height:2px;background:var(--faint);outline:none;cursor:none}
+#load-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:none}
+#load-value{color:var(--accent);min-width:48px}
+@media(max-width:860px){
+  #fea-3d{width:100%;opacity:.1!important;pointer-events:none!important}
+  #load-control{display:none}
 }
 
-/* ═══════════════════════════════════════
-   GRAIN OVERLAY
-   ═══════════════════════════════════════ */
-#grain {
-  position:fixed; inset:0; z-index:9998;
-  pointer-events:none;
-  opacity:0.035;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:128px 128px;
-}
+/* Layout */
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,60px)}
+section{position:relative;z-index:1}
+.sec-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--dim);
+  margin-bottom:2.5rem;display:flex;align-items:center;gap:16px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--faint)}
+.sec-label .num{color:var(--accent)}
+.sec-label.magnetic{transition:transform .3s var(--ease)}
 
-/* ═══════════════════════════════════════
-   REVEAL SYSTEM
-   ═══════════════════════════════════════ */
-.reveal {
-  opacity:0;
-  transform:translateY(40px);
-  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
-}
-.reveal.visible {
-  opacity:1;
-  transform:translateY(0);
-}
-.reveal-line {
-  display:inline-block;
-  overflow:hidden;
-  vertical-align:bottom;
-}
-.reveal-line > span {
-  display:inline-block;
-  transform:translateY(110%);
-  transition:transform 0.8s var(--ease);
-}
-.reveal-line.visible > span {
-  transform:translateY(0);
-}
+/* Reveal */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+.rl{display:inline-block;overflow:hidden;vertical-align:bottom}
+.rl>span{display:inline-block;transform:translateY(110%);transition:transform .8s var(--ease)}
+.rl.vis>span{transform:translateY(0)}
 
-/* ═══════════════════════════════════════
-   LAYOUT
-   ═══════════════════════════════════════ */
-.wrap {
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 clamp(20px, 5vw, 60px);
-}
-section { position:relative; }
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;align-items:center;position:relative}
+.hero-content{position:relative;z-index:1;max-width:52%}
+.hero-eyebrow{font-family:var(--mono);font-size:clamp(.58rem,1.1vw,.7rem);letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem}
+.hero-name{font-family:var(--syne);font-size:clamp(2.6rem,8vw,6.5rem);font-weight:800;line-height:.95;letter-spacing:-.03em;margin-bottom:1.4rem}
+.hero-name .outline{-webkit-text-stroke:1px var(--dim);color:transparent}
+.hero-sub{font-size:clamp(.82rem,1.6vw,1.05rem);font-weight:300;color:var(--dim);max-width:440px;line-height:1.7}
+.hero-sub strong{color:var(--text);font-weight:500}
+.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.hero-scroll .line{width:1px;height:44px;background:linear-gradient(to bottom,var(--accent),transparent);animation:sp 2s ease-in-out infinite}
+@keyframes sp{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
+@media(max-width:860px){.hero-content{max-width:100%}}
 
-/* Section label */
-.sec-label {
-  font-family:var(--mono);
-  font-size:0.6rem;
-  letter-spacing:0.25em;
-  text-transform:uppercase;
-  color:var(--dim);
-  margin-bottom:2.5rem;
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-.sec-label::after {
-  content:'';
-  flex:1;
-  height:1px;
-  background:var(--faint);
-}
-.sec-label .num { color:var(--accent); }
+/* ── MARQUEE ── */
+#marquee{border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);padding:13px 0;overflow:hidden;white-space:nowrap;z-index:1;position:relative}
+.mq-track{display:inline-flex;animation:mq 22s linear infinite}
+.mq-track span{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);padding:0 20px}
+.mq-track em{font-style:normal;color:var(--accent)}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ═══════════════════════════════════════
-   1. HERO
-   ═══════════════════════════════════════ */
-#hero {
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-#hero-bg {
-  position:absolute; inset:0; z-index:0;
-  opacity:0.06;
-}
-.hero-content { position:relative; z-index:1; }
-.hero-eyebrow {
-  font-family:var(--mono);
-  font-size:clamp(0.6rem, 1.2vw, 0.72rem);
-  letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:var(--accent);
-  margin-bottom:1.5rem;
-}
-.hero-name {
-  font-family:var(--syne);
-  font-size:clamp(2.8rem, 9vw, 7.5rem);
-  font-weight:800;
-  line-height:0.95;
-  letter-spacing:-0.03em;
-  color:var(--text);
-  margin-bottom:1.5rem;
-}
-.hero-name .outline {
-  -webkit-text-stroke:1px var(--dim);
-  color:transparent;
-}
-.hero-sub {
-  font-size:clamp(0.85rem, 1.8vw, 1.1rem);
-  font-weight:300;
-  color:var(--dim);
-  max-width:480px;
-  line-height:1.7;
-}
-.hero-sub strong { color:var(--text); font-weight:500; }
+/* ── MANIFESTO ── */
+#manifesto{padding:clamp(80px,14vh,150px) 0}
+.man-text{font-family:var(--syne);font-size:clamp(1.3rem,3.2vw,2.5rem);font-weight:600;line-height:1.35;max-width:880px}
+.man-text .w{display:inline-block;opacity:.1;transition:opacity .35s ease}
+.man-text .w.lit{opacity:1}
+.man-text .hl{color:var(--accent)}
+.stats{display:flex;gap:clamp(28px,5vw,72px);margin-top:clamp(36px,7vh,72px);flex-wrap:wrap}
+.stat-num{font-family:var(--syne);font-size:clamp(1.8rem,4.5vw,3.2rem);font-weight:800;line-height:1}
+.stat-num .sfx{color:var(--accent);font-size:.55em}
+.stat-lbl{font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:5px}
 
-.hero-scroll {
-  position:absolute;
-  bottom:40px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
-  font-family:var(--mono);
-  font-size:0.55rem;
-  letter-spacing:0.2em;
-  color:var(--dim);
-  text-transform:uppercase;
-}
-.hero-scroll .line {
-  width:1px;
-  height:48px;
-  background:linear-gradient(to bottom, var(--accent), transparent);
-  animation:scrollPulse 2s ease-in-out infinite;
-}
-@keyframes scrollPulse {
-  0%,100% { opacity:0.3; transform:scaleY(0.6); }
-  50%     { opacity:1;   transform:scaleY(1); }
-}
+/* ── EXPERIENCE ── */
+#experience{padding:clamp(60px,11vh,110px) 0;overflow:hidden}
+.hscroll{display:flex;gap:20px;padding:16px 0;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.exp-card{flex:0 0 clamp(290px,38vw,400px);scroll-snap-align:start;border:1px solid var(--faint);
+  padding:clamp(22px,3vw,36px);background:var(--bg2);transition:border-color .3s,transform .15s ease;transform-style:preserve-3d;will-change:transform}
+.exp-card:hover{border-color:var(--accent)}
+.exp-idx{font-family:var(--syne);font-size:clamp(2.6rem,5vw,4.2rem);font-weight:800;color:var(--faint);line-height:1;margin-bottom:14px;transition:color .3s}
+.exp-card:hover .exp-idx{color:rgba(255,77,0,.15)}
+.exp-role{font-family:var(--syne);font-size:clamp(.95rem,1.8vw,1.2rem);font-weight:700;margin-bottom:3px}
+.exp-org{font-family:var(--mono);font-size:.62rem;color:var(--accent);letter-spacing:.08em;margin-bottom:3px}
+.exp-date{font-family:var(--mono);font-size:.52rem;color:var(--dim);margin-bottom:14px}
+.exp-desc{font-size:.78rem;font-weight:300;color:var(--dim);line-height:1.65}
+.exp-desc strong{color:var(--text);font-weight:500}
 
-/* Stress-strain SVG in hero */
-#hero-curve {
-  position:absolute;
-  right:clamp(20px, 6vw, 80px);
-  bottom:15%;
-  width:clamp(180px, 25vw, 340px);
-  opacity:0.12;
-  z-index:0;
-}
-#hero-curve path {
-  stroke:var(--accent);
-  stroke-width:2;
-  fill:none;
-  stroke-dasharray:600;
-  stroke-dashoffset:600;
-  animation:drawCurve 3s ease forwards 0.5s;
-}
-@keyframes drawCurve {
-  to { stroke-dashoffset:0; }
-}
+/* ── PUBLICATION ── */
+#publication{padding:clamp(70px,13vh,140px) 0}
+.pub-split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,56px);align-items:center}
+.pub-quote{font-family:var(--syne);font-size:clamp(1.1rem,2.3vw,1.65rem);font-weight:600;line-height:1.4;
+  border-left:3px solid var(--accent);padding-left:clamp(18px,3vw,30px)}
+.pub-quote .jrn{display:block;font-family:var(--mono);font-size:.58rem;font-weight:400;color:var(--dim);letter-spacing:.08em;margin-top:14px;text-transform:uppercase}
+.pub-detail{font-size:.8rem;font-weight:300;color:var(--dim);line-height:1.75}
+.pub-detail strong{color:var(--text);font-weight:500}
+.pub-tag{display:inline-block;font-family:var(--mono);font-size:.52rem;padding:4px 12px;border:1px solid var(--accent);color:var(--accent);margin-top:14px;letter-spacing:.1em}
+@media(max-width:768px){.pub-split{grid-template-columns:1fr}}
 
-/* ═══════════════════════════════════════
-   2. MARQUEE
-   ═══════════════════════════════════════ */
-#marquee {
-  border-top:1px solid var(--faint);
-  border-bottom:1px solid var(--faint);
-  padding:14px 0;
-  overflow:hidden;
-  white-space:nowrap;
-}
-.marquee-track {
-  display:inline-flex;
-  animation:marqueeScroll 25s linear infinite;
-}
-.marquee-track span {
-  font-family:var(--mono);
-  font-size:0.65rem;
-  letter-spacing:0.2em;
-  text-transform:uppercase;
-  color:var(--dim);
-  padding:0 24px;
-}
-.marquee-track span em {
-  font-style:normal;
-  color:var(--accent);
-}
-@keyframes marqueeScroll {
-  0%   { transform:translateX(0); }
-  100% { transform:translateX(-50%); }
-}
+/* ── SKILLS ── */
+#skills{padding:clamp(60px,11vh,110px) 0}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2px}
+.sk-block{border:1px solid var(--faint);padding:clamp(18px,2.5vw,28px);transition:border-color .3s,background .3s}
+.sk-block:hover{border-color:var(--accent);background:rgba(255,77,0,.02)}
+.sk-block h3{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px}
+.sk-block:nth-child(1) h3{color:var(--accent)}
+.sk-block:nth-child(2) h3{color:var(--accent2)}
+.sk-block:nth-child(3) h3{color:var(--green)}
+.sk-block:nth-child(4) h3{color:var(--amber)}
+.sk-block ul{list-style:none;display:flex;flex-wrap:wrap;gap:5px}
+.sk-block li{font-size:.65rem;font-weight:300;padding:4px 11px;border:1px solid var(--faint);color:var(--dim);transition:all .2s}
+.sk-block li:hover{border-color:var(--text);color:var(--text)}
 
-/* ═══════════════════════════════════════
-   3. MANIFESTO (sticky)
-   ═══════════════════════════════════════ */
-#manifesto {
-  padding:clamp(80px, 15vh, 160px) 0;
-}
-.manifesto-text {
-  font-family:var(--syne);
-  font-size:clamp(1.4rem, 3.5vw, 2.8rem);
-  font-weight:600;
-  line-height:1.35;
-  max-width:900px;
-}
-.manifesto-text .word {
-  display:inline-block;
-  opacity:0.12;
-  transition:opacity 0.4s ease;
-}
-.manifesto-text .word.lit { opacity:1; }
-.manifesto-text .hl { color:var(--accent); }
+/* ── EDUCATION ── */
+#education{padding:clamp(60px,11vh,110px) 0}
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,56px)}
+@media(max-width:768px){.edu-grid{grid-template-columns:1fr}}
+.edu-item{padding:18px 0;border-bottom:1px solid var(--faint)}
+.edu-item:last-child{border-bottom:none}
+.edu-deg{font-family:var(--syne);font-size:.92rem;font-weight:700}
+.edu-sch{font-family:var(--mono);font-size:.6rem;color:var(--accent);margin-top:2px}
+.edu-meta{font-family:var(--mono);font-size:.52rem;color:var(--dim);margin-top:2px}
+.edu-note{font-size:.7rem;font-weight:300;color:var(--dim);margin-top:7px;line-height:1.6}
+.edu-note strong{color:var(--text);font-weight:500}
+.cert-item{font-size:.68rem;font-weight:300;color:var(--dim);padding:7px 0;border-bottom:1px solid var(--faint);display:flex;gap:9px;align-items:baseline}
+.cert-item:last-child{border-bottom:none}
+.cert-item::before{content:'▸';color:var(--accent);font-size:.5rem}
+.lang-row{display:flex;gap:20px;margin-top:16px;flex-wrap:wrap}
+.lang-item{font-family:var(--mono);font-size:.6rem;color:var(--dim)}
+.lang-item strong{color:var(--text);font-weight:500}
 
-/* Stats row */
-.stats {
-  display:flex;
-  gap:clamp(30px, 6vw, 80px);
-  margin-top:clamp(40px, 8vh, 80px);
-  flex-wrap:wrap;
-}
-.stat { text-align:left; }
-.stat-num {
-  font-family:var(--syne);
-  font-size:clamp(2rem, 5vw, 3.5rem);
-  font-weight:800;
-  color:var(--text);
-  line-height:1;
-}
-.stat-num .suffix { color:var(--accent); font-size:0.6em; }
-.stat-label {
-  font-family:var(--mono);
-  font-size:0.58rem;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:var(--dim);
-  margin-top:6px;
-}
+/* ── REFERENCES ── */
+#references{padding:clamp(60px,11vh,110px) 0}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+@media(max-width:768px){.ref-grid{grid-template-columns:1fr}}
+.ref-card{border:1px solid var(--faint);padding:clamp(20px,3vw,32px);transition:border-color .3s}
+.ref-card:hover{border-color:var(--accent)}
+.ref-name{font-family:var(--syne);font-size:.95rem;font-weight:700}
+.ref-title{font-size:.72rem;font-weight:300;color:var(--dim);margin-top:3px;line-height:1.5}
+.ref-role{font-family:var(--mono);font-size:.55rem;color:var(--accent);margin-top:8px;letter-spacing:.06em}
+.ref-contact{font-family:var(--mono);font-size:.58rem;color:var(--dim);margin-top:6px;line-height:1.7}
+.ref-contact a{border-bottom:1px solid var(--faint);transition:border-color .2s,color .2s}
+.ref-contact a:hover{color:var(--accent);border-color:var(--accent)}
+.ref-note{font-family:var(--mono);font-size:.52rem;color:var(--dim);margin-top:16px;opacity:.6}
 
-/* ═══════════════════════════════════════
-   4. EXPERIENCE (horizontal scroll)
-   ═══════════════════════════════════════ */
-#experience {
-  padding:clamp(60px, 12vh, 120px) 0;
-  overflow:hidden;
-}
-.hscroll-wrapper {
-  display:flex;
-  gap:24px;
-  padding:20px 0;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:none;
-}
-.hscroll-wrapper::-webkit-scrollbar { display:none; }
-.exp-card {
-  flex:0 0 clamp(300px, 40vw, 420px);
-  scroll-snap-align:start;
-  border:1px solid var(--faint);
-  padding:clamp(24px, 3vw, 40px);
-  background:var(--bg2);
-  position:relative;
-  transition:border-color 0.3s, transform 0.3s var(--ease);
-}
-.exp-card:hover {
-  border-color:var(--accent);
-  transform:translateY(-4px);
-}
-.exp-card .idx {
-  font-family:var(--syne);
-  font-size:clamp(3rem, 6vw, 5rem);
-  font-weight:800;
-  color:var(--faint);
-  line-height:1;
-  margin-bottom:16px;
-  transition:color 0.3s;
-}
-.exp-card:hover .idx { color:rgba(255,77,0,0.15); }
-.exp-card .role {
-  font-family:var(--syne);
-  font-size:clamp(1rem, 2vw, 1.3rem);
-  font-weight:700;
-  margin-bottom:4px;
-}
-.exp-card .org {
-  font-family:var(--mono);
-  font-size:0.65rem;
-  color:var(--accent);
-  letter-spacing:0.1em;
-  margin-bottom:4px;
-}
-.exp-card .date {
-  font-family:var(--mono);
-  font-size:0.55rem;
-  color:var(--dim);
-  margin-bottom:16px;
-}
-.exp-card .desc {
-  font-size:0.8rem;
-  font-weight:300;
-  color:var(--dim);
-  line-height:1.65;
-}
-.hscroll-hint {
-  font-family:var(--mono);
-  font-size:0.55rem;
-  color:var(--dim);
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  margin-top:16px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.hscroll-hint .arrow {
-  display:inline-block;
-  animation:hintSlide 1.5s ease-in-out infinite;
-}
-@keyframes hintSlide {
-  0%,100% { transform:translateX(0); }
-  50%     { transform:translateX(6px); }
-}
+/* ── CONTACT ── */
+#contact{padding:clamp(90px,18vh,180px) 0 clamp(50px,9vh,90px);text-align:center}
+.cta{font-family:var(--syne);font-size:clamp(1.8rem,5.5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:2rem}
+.cta .hl{color:var(--accent)}
+.cta-email{display:inline-block;font-family:var(--mono);font-size:clamp(.78rem,1.8vw,1.05rem);
+  border-bottom:1px solid var(--accent);padding-bottom:4px;transition:color .3s;cursor:none}
+.cta-email:hover{color:var(--accent)}
+.cta-links{display:flex;justify-content:center;gap:clamp(14px,2.5vw,28px);margin-top:2.2rem;flex-wrap:wrap}
+.cta-links a{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+  padding:9px 18px;border:1px solid var(--faint);transition:all .3s;cursor:none}
+.cta-links a:hover{color:var(--text);border-color:var(--accent);background:rgba(255,77,0,.04)}
+.cta-links a.pri{color:var(--accent);border-color:var(--accent)}
 
-/* ═══════════════════════════════════════
-   5. PUBLICATION (split)
-   ═══════════════════════════════════════ */
-#publication {
-  padding:clamp(80px, 15vh, 160px) 0;
-}
-.pub-split {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:clamp(30px, 5vw, 60px);
-  align-items:center;
-}
-.pub-quote {
-  font-family:var(--syne);
-  font-size:clamp(1.2rem, 2.5vw, 1.8rem);
-  font-weight:600;
-  line-height:1.4;
-  border-left:3px solid var(--accent);
-  padding-left:clamp(20px, 3vw, 32px);
-}
-.pub-quote .journal {
-  display:block;
-  font-family:var(--mono);
-  font-size:0.6rem;
-  font-weight:400;
-  color:var(--dim);
-  letter-spacing:0.1em;
-  margin-top:16px;
-  text-transform:uppercase;
-}
-.pub-detail {
-  font-size:0.82rem;
-  font-weight:300;
-  color:var(--dim);
-  line-height:1.75;
-}
-.pub-detail strong { color:var(--text); font-weight:500; }
-.pub-tag {
-  display:inline-block;
-  font-family:var(--mono);
-  font-size:0.55rem;
-  padding:4px 12px;
-  border:1px solid var(--accent);
-  color:var(--accent);
-  margin-top:16px;
-  letter-spacing:0.1em;
-}
-@media (max-width:768px) {
-  .pub-split { grid-template-columns:1fr; }
-}
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z-index:1}
+.ft-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px}
+.ft-manifesto{font-family:var(--syne);font-size:.82rem;font-weight:600;color:var(--dim);max-width:380px;line-height:1.5}
+.ft-manifesto em{font-style:normal;color:var(--accent)}
+.ft-meta{font-family:var(--mono);font-size:.5rem;color:var(--dim);letter-spacing:.08em;line-height:2;text-align:right}
+.ft-mesh{background:none;border:none;color:var(--faint);font-size:.7rem;cursor:none;transition:color .3s;padding:4px}
+.ft-mesh:hover{color:var(--accent)}
 
-/* ═══════════════════════════════════════
-   6. SKILLS
-   ═══════════════════════════════════════ */
-#skills {
-  padding:clamp(60px, 12vh, 120px) 0;
-}
-.skills-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
-  gap:2px;
-}
-.skill-block {
-  border:1px solid var(--faint);
-  padding:clamp(20px, 3vw, 32px);
-  transition:border-color 0.3s, background 0.3s;
-}
-.skill-block:hover {
-  border-color:var(--accent);
-  background:rgba(255,77,0,0.02);
-}
-.skill-block h3 {
-  font-family:var(--mono);
-  font-size:0.6rem;
-  letter-spacing:0.2em;
-  text-transform:uppercase;
-  margin-bottom:16px;
-}
-.skill-block:nth-child(1) h3 { color:var(--accent); }
-.skill-block:nth-child(2) h3 { color:var(--accent2); }
-.skill-block:nth-child(3) h3 { color:#4ecb8d; }
-.skill-block:nth-child(4) h3 { color:#f0a03c; }
-.skill-block ul {
-  list-style:none;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-}
-.skill-block li {
-  font-size:0.68rem;
-  font-weight:300;
-  padding:5px 12px;
-  border:1px solid var(--faint);
-  color:var(--dim);
-  transition:all 0.2s;
-}
-.skill-block li:hover {
-  border-color:var(--text);
-  color:var(--text);
-}
+/* ── MESH GAME MODAL ── */
+#mesh-modal{position:fixed;inset:0;z-index:99995;background:rgba(4,4,6,.95);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#mesh-modal.open{display:flex}
+#mesh-modal h2{font-family:var(--syne);font-size:1.1rem;font-weight:700;color:var(--text)}
+#mesh-modal .sub{font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.1em}
+#mesh-canvas{border:1px solid var(--faint);background:var(--bg2);cursor:crosshair;max-width:95vw}
+.mesh-hud{display:flex;gap:28px;font-family:var(--mono);font-size:.65rem;color:var(--dim)}
+.mesh-hud strong{color:var(--accent)}
+.mesh-btns{display:flex;gap:12px}
+.mesh-btns button{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;padding:8px 18px;
+  border:1px solid var(--faint);background:none;color:var(--dim);cursor:pointer;transition:all .2s}
+.mesh-btns button:hover{border-color:var(--accent);color:var(--accent)}
+.mesh-msg{font-family:var(--mono);font-size:.7rem;color:var(--green);min-height:1.2em}
 
-/* ═══════════════════════════════════════
-   7. EDUCATION + CERTS
-   ═══════════════════════════════════════ */
-#education {
-  padding:clamp(60px, 12vh, 120px) 0;
-}
-.edu-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:clamp(30px, 5vw, 60px);
-}
-@media (max-width:768px) {
-  .edu-grid { grid-template-columns:1fr; }
-}
-.edu-item {
-  padding:20px 0;
-  border-bottom:1px solid var(--faint);
-}
-.edu-item:last-child { border-bottom:none; }
-.edu-degree {
-  font-family:var(--syne);
-  font-size:0.95rem;
-  font-weight:700;
-}
-.edu-school {
-  font-family:var(--mono);
-  font-size:0.62rem;
-  color:var(--accent);
-  margin-top:3px;
-}
-.edu-meta {
-  font-family:var(--mono);
-  font-size:0.55rem;
-  color:var(--dim);
-  margin-top:2px;
-}
-.edu-note {
-  font-size:0.72rem;
-  font-weight:300;
-  color:var(--dim);
-  margin-top:8px;
-  line-height:1.6;
-}
-.cert-item {
-  font-size:0.7rem;
-  font-weight:300;
-  color:var(--dim);
-  padding:8px 0;
-  border-bottom:1px solid var(--faint);
-  display:flex;
-  gap:10px;
-  align-items:baseline;
-}
-.cert-item:last-child { border-bottom:none; }
-.cert-item::before {
-  content:'▸';
-  color:var(--accent);
-  font-size:0.55rem;
-}
-
-/* ═══════════════════════════════════════
-   8. CONTACT
-   ═══════════════════════════════════════ */
-#contact {
-  padding:clamp(100px, 20vh, 200px) 0 clamp(60px, 10vh, 100px);
-  text-align:center;
-}
-.contact-cta {
-  font-family:var(--syne);
-  font-size:clamp(2rem, 6vw, 4.5rem);
-  font-weight:800;
-  line-height:1.1;
-  margin-bottom:2rem;
-}
-.contact-cta .hl { color:var(--accent); }
-.contact-email {
-  display:inline-block;
-  font-family:var(--mono);
-  font-size:clamp(0.8rem, 2vw, 1.1rem);
-  color:var(--text);
-  border-bottom:1px solid var(--accent);
-  padding-bottom:4px;
-  transition:color 0.3s, border-color 0.3s;
-  cursor:none;
-}
-.contact-email:hover { color:var(--accent); }
-.contact-links {
-  display:flex;
-  justify-content:center;
-  gap:clamp(16px, 3vw, 32px);
-  margin-top:2.5rem;
-  flex-wrap:wrap;
-}
-.contact-links a {
-  font-family:var(--mono);
-  font-size:0.62rem;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--dim);
-  padding:10px 20px;
-  border:1px solid var(--faint);
-  transition:all 0.3s;
-  cursor:none;
-}
-.contact-links a:hover {
-  color:var(--text);
-  border-color:var(--accent);
-  background:rgba(255,77,0,0.04);
-}
-.contact-links a.primary {
-  color:var(--accent);
-  border-color:var(--accent);
-}
-
-/* ═══════════════════════════════════════
-   FOOTER
-   ═══════════════════════════════════════ */
-footer {
-  border-top:1px solid var(--faint);
-  padding:24px 0;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px;
-}
-footer p {
-  font-family:var(--mono);
-  font-size:0.52rem;
-  color:var(--dim);
-  letter-spacing:0.1em;
-}
-
-/* ═══════════════════════════════════════
-   MAGNETIC (JS-driven transform)
-   ═══════════════════════════════════════ */
-.magnetic { transition:transform 0.3s var(--ease); }
-
-/* ═══════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════ */
-@media (max-width:768px) {
-  .hero-name { font-size:clamp(2.2rem, 12vw, 4rem); }
-  #hero-curve { display:none; }
-  .stats { gap:24px; }
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .reveal,.rl>span{opacity:1!important;transform:none!important}
+  .man-text .w{opacity:1!important}
+  #page-intro{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- Cursor -->
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
-
-<!-- Grain -->
+<a href="#main" class="skip-link">Skip to content</a>
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
 <div id="grain" aria-hidden="true"></div>
+<div id="scroll-progress" aria-hidden="true"></div>
+<div id="page-intro" aria-hidden="true"><span>M.F.Ö</span></div>
 
-<!-- ═══════════ HERO ═══════════ -->
+<!-- 3D FEA -->
+<canvas id="fea-3d" aria-label="Interactive 3D FEA simulation — C-channel under load"></canvas>
+<div id="load-control">
+  <label for="load-slider">LOAD</label>
+  <input type="range" id="load-slider" min="0" max="100" value="35" aria-label="Applied load in kilonewtons">
+  <span id="load-value">35 kN</span>
+</div>
+
+<main id="main">
+
+<!-- ═══ HERO ═══ -->
 <section id="hero">
-  <canvas id="hero-bg" aria-hidden="true"></canvas>
-
-  <svg id="hero-curve" viewBox="0 0 300 200" aria-hidden="true">
-    <path d="M10,190 L10,10 M10,190 L290,190 M10,190 C40,190 50,60 80,55 C110,50 120,52 140,58 C170,68 200,100 230,140 C250,165 270,180 290,185" />
-  </svg>
-
   <div class="wrap hero-content">
     <p class="hero-eyebrow reveal">Computational Mechanics Engineer</p>
     <h1 class="hero-name">
-      <span class="reveal-line"><span>MUSTAFA</span></span><br>
-      <span class="reveal-line"><span>FURKAN</span></span><br>
-      <span class="reveal-line"><span class="outline">ÖZEL</span></span>
+      <span class="rl"><span>MUSTAFA</span></span><br>
+      <span class="rl"><span>FURKAN</span></span><br>
+      <span class="rl"><span class="outline">ÖZEL</span></span>
     </h1>
     <p class="hero-sub reveal">
       Bridging <strong>theoretical structural modeling</strong> with practical
-      <strong>R&D solutions</strong>. FEA, CFD, and Python-based optimization
+      <strong>R&D solutions</strong>. FEA, CFD & Python-based optimization
       for aerospace & advanced manufacturing.
     </p>
   </div>
-
-  <div class="hero-scroll" aria-hidden="true">
-    <span>Scroll</span>
-    <div class="line"></div>
-  </div>
+  <div class="hero-scroll" aria-hidden="true"><span>Scroll</span><div class="line"></div></div>
 </section>
 
-<!-- ═══════════ MARQUEE ═══════════ -->
+<!-- ═══ MARQUEE ═══ -->
 <div id="marquee" aria-hidden="true">
-  <div class="marquee-track">
+  <div class="mq-track">
     <span>Finite Element Analysis <em>·</em></span>
     <span>Computational Fluid Dynamics <em>·</em></span>
     <span>Python FEA Scripting <em>·</em></span>
     <span>ANSYS Mechanical & Fluent <em>·</em></span>
     <span>Structural Optimization <em>·</em></span>
     <span>Fracture Mechanics <em>·</em></span>
-    <span>Multiscale Modeling <em>·</em></span>
-    <span>TÜBİTAK R&D <em>·</em></span>
     <span>Finite Element Analysis <em>·</em></span>
     <span>Computational Fluid Dynamics <em>·</em></span>
     <span>Python FEA Scripting <em>·</em></span>
     <span>ANSYS Mechanical & Fluent <em>·</em></span>
     <span>Structural Optimization <em>·</em></span>
     <span>Fracture Mechanics <em>·</em></span>
-    <span>Multiscale Modeling <em>·</em></span>
-    <span>TÜBİTAK R&D <em>·</em></span>
   </div>
 </div>
 
-<!-- ═══════════ MANIFESTO ═══════════ -->
+<!-- ═══ 01 MANIFESTO ═══ -->
 <section id="manifesto">
   <div class="wrap">
-    <div class="sec-label reveal"><span class="num">01</span> Manifesto</div>
-    <p class="manifesto-text" id="manifesto-text">
-      I develop Python-based algorithms integrated with finite element frameworks to evaluate and optimize complex shear buckling phenomena in thin-walled structures — applicable to aerospace and advanced manufacturing.
-    </p>
+    <div class="sec-label magnetic reveal"><span class="num">01</span> Manifesto</div>
+    <p class="man-text" id="man-text">I develop Python-based algorithms integrated with finite element frameworks to evaluate and optimize complex shear buckling phenomena in thin-walled structures — bridging theoretical structural modeling with practical R&D solutions applicable to aerospace and advanced manufacturing.</p>
     <div class="stats">
-      <div class="stat reveal">
-        <div class="stat-num"><span class="counter" data-target="3">0</span><span class="suffix">+</span></div>
-        <div class="stat-label">Years R&D Experience</div>
-      </div>
-      <div class="stat reveal">
-        <div class="stat-num"><span class="counter" data-target="1">0</span></div>
-        <div class="stat-label">CRC Press Publication</div>
-      </div>
-      <div class="stat reveal">
-        <div class="stat-num"><span class="counter" data-target="2">0</span></div>
-        <div class="stat-label">Bachelor's Degrees</div>
-      </div>
-      <div class="stat reveal">
-        <div class="stat-num"><span class="counter" data-target="6">0</span></div>
-        <div class="stat-label">Technical Certifications</div>
-      </div>
+      <div class="reveal"><div class="stat-num"><span class="ctr" data-t="3">0</span><span class="sfx">+</span></div><div class="stat-lbl">Years R&D</div></div>
+      <div class="reveal"><div class="stat-num"><span class="ctr" data-t="1">0</span></div><div class="stat-lbl">CRC Press Publication</div></div>
+      <div class="reveal"><div class="stat-num"><span class="ctr" data-t="2">0</span></div><div class="stat-lbl">Bachelor's Degrees</div></div>
+      <div class="reveal"><div class="stat-num"><span class="ctr" data-t="6">0</span></div><div class="stat-lbl">Certifications</div></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ EXPERIENCE ═══════════ -->
+<!-- ═══ 02 EXPERIENCE ═══ -->
 <section id="experience">
   <div class="wrap">
-    <div class="sec-label reveal"><span class="num">02</span> Experience</div>
+    <div class="sec-label magnetic reveal"><span class="num">02</span> Experience</div>
   </div>
   <div class="wrap">
-    <div class="hscroll-wrapper">
-      <article class="exp-card reveal">
-        <div class="idx">01</div>
-        <h3 class="role">Sales Engineer — Technical Consultant</h3>
-        <p class="org">Akifsan Makina · Ankara</p>
-        <p class="date">FEB 2024 — SEP 2025</p>
-        <p class="desc">Expert technical consultation on advanced machining, cutting tools, and industrial equipment. Analyzed complex client requirements and manufacturing constraints to recommend optimal specifications.</p>
+    <div class="hscroll">
+      <article class="exp-card reveal tilt">
+        <div class="exp-idx">01</div>
+        <h3 class="exp-role">Sales Engineer — Technical Consultant</h3>
+        <p class="exp-org">Akifsan Makina · Ankara</p>
+        <p class="exp-date">FEB 2024 — SEP 2025</p>
+        <p class="exp-desc">Expert technical consultation on <strong>advanced machining, cutting tools</strong> and industrial equipment. Analyzed complex client requirements and manufacturing constraints to recommend optimal specifications.</p>
       </article>
-      <article class="exp-card reveal">
-        <div class="idx">02</div>
-        <h3 class="role">R&D and Project Coordinator</h3>
-        <p class="org">Fixus Solar Mounting Systems · Ankara</p>
-        <p class="date">MAY 2023 — FEB 2024</p>
-        <p class="desc">Led structural optimization of solar mounting systems against dynamic wind and snow loads. Rigorous structural calculations ensuring compliance with international engineering standards. Novel design solutions achieving substantial cost reductions.</p>
+      <article class="exp-card reveal tilt">
+        <div class="exp-idx">02</div>
+        <h3 class="exp-role">R&D and Project Coordinator</h3>
+        <p class="exp-org">Fixus Solar Mounting Systems · Ankara</p>
+        <p class="exp-date">MAY 2023 — FEB 2024</p>
+        <p class="exp-desc">Led structural optimization of solar mounting systems against <strong>dynamic wind and snow loads</strong>. Rigorous calculations ensuring compliance with international standards. Novel designs achieving <strong>substantial cost reductions</strong>.</p>
       </article>
-      <article class="exp-card reveal">
-        <div class="idx">03</div>
-        <h3 class="role">Design & Analysis Engineer</h3>
-        <p class="org">Theta Clean Energy Technologies · Ankara</p>
-        <p class="date">JAN 2022 — NOV 2022</p>
-        <p class="desc">CFD and structural analyses using ANSYS Fluent & Mechanical for TÜBİTAK-supported clean energy projects. Translated theoretical mathematical models into functional 3D designs and physical prototypes.</p>
+      <article class="exp-card reveal tilt">
+        <div class="exp-idx">03</div>
+        <h3 class="exp-role">Design & Analysis Engineer</h3>
+        <p class="exp-org">Theta Clean Energy Technologies · Ankara</p>
+        <p class="exp-date">JAN 2022 — NOV 2022</p>
+        <p class="exp-desc"><strong>TÜBİTAK-supported</strong> clean energy projects. CFD and structural analyses using <strong>ANSYS Fluent & Mechanical</strong>. Translated theoretical models into functional 3D designs and physical prototypes.</p>
       </article>
     </div>
-    <p class="hscroll-hint" aria-hidden="true">Drag to explore <span class="arrow">→</span></p>
   </div>
 </section>
 
-<!-- ═══════════ PUBLICATION ═══════════ -->
+<!-- ═══ 03 PUBLICATION ═══ -->
 <section id="publication">
   <div class="wrap">
-    <div class="sec-label reveal"><span class="num">03</span> Publication</div>
+    <div class="sec-label magnetic reveal"><span class="num">03</span> Publication</div>
     <div class="pub-split">
       <blockquote class="pub-quote reveal">
         "Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"
-        <span class="journal">Advances in Aerospace Engineering — CRC Press / Taylor & Francis, 2025 · pp. 35–46</span>
+        <span class="jrn">Advances in Aerospace Engineering — CRC Press / Taylor & Francis, 2025 · pp. 35–46</span>
       </blockquote>
       <div class="pub-detail reveal">
-        <p>Co-authored with <strong>Assoc. Prof. Dr. Hande Girard</strong> (Atılım University). Developed <strong>Python-based algorithms</strong> integrated with traditional finite element frameworks to evaluate and optimize complex <strong>shear buckling phenomena</strong> inherent in thin-walled structures.</p>
-        <p style="margin-top:12px">Master's research extended this work into a full thesis: <strong>"Prevention of Shear Buckling in Thin-Walled Closed-Section Beams"</strong> at OSTİM Technical University.</p>
+        <p>Co-authored with <strong>Assoc. Prof. Dr. Hande Girard</strong> (Atılım University). Developed <strong>Python-based algorithms</strong> integrated with finite element frameworks to evaluate and optimize <strong>shear buckling phenomena</strong> in thin-walled structures.</p>
+        <p style="margin-top:12px">Master's thesis extended this work: <strong>"Prevention of Shear Buckling in Thin-Walled Closed-Section Beams"</strong> at OSTİM Technical University.</p>
         <span class="pub-tag">Peer-Reviewed Book Chapter</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ SKILLS ═══════════ -->
+<!-- ═══ 04 SKILLS ═══ -->
 <section id="skills">
   <div class="wrap">
-    <div class="sec-label reveal"><span class="num">04</span> Technical Competencies</div>
-    <div class="skills-grid">
-      <div class="skill-block reveal">
-        <h3>Computational Mechanics</h3>
-        <ul>
-          <li>FEA</li><li>CFD</li><li>Structural Dynamics</li><li>Multiscale Modeling</li><li>Fracture Mechanics</li>
-        </ul>
-      </div>
-      <div class="skill-block reveal">
-        <h3>Engineering Software</h3>
-        <ul>
-          <li>ANSYS Mechanical</li><li>ANSYS Fluent</li><li>Fusion 360</li><li>SolidWorks</li><li>MATLAB</li><li>AutoCAD</li>
-        </ul>
-      </div>
-      <div class="skill-block reveal">
-        <h3>Programming</h3>
-        <ul>
-          <li>Python — FEA Scripting</li><li>Structural Optimization</li><li>Automation</li>
-        </ul>
-      </div>
-      <div class="skill-block reveal">
-        <h3>R&D</h3>
-        <ul>
-          <li>Prototyping</li><li>Thermo-fluid Dynamics</li><li>TÜBİTAK Coordination</li><li>Technical Documentation</li>
-        </ul>
-      </div>
+    <div class="sec-label magnetic reveal"><span class="num">04</span> Technical Competencies</div>
+    <div class="sk-grid">
+      <div class="sk-block reveal"><h3>Computational Mechanics</h3><ul><li>FEA</li><li>CFD</li><li>Structural Dynamics</li><li>Multiscale Modeling</li><li>Fracture Mechanics</li></ul></div>
+      <div class="sk-block reveal"><h3>Engineering Software</h3><ul><li>ANSYS Mechanical</li><li>ANSYS Fluent</li><li>Fusion 360</li><li>SolidWorks</li><li>MATLAB</li><li>AutoCAD</li></ul></div>
+      <div class="sk-block reveal"><h3>Programming</h3><ul><li>Python — FEA Scripting</li><li>Structural Optimization</li><li>Automation</li></ul></div>
+      <div class="sk-block reveal"><h3>R&D</h3><ul><li>Prototyping</li><li>Thermo-fluid Dynamics</li><li>TÜBİTAK Coordination</li><li>Technical Documentation</li></ul></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ EDUCATION + CERTS ═══════════ -->
+<!-- ═══ 05 EDUCATION ═══ -->
 <section id="education">
   <div class="wrap">
-    <div class="sec-label reveal"><span class="num">05</span> Education & Certifications</div>
+    <div class="sec-label magnetic reveal"><span class="num">05</span> Education & Certifications</div>
     <div class="edu-grid">
       <div>
         <div class="edu-item reveal">
-          <p class="edu-degree">MSc — Mechanical Engineering</p>
-          <p class="edu-school">OSTİM Technical University, Ankara</p>
+          <p class="edu-deg">MSc — Mechanical Engineering</p>
+          <p class="edu-sch">OSTİM Technical University, Ankara</p>
           <p class="edu-meta">2022 – 2025 · GPA 3.07/4.00</p>
-          <p class="edu-note">Thesis: Shear Buckling in Thin-Walled Closed-Section Beams — Python-Based Structural Analysis. Advisor: Assoc. Prof. Dr. Hande Girard.</p>
+          <p class="edu-note"><strong>Thesis:</strong> "Prevention of Shear Buckling in Thin-Walled Closed-Section Beams: Insights from Python-Based Structural Analysis" — Advisor: Assoc. Prof. Dr. Hande Girard</p>
+          <p class="edu-note"><strong>Focus:</strong> Computational Solid Mechanics · Finite Element Analysis · Advanced Machine Vibrations · Engineering Fracture Mechanics</p>
         </div>
         <div class="edu-item reveal">
-          <p class="edu-degree">BSc — Mechanical Engineering</p>
-          <p class="edu-school">Selçuk University, Konya</p>
+          <p class="edu-deg">BSc — Mechanical Engineering</p>
+          <p class="edu-sch">Selçuk University, Konya</p>
           <p class="edu-meta">2016 – 2021 · GPA 3.11/4.00 · Honors Student</p>
         </div>
         <div class="edu-item reveal">
-          <p class="edu-degree">BSc — Business Administration</p>
-          <p class="edu-school">Anadolu University, Eskişehir</p>
+          <p class="edu-deg">BSc — Business Administration</p>
+          <p class="edu-sch">Anadolu University, Eskişehir</p>
           <p class="edu-meta">2017 – 2021 · GPA 2.89/4.00 · High Honor</p>
+          <p class="edu-note"><strong>Relevance:</strong> Project management, systemic efficiency, and R&D coordination.</p>
+        </div>
+        <div class="lang-row reveal">
+          <span class="lang-item"><strong>Turkish</strong> — Native</span>
+          <span class="lang-item"><strong>English</strong> — B1 Professional (Selçuk Üni. Preparatory Certificate)</span>
         </div>
       </div>
       <div>
@@ -851,180 +408,354 @@ footer p {
   </div>
 </section>
 
-<!-- ═══════════ CONTACT ═══════════ -->
+<!-- ═══ 06 REFERENCES ═══ -->
+<section id="references">
+  <div class="wrap">
+    <div class="sec-label magnetic reveal"><span class="num">06</span> Academic References</div>
+    <div class="ref-grid">
+      <div class="ref-card reveal">
+        <p class="ref-name">Assoc. Prof. Dr. Hande Girard</p>
+        <p class="ref-title">Associate Professor of Aerospace Engineering, Atılım University</p>
+        <p class="ref-role">Master's Thesis Advisor & Co-author</p>
+        <p class="ref-contact">
+          <a href="mailto:hande.girard@atilim.edu.tr">hande.girard@atilim.edu.tr</a><br>
+          +90 312 586 88 84
+        </p>
+      </div>
+      <div class="ref-card reveal">
+        <p class="ref-name">Assist. Prof. Dr. Hikmet Bal</p>
+        <p class="ref-title">Assistant Professor of Aerospace Engineering, OSTİM Technical University</p>
+        <p class="ref-role">Academic Faculty Member</p>
+        <p class="ref-contact">
+          <a href="mailto:hikmet.bal@ostimteknik.edu.tr">hikmet.bal@ostimteknik.edu.tr</a><br>
+          +90 312 386 10 92 / Ext: 1911
+        </p>
+      </div>
+    </div>
+    <p class="ref-note reveal">Additional references available upon request.</p>
+  </div>
+</section>
+
+<!-- ═══ 07 CONTACT ═══ -->
 <section id="contact">
   <div class="wrap">
-    <div class="sec-label reveal" style="justify-content:center"><span class="num">06</span> Contact</div>
-    <h2 class="contact-cta reveal">
-      Let's build something<br><span class="hl">extraordinary.</span>
-    </h2>
-    <a href="mailto:furkan.ozel@yahoo.com" class="contact-email magnetic reveal">furkan.ozel@yahoo.com</a>
-    <div class="contact-links reveal">
-      <a href="Academic CV.pdf" download class="primary magnetic">⬇ Download CV</a>
+    <div class="sec-label magnetic reveal" style="justify-content:center"><span class="num">07</span> Contact</div>
+    <h2 class="cta reveal">Let's build something<br><span class="hl">extraordinary.</span></h2>
+    <a href="mailto:furkan.ozel@yahoo.com" class="cta-email magnetic reveal">furkan.ozel@yahoo.com</a>
+    <div class="cta-links reveal">
+      <a href="Academic CV.pdf" download class="pri magnetic">⬇ Download CV</a>
       <a href="tel:+905432209980" class="magnetic">+90 543 220 9980</a>
-      <a href="#" class="magnetic">Ankara, Türkiye</a>
+      <span class="magnetic" style="padding:9px 18px;border:1px solid var(--faint);font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)">Ankara, Türkiye</span>
     </div>
   </div>
 </section>
 
-<!-- ═══════════ FOOTER ═══════════ -->
+<!-- ═══ FOOTER ═══ -->
 <footer>
-  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%">
-    <p>© 2026 MUSTAFA FURKAN ÖZEL</p>
-    <p>COMPUTATIONAL MECHANICS · FEA · CFD · PYTHON</p>
+  <div class="wrap ft-inner">
+    <p class="ft-manifesto">"Bridging <em>theoretical structural modeling</em> with practical <em>R&D solutions</em> — from Python-based FEA algorithms to physical prototypes."</p>
+    <div class="ft-meta">
+      © 2026 MUSTAFA FURKAN ÖZEL<br>
+      REFERENCES: GIRARD (ATILIM) · BAL (OSTİM)<br>
+      LAST UPDATED: JULY 2026 · ANKARA, TÜRKİYE<br>
+      <button class="ft-mesh" id="mesh-trigger" aria-label="Open mesh lab" title="mesh.lab">⚙ mesh.lab</button>
+    </div>
   </div>
 </footer>
 
+</main>
+
+<!-- ═══ EASTER EGG: MESH GAME ═══ -->
+<div id="mesh-modal" role="dialog" aria-label="Mesh optimization game">
+  <h2>⬡ MESH LAB</h2>
+  <p class="sub">Drag nodes to maximize mesh quality — aim for equilateral triangles</p>
+  <canvas id="mesh-canvas" width="560" height="440"></canvas>
+  <div class="mesh-hud">
+    <span>QUALITY: <strong id="mesh-score">0%</strong></span>
+    <span>TIME: <strong id="mesh-timer">60s</strong></span>
+    <span>BEST: <strong id="mesh-best">0%</strong></span>
+  </div>
+  <p class="mesh-msg" id="mesh-msg"></p>
+  <div class="mesh-btns">
+    <button id="mesh-reset">↻ RESET</button>
+    <button id="mesh-close">✕ CLOSE</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
 'use strict';
+const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ── Custom Cursor ── */
-const dot  = document.getElementById('cursor-dot');
-const ring = document.getElementById('cursor-ring');
-let mx=0, my=0, rx=0, ry=0;
+/* ── Page Intro ── */
+const intro = document.getElementById('page-intro');
+if(!RM){ setTimeout(()=>intro.classList.add('hide'), 1400); }
+else { intro.classList.add('hide'); }
 
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  dot.style.left = mx+'px';
-  dot.style.top  = my+'px';
+/* ── Cursor ── */
+const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+(function ac(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ac);})();
+document.querySelectorAll('a,button,.exp-card,.sk-block,.ref-card,.magnetic').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('hov'));
 });
 
-(function animCursor(){
-  rx += (mx - rx) * 0.15;
-  ry += (my - ry) * 0.15;
-  ring.style.left = rx+'px';
-  ring.style.top  = ry+'px';
-  requestAnimationFrame(animCursor);
-})();
+/* ── Scroll Progress ── */
+const sp=document.getElementById('scroll-progress');
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  sp.style.width=(window.scrollY/h*100)+'%';
+},{passive:true});
 
-document.querySelectorAll('a, button, .exp-card, .skill-block, .magnetic').forEach(el => {
-  el.addEventListener('mouseenter', () => ring.classList.add('hovering'));
-  el.addEventListener('mouseleave', () => ring.classList.remove('hovering'));
-});
+/* ── Reveal ── */
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal,.rl').forEach(el=>ro.observe(el));
 
-/* ── Magnetic Effect ── */
-document.querySelectorAll('.magnetic').forEach(el => {
-  el.addEventListener('mousemove', e => {
-    const r = el.getBoundingClientRect();
-    const x = e.clientX - r.left - r.width/2;
-    const y = e.clientY - r.top  - r.height/2;
-    el.style.transform = `translate(${x*0.25}px, ${y*0.25}px)`;
-  });
-  el.addEventListener('mouseleave', () => {
-    el.style.transform = 'translate(0,0)';
-  });
-});
-
-/* ── Reveal on Scroll ── */
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-      revealObs.unobserve(e.target);
-    }
-  });
-}, { threshold:0.1, rootMargin:'0px 0px -40px 0px' });
-
-document.querySelectorAll('.reveal, .reveal-line').forEach(el => revealObs.observe(el));
-
-/* ── Manifesto Word Reveal ── */
-const manifesto = document.getElementById('manifesto-text');
-if(manifesto){
-  const words = manifesto.textContent.trim().split(/\s+/);
-  manifesto.innerHTML = words.map(w => {
-    const isHl = ['Python-based','finite','element','shear','buckling','thin-walled','aerospace','optimization.'].some(k => w.includes(k));
-    return `<span class="word${isHl?' hl':''}">${w}</span>`;
-  }).join(' ');
-
-  const wordEls = manifesto.querySelectorAll('.word');
-  window.addEventListener('scroll', () => {
-    const rect = manifesto.getBoundingClientRect();
-    const progress = Math.min(1, Math.max(0,
-      (window.innerHeight - rect.top) / (window.innerHeight + rect.height)
-    ));
-    const litCount = Math.floor(progress * wordEls.length * 1.4);
-    wordEls.forEach((w, i) => {
-      w.classList.toggle('lit', i < litCount);
-    });
-  }, { passive:true });
+/* ── Manifesto word reveal ── */
+const man=document.getElementById('man-text');
+if(man&&!RM){
+  const ws=man.textContent.trim().split(/\s+/);
+  const hls=['Python-based','finite','element','shear','buckling','thin-walled','aerospace','optimization.','R&D','FEA,'];
+  man.innerHTML=ws.map(w=>`<span class="w${hls.some(k=>w.includes(k))?' hl':''}">${w}</span>`).join(' ');
+  const wEls=man.querySelectorAll('.w');
+  window.addEventListener('scroll',()=>{
+    const r=man.getBoundingClientRect();
+    const p=Math.min(1,Math.max(0,(window.innerHeight-r.top)/(window.innerHeight+r.height)));
+    const n=Math.floor(p*wEls.length*1.5);
+    wEls.forEach((w,i)=>w.classList.toggle('lit',i<n));
+  },{passive:true});
 }
 
-/* ── Counter Animation ── */
-const counterObs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if(e.isIntersecting){
-      const el = e.target;
-      const target = +el.dataset.target;
-      let current = 0;
-      const step = Math.max(1, Math.floor(target / 30));
-      const iv = setInterval(() => {
-        current += step;
-        if(current >= target){ current = target; clearInterval(iv); }
-        el.textContent = current;
-      }, 40);
-      counterObs.unobserve(el);
-    }
+/* ── Counter ── */
+const co=new IntersectionObserver(es=>{es.forEach(e=>{
+  if(e.isIntersecting){const el=e.target,t=+el.dataset.t;let c=0;
+    const iv=setInterval(()=>{c++;if(c>=t){c=t;clearInterval(iv);}el.textContent=c;},50);
+    co.unobserve(el);}
+});},{threshold:.5});
+document.querySelectorAll('.ctr').forEach(el=>co.observe(el));
+
+/* ── Magnetic ── */
+document.querySelectorAll('.magnetic').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.22}px,${(e.clientY-r.top-r.height/2)*.22}px)`;
   });
-}, { threshold:0.5 });
+  el.addEventListener('mouseleave',()=>el.style.transform='translate(0,0)');
+});
 
-document.querySelectorAll('.counter').forEach(el => counterObs.observe(el));
+/* ── 3D Tilt Cards ── */
+if(!RM){document.querySelectorAll('.tilt').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`perspective(700px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave',()=>card.style.transform='perspective(700px) rotateY(0) rotateX(0) translateY(0)');
+});}
 
-/* ── Hero Background Particles (FEA mesh nodes) ── */
-const canvas = document.getElementById('hero-bg');
-if(canvas){
-  const ctx = canvas.getContext('2d');
-  let W, H, nodes=[];
-  function resize(){
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-    nodes = [];
-    const count = Math.floor((W * H) / 12000);
-    for(let i=0; i<count; i++){
-      nodes.push({
-        x: Math.random()*W,
-        y: Math.random()*H,
-        vx:(Math.random()-0.5)*0.3,
-        vy:(Math.random()-0.5)*0.3,
-        r: Math.random()*1.5+0.5
-      });
+/* ── 3D FEA (Three.js) ── */
+const feaC=document.getElementById('fea-3d');
+const loadCtrl=document.getElementById('load-control');
+const slider=document.getElementById('load-slider');
+const loadVal=document.getElementById('load-value');
+
+if(typeof THREE!=='undefined'&&!RM){
+  const W=()=>feaC.offsetWidth, H=()=>feaC.offsetHeight;
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(42,W()/H(),.1,100);
+  camera.position.set(3.5,2.5,6.5); camera.lookAt(0,0,0);
+  const renderer=new THREE.WebGLRenderer({canvas:feaC,alpha:true,antialias:true});
+  renderer.setSize(W(),H()); renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+  /* C-channel shape */
+  const s=new THREE.Shape();
+  const cw=1.4,ch=2.4,ct=.22;
+  s.moveTo(-cw/2,-ch/2); s.lineTo(cw/2,-ch/2); s.lineTo(cw/2,-ch/2+ct);
+  s.lineTo(-cw/2+ct,-ch/2+ct); s.lineTo(-cw/2+ct,ch/2-ct);
+  s.lineTo(cw/2,ch/2-ct); s.lineTo(cw/2,ch/2); s.lineTo(-cw/2,ch/2); s.closePath();
+  const geo=new THREE.ExtrudeGeometry(s,{depth:4,bevelEnabled:false,curveSegments:1});
+  geo.center();
+
+  const pos=geo.attributes.position;
+  const cols=new Float32Array(pos.count*3);
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(cols,3));
+
+  const mat=new THREE.MeshPhongMaterial({vertexColors:true,flatShading:true,shininess:25,specular:0x222222});
+  const mesh=new THREE.Mesh(geo,mat); scene.add(mesh);
+  const wire=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({wireframe:true,color:0xffffff,transparent:true,opacity:.05}));
+  mesh.add(wire);
+
+  const dl=new THREE.DirectionalLight(0xffffff,.75); dl.position.set(5,5,5); scene.add(dl);
+  scene.add(new THREE.AmbientLight(0x404050,.55));
+
+  function vm(s){s=Math.max(0,Math.min(1,s));let r,g,b;
+    if(s<.25){r=0;g=s*4;b=1}else if(s<.5){r=0;g=1;b=1-(s-.25)*4}
+    else if(s<.75){r=(s-.5)*4;g=1;b=0}else{r=1;g=1-(s-.75)*4;b=0}
+    return[r,g,b];}
+
+  function updateColors(lf){
+    const p=geo.attributes.position,c=geo.attributes.color;
+    for(let i=0;i<p.count;i++){
+      const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+      const d=Math.sqrt(x*x+(y-1.4)*(y-1.4)+z*z);
+      const st=Math.max(0,1-d/5)*lf;
+      const[r,g,b]=vm(st); c.setXYZ(i,r,g,b);
     }
+    c.needsUpdate=true;
   }
-  resize();
-  window.addEventListener('resize', resize);
+  updateColors(.35);
 
-  function drawMesh(){
-    ctx.clearRect(0,0,W,H);
-    // Draw connections
-    for(let i=0;i<nodes.length;i++){
-      for(let j=i+1;j<nodes.length;j++){
-        const dx=nodes[i].x-nodes[j].x;
-        const dy=nodes[i].y-nodes[j].y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){
-          ctx.strokeStyle=`rgba(255,77,0,${0.06*(1-dist/120)})`;
-          ctx.lineWidth=0.5;
-          ctx.beginPath();
-          ctx.moveTo(nodes[i].x,nodes[i].y);
-          ctx.lineTo(nodes[j].x,nodes[j].y);
-          ctx.stroke();
-        }
-      }
-    }
-    // Draw nodes
-    nodes.forEach(n=>{
-      ctx.fillStyle='rgba(255,77,0,0.25)';
-      ctx.beginPath();
-      ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
-      ctx.fill();
-      n.x+=n.vx; n.y+=n.vy;
-      if(n.x<0||n.x>W) n.vx*=-1;
-      if(n.y<0||n.y>H) n.vy*=-1;
-    });
-    requestAnimationFrame(drawMesh);
+  slider.addEventListener('input',()=>{
+    const v=slider.value/100;
+    updateColors(v);
+    loadVal.textContent=slider.value+' kN';
+  });
+
+  let drag=false,px,py;
+  feaC.addEventListener('mousedown',e=>{drag=true;px=e.clientX;py=e.clientY;});
+  window.addEventListener('mousemove',e=>{
+    if(!drag)return;
+    mesh.rotation.y+=(e.clientX-px)*.006;
+    mesh.rotation.x+=(e.clientY-py)*.006;
+    px=e.clientX;py=e.clientY;
+  });
+  window.addEventListener('mouseup',()=>drag=false);
+
+  (function anim(){requestAnimationFrame(anim);mesh.rotation.y+=.003;renderer.render(scene,camera);})();
+
+  window.addEventListener('resize',()=>{
+    camera.aspect=W()/H();camera.updateProjectionMatrix();renderer.setSize(W(),H());
+  });
+
+  /* Scroll fade */
+  const hero=document.getElementById('hero');
+  window.addEventListener('scroll',()=>{
+    const p=Math.min(1,window.scrollY/hero.offsetHeight);
+    feaC.style.opacity=1-p;
+    loadCtrl.style.opacity=1-p;
+    feaC.style.pointerEvents=p>.7?'none':'auto';
+    loadCtrl.style.pointerEvents=p>.7?'none':'auto';
+  },{passive:true});
+} else {
+  feaC.style.display='none'; loadCtrl.style.display='none';
+}
+
+/* ── Easter Egg: Mesh Game ── */
+const modal=document.getElementById('mesh-modal');
+const mC=document.getElementById('mesh-canvas');
+const mCtx=mC.getContext('2d');
+const scoreEl=document.getElementById('mesh-score');
+const timerEl=document.getElementById('mesh-timer');
+const bestEl=document.getElementById('mesh-best');
+const msgEl=document.getElementById('mesh-msg');
+const G=5, CW=560, CH=440, PX=60, PY=50;
+const SX=(CW-2*PX)/(G-1), SY=(CH-2*PY)/(G-1);
+let nodes=[], dragN=-1, timeLeft=60, tIv=null;
+
+const tris=[];
+for(let i=0;i<G-1;i++)for(let j=0;j<G-1;j++){
+  const a=i*G+j,b=a+1,c=a+G,d=c+1;
+  tris.push([a,b,c],[b,d,c]);
+}
+
+function initNodes(){
+  nodes=[];
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++){
+    nodes.push({x:PX+i*SX+(Math.random()-.5)*SX*.75, y:PY+j*SY+(Math.random()-.5)*SY*.75});
   }
+}
+function triQ(a,b,c){
+  const ab=Math.hypot(b.x-a.x,b.y-a.y),bc=Math.hypot(c.x-b.x,c.y-b.y),ca=Math.hypot(a.x-c.x,a.y-c.y);
+  if(ab<1||bc<1||ca<1)return 0;
+  const A=Math.acos(Math.max(-1,Math.min(1,(ab*ab+ca*ca-bc*bc)/(2*ab*ca))));
+  const B=Math.acos(Math.max(-1,Math.min(1,(ab*ab+bc*bc-ca*ca)/(2*ab*bc))));
+  const C=Math.PI-A-B;
+  return Math.min(A,B,C)*180/Math.PI/60;
+}
+function score(){let s=0;tris.forEach(([a,b,c])=>s+=triQ(nodes[a],nodes[b],nodes[c]));return Math.round(s/tris.length*100);}
+
+function drawMesh(){
+  mCtx.clearRect(0,0,CW,CH);
+  tris.forEach(([a,b,c])=>{
+    const q=triQ(nodes[a],nodes[b],nodes[c]);
+    mCtx.beginPath();mCtx.moveTo(nodes[a].x,nodes[a].y);mCtx.lineTo(nodes[b].x,nodes[b].y);mCtx.lineTo(nodes[c].x,nodes[c].y);mCtx.closePath();
+    mCtx.fillStyle=q>.75?'rgba(78,203,141,.12)':q>.45?'rgba(240,160,60,.12)':'rgba(224,85,85,.12)';
+    mCtx.fill();mCtx.strokeStyle='rgba(200,200,210,.18)';mCtx.lineWidth=.5;mCtx.stroke();
+  });
+  nodes.forEach((n,i)=>{
+    mCtx.beginPath();mCtx.arc(n.x,n.y,i===dragN?7:4,0,Math.PI*2);
+    mCtx.fillStyle=i===dragN?'#ff4d00':'#e8e6e1';mCtx.fill();
+  });
+  scoreEl.textContent=score()+'%';
+}
+
+function startGame(){
+  initNodes();timeLeft=60;msgEl.textContent='';
+  bestEl.textContent=(localStorage.getItem('meshBest')||0)+'%';
+  clearInterval(tIv);
+  tIv=setInterval(()=>{timeLeft--;timerEl.textContent=timeLeft+'s';
+    if(timeLeft<=0){clearInterval(tIv);endGame();}
+  },1000);
   drawMesh();
 }
+function endGame(){
+  const s=score(),b=+(localStorage.getItem('meshBest')||0);
+  if(s>b){localStorage.setItem('meshBest',s);bestEl.textContent=s+'%';msgEl.textContent='🎉 New best: '+s+'%!';}
+  else msgEl.textContent='Time up! Score: '+s+'%';
+}
+
+mC.addEventListener('mousedown',e=>{
+  const r=mC.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  let md=22,mi=-1;
+  nodes.forEach((n,i)=>{const d=Math.hypot(n.x-x,n.y-y);if(d<md){md=d;mi=i;}});
+  dragN=mi;
+});
+mC.addEventListener('mousemove',e=>{
+  if(dragN<0)return;
+  const r=mC.getBoundingClientRect();
+  nodes[dragN].x=Math.max(8,Math.min(CW-8,e.clientX-r.left));
+  nodes[dragN].y=Math.max(8,Math.min(CH-8,e.clientY-r.top));
+  drawMesh();
+});
+window.addEventListener('mouseup',()=>dragN=-1);
+
+/* Touch support */
+mC.addEventListener('touchstart',e=>{
+  const r=mC.getBoundingClientRect(),t=e.touches[0];
+  const x=t.clientX-r.left,y=t.clientY-r.top;
+  let md=30,mi=-1;
+  nodes.forEach((n,i)=>{const d=Math.hypot(n.x-x,n.y-y);if(d<md){md=d;mi=i;}});
+  dragN=mi;
+},{passive:true});
+mC.addEventListener('touchmove',e=>{
+  if(dragN<0)return;e.preventDefault();
+  const r=mC.getBoundingClientRect(),t=e.touches[0];
+  nodes[dragN].x=Math.max(8,Math.min(CW-8,t.clientX-r.left));
+  nodes[dragN].y=Math.max(8,Math.min(CH-8,t.clientY-r.top));
+  drawMesh();
+},{passive:false});
+mC.addEventListener('touchend',()=>dragN=-1);
+
+function openMesh(){modal.classList.add('open');startGame();}
+function closeMesh(){modal.classList.remove('open');clearInterval(tIv);}
+
+document.getElementById('mesh-trigger').addEventListener('click',openMesh);
+document.getElementById('mesh-close').addEventListener('click',closeMesh);
+document.getElementById('mesh-reset').addEventListener('click',startGame);
+modal.addEventListener('click',e=>{if(e.target===modal)closeMesh();});
+
+/* Konami-style: press M 3 times */
+let mC2=0,mT2;
+document.addEventListener('keydown',e=>{
+  if(e.key==='m'||e.key==='M'){
+    mC2++;clearTimeout(mT2);mT2=setTimeout(()=>mC2=0,700);
+    if(mC2>=3){openMesh();mC2=0;}
+  }
+  if(e.key==='Escape')closeMesh();
+});
 
 })();
 </script>
