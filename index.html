@@ -1,1072 +1,612 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M. Furkan Özel — Computational Mechanics Engineer</title>
-    <meta name="description" content="Mustafa Furkan Özel — FEA, CFD, Python-based structural optimization. MSc Mechanical Engineering. CRC Press author.">
-    <meta property="og:title" content="M. Furkan Özel | Portfolio">
-    <meta property="og:description" content="Computational Mechanics • FEA • CFD • Python">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://furkanis.me">
-    <link rel="canonical" href="https://furkanis.me">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M. FURKAN ÖZEL — COMPUTATIONAL MECHANICS ENGINEER</title>
+<meta name="description" content="Mustafa Furkan Özel — FEA, CFD, Python-based structural optimization. MSc Mechanical Engineering. CRC Press / Taylor & Francis author.">
+<meta property="og:title" content="M. Furkan Özel — Engineering Portfolio">
+<meta property="og:description" content="Computational Mechanics · FEA · CFD · Python · R&D">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://furkanis.me">
+<link rel="canonical" href="https://furkanis.me">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
 
-        /* ══════════════════════════════════════
-           DESIGN TOKENS
-           ══════════════════════════════════════ */
-        :root {
-            --bg:        #0a0a0b;
-            --bg-card:   #111113;
-            --bg-term:   #0c0c0e;
-            --border:    #1e1e22;
-            --border-hi: #2a2a30;
-            --text:      #c9c9ce;
-            --text-dim:  #6b6b76;
-            --text-bright:#f0f0f2;
-            --accent:    #4f8ff7;
-            --accent-dim:#2a4a7a;
-            --green:     #3ddc84;
-            --red:       #ff5f57;
-            --yellow:    #febc2e;
-            --orange:    #ff9f43;
-            --purple:    #a78bfa;
-            --cyan:      #22d3ee;
-            --mono:      'JetBrains Mono', monospace;
-            --sans:      'Inter', -apple-system, sans-serif;
-            --radius:    12px;
-        }
+/* ═══════════════════════════════════════════
+   TOKENS
+   ═══════════════════════════════════════════ */
+:root {
+  --bg:       #0b0d13;
+  --bg-panel: rgba(15,18,28,0.65);
+  --line:     rgba(100,140,210,0.10);
+  --line-hi:  rgba(100,140,210,0.28);
+  --line-acc: rgba(90,155,245,0.50);
+  --text:     #b0bdd4;
+  --text-hi:  #e2e9f5;
+  --text-dim: #4e5a72;
+  --accent:   #5b9bf5;
+  --accent2:  #f0a03c;
+  --red:      #e05555;
+  --green:    #4ecb8d;
+  --mono:     'JetBrains Mono', 'Courier New', monospace;
+  --grid:     24px;
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
 
-        body {
-            font-family: var(--sans);
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
 
-        ::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: #fff; }
 
-        /* ══════════════════════════════════════
-           BOOT SEQUENCE OVERLAY
-           ══════════════════════════════════════ */
-        #boot-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #000;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        #boot-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+/* ═══════════════════════════════════════════
+   BLUEPRINT GRID BACKGROUND
+   ═══════════════════════════════════════════ */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,  var(--line) 0 1px, transparent 1px var(--grid)),
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px var(--grid));
+}
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,  rgba(100,140,210,0.04) 0 1px, transparent 1px calc(var(--grid)*5)),
+    repeating-linear-gradient(90deg, rgba(100,140,210,0.04) 0 1px, transparent 1px calc(var(--grid)*5));
+}
 
-        #boot-text {
-            font-family: var(--mono);
-            font-size: clamp(11px, 1.4vw, 14px);
-            color: var(--green);
-            line-height: 1.7;
-            max-width: 640px;
-            padding: 2rem;
-            white-space: pre-wrap;
-        }
-        #boot-text .cursor-blink {
-            display: inline-block;
-            width: 8px; height: 15px;
-            background: var(--green);
-            animation: blink 0.6s step-end infinite;
-            vertical-align: text-bottom;
-        }
+/* ═══════════════════════════════════════════
+   CROSSHAIR FOLLOWER
+   ═══════════════════════════════════════════ */
+#crosshair-h, #crosshair-v {
+  position:fixed; z-index:9998; pointer-events:none;
+  background: var(--line-acc);
+  opacity:0; transition: opacity 0.3s;
+}
+#crosshair-h { left:0; right:0; height:1px; }
+#crosshair-v { top:0; bottom:0; width:1px; }
+body:hover #crosshair-h, body:hover #crosshair-v { opacity:1; }
 
-        @keyframes blink { 50% { opacity: 0; } }
+#coord-readout {
+  position:fixed; bottom:12px; right:16px; z-index:9999;
+  font-size:9px; letter-spacing:0.08em;
+  color: var(--text-dim);
+  pointer-events:none;
+}
 
-        /* ══════════════════════════════════════
-           LAYOUT
-           ══════════════════════════════════════ */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 2rem 1.25rem 4rem;
-            opacity: 0;
-            transform: translateY(12px);
-            transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
-        }
-        .container.visible { opacity: 1; transform: translateY(0); }
+/* ═══════════════════════════════════════════
+   PAGE FRAME (drawing border)
+   ═══════════════════════════════════════════ */
+.drawing-frame {
+  position:relative; z-index:1;
+  max-width:1140px;
+  margin:0 auto;
+  padding:20px;
+  min-height:100vh;
+}
 
-        /* ══════════════════════════════════════
-           HEADER
-           ══════════════════════════════════════ */
-        .site-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .site-header h1 {
-            font-size: clamp(1.6rem, 4vw, 2.4rem);
-            font-weight: 700;
-            color: var(--text-bright);
-            letter-spacing: -0.03em;
-        }
-        .site-header .subtitle {
-            font-family: var(--mono);
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-top: 0.4rem;
-        }
-        .header-actions {
-            display: flex; gap: 0.5rem; align-items: center;
-        }
-        .header-actions a, .header-actions button {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            background: none;
-            border: 1px solid var(--border);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .header-actions a:hover, .header-actions button:hover {
-            color: var(--accent);
-            border-color: var(--accent-dim);
-            background: rgba(79,143,247,0.06);
-        }
+/* Corner registration marks */
+.reg-mark {
+  position:absolute; width:18px; height:18px;
+  opacity:0.3;
+}
+.reg-mark::before, .reg-mark::after {
+  content:''; position:absolute; background:var(--text-dim);
+}
+.reg-mark::before { width:18px; height:1px; top:9px; left:0; }
+.reg-mark::after  { width:1px; height:18px; left:9px; top:0; }
+.reg-mark.tl { top:8px; left:8px; }
+.reg-mark.tr { top:8px; right:8px; }
+.reg-mark.bl { bottom:8px; left:8px; }
+.reg-mark.br { bottom:8px; right:8px; }
 
-        /* ══════════════════════════════════════
-           BENTO GRID
-           ══════════════════════════════════════ */
-        .bento {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 1rem;
-        }
+/* ═══════════════════════════════════════════
+   TITLE BLOCK (top)
+   ═══════════════════════════════════════════ */
+.title-block {
+  border:1px solid var(--line-hi);
+  display:grid;
+  grid-template-columns: 1fr auto;
+  margin-bottom:2px;
+}
+.tb-main {
+  padding:20px 24px;
+  border-right:1px solid var(--line-hi);
+}
+.tb-name {
+  font-size:clamp(1.1rem, 3vw, 1.7rem);
+  font-weight:600;
+  color:var(--text-hi);
+  letter-spacing:0.06em;
+  line-height:1.2;
+}
+.tb-role {
+  font-size:clamp(0.55rem, 1.2vw, 0.68rem);
+  color:var(--accent);
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  margin-top:6px;
+}
+.tb-meta {
+  display:grid;
+  grid-template-rows: repeat(4,1fr);
+  font-size:0.58rem;
+  color:var(--text-dim);
+  letter-spacing:0.06em;
+}
+.tb-meta div {
+  padding:6px 16px;
+  border-bottom:1px solid var(--line);
+  display:flex; justify-content:space-between; gap:16px;
+  white-space:nowrap;
+}
+.tb-meta div:last-child { border-bottom:none; }
+.tb-meta span:first-child { color:var(--text-dim); }
+.tb-meta span:last-child  { color:var(--text); }
 
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            transition: border-color 0.25s, box-shadow 0.25s;
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover {
-            border-color: var(--border-hi);
-            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
-        }
-        .card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .card:hover::before { opacity: 1; }
+/* ═══════════════════════════════════════════
+   SECTION PANELS
+   ═══════════════════════════════════════════ */
+.sections {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+}
+.sections .full { grid-column:1/-1; }
 
-        .card-label {
-            font-family: var(--mono);
-            font-size: 0.62rem;
-            text-transform: uppercase;
-            letter-spacing: 0.18em;
-            color: var(--text-dim);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .card-label .dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--accent);
-        }
+.panel {
+  border:1px solid var(--line);
+  padding:24px;
+  position:relative;
+  background:var(--bg-panel);
+  backdrop-filter:blur(4px);
+  transition: border-color 0.3s, background 0.3s;
+  /* reveal animation */
+  opacity:0;
+  transform:translateY(10px);
+}
+.panel.visible {
+  opacity:1;
+  transform:translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.3s, background 0.3s;
+}
+.panel:hover {
+  border-color:var(--line-hi);
+  background:rgba(20,25,40,0.7);
+}
 
-        /* Grid spans */
-        .col-8  { grid-column: span 8; }
-        .col-4  { grid-column: span 4; }
-        .col-6  { grid-column: span 6; }
-        .col-12 { grid-column: span 12; }
-        .row-2  { grid-row: span 2; }
+/* Section header — engineering drawing style */
+.sec-head {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line);
+}
+.sec-num {
+  font-size:0.6rem;
+  color:var(--accent);
+  letter-spacing:0.15em;
+  white-space:nowrap;
+}
+.sec-title {
+  font-size:0.68rem;
+  font-weight:500;
+  color:var(--text-hi);
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+}
+/* Dimension line decoration */
+.sec-dim {
+  flex:1;
+  height:1px;
+  background:var(--line);
+  position:relative;
+  min-width:30px;
+}
+.sec-dim::before, .sec-dim::after {
+  content:'';
+  position:absolute;
+  top:-3px;
+  width:1px; height:7px;
+  background:var(--line-hi);
+}
+.sec-dim::before { left:0; }
+.sec-dim::after  { right:0; }
 
-        @media (max-width: 860px) {
-            .col-8, .col-4, .col-6 { grid-column: span 12; }
-            .row-2 { grid-row: span 1; }
-        }
+/* ═══════════════════════════════════════════
+   CONTENT STYLES
+   ═══════════════════════════════════════════ */
+.edu-item {
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+.edu-item:last-child { border-bottom:none; }
+.edu-degree { font-size:0.72rem; color:var(--text-hi); font-weight:500; }
+.edu-school { font-size:0.62rem; color:var(--accent); margin-top:2px; }
+.edu-date   { font-size:0.55rem; color:var(--text-dim); margin-top:1px; }
+.edu-note   { font-size:0.6rem; color:var(--text); opacity:0.6; margin-top:4px; line-height:1.5; }
 
-        /* ══════════════════════════════════════
-           TERMINAL
-           ══════════════════════════════════════ */
-        .terminal-window {
-            background: var(--bg-term);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 420px;
-        }
-        .term-titlebar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.02);
-            border-bottom: 1px solid var(--border);
-            user-select: none;
-        }
-        .term-dot { width: 11px; height: 11px; border-radius: 50%; }
-        .term-dot.r { background: var(--red); }
-        .term-dot.y { background: var(--yellow); }
-        .term-dot.g { background: var(--green); }
-        .term-title {
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            color: var(--text-dim);
-            margin-left: 8px;
-            flex: 1;
-        }
-        .term-status {
-            font-family: var(--mono);
-            font-size: 0.6rem;
-            color: var(--green);
-        }
+/* Experience */
+.exp-item { padding:12px 0; border-bottom:1px solid var(--line); }
+.exp-item:last-child { border-bottom:none; }
+.exp-role { font-size:0.7rem; color:var(--text-hi); font-weight:500; }
+.exp-org  { font-size:0.6rem; color:var(--accent); margin-top:2px; }
+.exp-date { font-size:0.52rem; color:var(--text-dim); }
+.exp-desc { font-size:0.6rem; color:var(--text); opacity:0.6; margin-top:5px; line-height:1.55; }
 
-        .term-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            font-family: var(--mono);
-            font-size: clamp(0.7rem, 1.2vw, 0.8rem);
-            line-height: 1.75;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-hi) transparent;
-        }
-        .term-body::-webkit-scrollbar { width: 4px; }
-        .term-body::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+/* Publication */
+.pub-item {
+  border-left:2px solid var(--line-acc);
+  padding-left:14px;
+  margin-bottom:14px;
+}
+.pub-item:last-child { margin-bottom:0; }
+.pub-title { font-size:0.68rem; color:var(--text-hi); line-height:1.5; font-weight:400; }
+.pub-meta  { font-size:0.55rem; color:var(--text-dim); margin-top:4px; }
 
-        .term-line { margin-bottom: 2px; word-break: break-word; }
-        .term-line.cmd { color: var(--text-bright); }
-        .term-line.cmd::before { content: '❯ '; color: var(--accent); }
-        .term-line.out { color: var(--text); }
-        .term-line.ok  { color: var(--green); }
-        .term-line.err { color: var(--red); }
-        .term-line.info{ color: var(--cyan); }
-        .term-line.warn{ color: var(--yellow); }
-        .term-line.dim { color: var(--text-dim); }
-        .term-line.accent { color: var(--accent); }
-        .term-line.purple { color: var(--purple); }
-        .term-line.ascii { color: var(--green); line-height: 1.2; font-size: 0.65rem; }
+/* Skills */
+.skill-cat {
+  font-size:0.55rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+  margin-top:14px;
+}
+.skill-cat:first-child { margin-top:0; }
+.skill-cat.c1 { color:var(--accent); }
+.skill-cat.c2 { color:var(--green); }
+.skill-cat.c3 { color:var(--accent2); }
+.skill-cat.c4 { color:var(--red); }
+.skill-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.skill-tags span {
+  font-size:0.55rem;
+  padding:3px 9px;
+  border:1px solid var(--line);
+  color:var(--text);
+  opacity:0.7;
+  transition:all 0.2s;
+}
+.skill-tags span:hover {
+  border-color:var(--line-acc);
+  color:var(--text-hi);
+  opacity:1;
+}
 
-        .term-input-row {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            background: rgba(255,255,255,0.01);
-        }
-        .term-prompt {
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-right: 8px;
-            white-space: nowrap;
-        }
-        #term-input {
-            flex: 1;
-            background: none;
-            border: none;
-            outline: none;
-            color: var(--text-bright);
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            caret-color: var(--green);
-        }
-        #term-input::placeholder { color: var(--text-dim); opacity: 0.4; }
+/* Certs */
+.cert-item {
+  font-size:0.6rem;
+  color:var(--text);
+  opacity:0.65;
+  padding:5px 0;
+  border-bottom:1px solid var(--line);
+  display:flex; gap:8px; align-items:baseline;
+}
+.cert-item:last-child { border-bottom:none; }
+.cert-item::before { content:'▸'; color:var(--accent); font-size:0.5rem; }
 
-        /* Scanline CRT effect */
-        .terminal-window::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0,0,0,0.03) 2px,
-                rgba(0,0,0,0.03) 4px
-            );
-            pointer-events: none;
-            border-radius: var(--radius);
-        }
+/* Contact / Notes */
+.note-row {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 0;
+  font-size:0.62rem;
+  color:var(--text);
+  text-decoration:none;
+  transition:color 0.2s;
+}
+a.note-row:hover { color:var(--accent); }
+.note-icon {
+  width:26px; height:26px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--line);
+  font-size:0.7rem;
+  flex-shrink:0;
+}
+.cv-link {
+  display:inline-flex; align-items:center; gap:8px;
+  margin-top:14px;
+  padding:9px 18px;
+  font-size:0.6rem;
+  letter-spacing:0.1em;
+  color:var(--accent);
+  border:1px solid var(--line-acc);
+  text-decoration:none;
+  transition:all 0.2s;
+}
+.cv-link:hover { background:rgba(90,155,245,0.08); border-color:var(--accent); }
 
-        /* ══════════════════════════════════════
-           CONTENT CARDS
-           ══════════════════════════════════════ */
-        .about-text {
-            font-size: clamp(0.82rem, 1.3vw, 0.92rem);
-            line-height: 1.75;
-            color: var(--text);
-            font-weight: 300;
-        }
-        .about-text strong { color: var(--text-bright); font-weight: 500; }
+/* ═══════════════════════════════════════════
+   BOTTOM TITLE BLOCK
+   ═══════════════════════════════════════════ */
+.bottom-block {
+  border:1px solid var(--line-hi);
+  border-top:none;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  font-size:0.52rem;
+  color:var(--text-dim);
+  letter-spacing:0.06em;
+}
+.bottom-block > div {
+  padding:10px 16px;
+  border-right:1px solid var(--line);
+}
+.bottom-block > div:last-child { border-right:none; }
+.bottom-block .label { color:var(--text-dim); display:block; margin-bottom:3px; }
+.bottom-block .value { color:var(--text); }
 
-        .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
-        .tag {
-            font-family: var(--mono);
-            font-size: 0.6rem;
-            padding: 3px 10px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            color: var(--text-dim);
-            transition: all 0.2s;
-        }
-        .tag:hover { border-color: var(--accent-dim); color: var(--accent); }
+/* ═══════════════════════════════════════════
+   SECTION CUT ANIMATION (horizontal line sweep)
+   ═══════════════════════════════════════════ */
+#section-cut {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  z-index:9997;
+  pointer-events:none;
+  opacity:0;
+}
+#section-cut.sweep {
+  animation: sweepDown 1.2s ease-out forwards;
+}
+@keyframes sweepDown {
+  0%   { top:0; opacity:0.9; }
+  100% { top:100vh; opacity:0; }
+}
 
-        /* Timeline */
-        .tl { position: relative; padding-left: 1.1rem; }
-        .tl-item { position: relative; padding-bottom: 1.25rem; }
-        .tl-item:last-child { padding-bottom: 0; }
-        .tl-item::before {
-            content: '';
-            position: absolute; left: 0; top: 5px;
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            border: 1.5px solid var(--accent);
-            background: var(--bg);
-        }
-        .tl-item::after {
-            content: '';
-            position: absolute; left: 3px; top: 16px;
-            width: 1px; height: calc(100% - 10px);
-            background: var(--border);
-        }
-        .tl-item:last-child::after { display: none; }
-        .tl-role { font-size: 0.82rem; font-weight: 500; color: var(--text-bright); }
-        .tl-org  { font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 2px; }
-        .tl-date { font-family: var(--mono); font-size: 0.6rem; color: var(--accent-dim); }
-        .tl-desc { font-size: 0.75rem; color: var(--text); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
-
-        /* Publication */
-        .pub {
-            border-left: 2px solid var(--accent-dim);
-            padding-left: 1rem;
-            margin-bottom: 1rem;
-        }
-        .pub:last-child { margin-bottom: 0; }
-        .pub-title { font-size: 0.8rem; font-weight: 500; color: var(--text-bright); line-height: 1.4; }
-        .pub-meta  { font-family: var(--mono); font-size: 0.62rem; color: var(--text-dim); margin-top: 4px; }
-
-        /* Skills */
-        .skill-group { margin-bottom: 1rem; }
-        .skill-group:last-child { margin-bottom: 0; }
-        .skill-cat {
-            font-family: var(--mono);
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            margin-bottom: 6px;
-        }
-        .skill-cat.c1 { color: var(--accent); }
-        .skill-cat.c2 { color: var(--green); }
-        .skill-cat.c3 { color: var(--yellow); }
-        .skill-cat.c4 { color: var(--purple); }
-
-        /* Contact */
-        .contact-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 0;
-            font-family: var(--mono);
-            font-size: 0.72rem;
-            color: var(--text);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        a.contact-row:hover { color: var(--accent); }
-        .contact-icon {
-            width: 30px; height: 30px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px;
-            background: rgba(79,143,247,0.06);
-            border: 1px solid var(--border);
-            font-size: 0.8rem;
-            flex-shrink: 0;
-        }
-
-        .cv-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            margin-top: 1rem;
-            padding: 10px 20px;
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--accent);
-            border: 1px solid var(--accent-dim);
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .cv-btn:hover { background: rgba(79,143,247,0.08); border-color: var(--accent); }
-
-        /* Certs */
-        .cert-list { list-style: none; }
-        .cert-list li {
-            font-size: 0.72rem;
-            color: var(--text);
-            opacity: 0.7;
-            padding: 4px 0;
-            display: flex; align-items: flex-start; gap: 8px;
-        }
-        .cert-list li::before { content: '▸'; color: var(--accent); font-size: 0.6rem; margin-top: 2px; }
-
-        /* Footer */
-        .site-footer {
-            max-width: 1100px;
-            margin: 3rem auto 0;
-            padding: 1.5rem 1.25rem 0;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            font-family: var(--mono);
-            font-size: 0.6rem;
-            color: var(--text-dim);
-            opacity: 0.5;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        /* FEA Canvas */
-        #fea-canvas {
-            width: 100%;
-            height: 100%;
-            min-height: 240px;
-            display: block;
-            border-radius: 8px;
-            cursor: crosshair;
-        }
-    </style>
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media (max-width:768px) {
+  .sections { grid-template-columns:1fr; }
+  .title-block { grid-template-columns:1fr; }
+  .tb-main { border-right:none; border-bottom:1px solid var(--line-hi); }
+  .tb-meta { grid-template-rows:none; grid-template-columns:1fr 1fr; }
+  .tb-meta div { border-right:1px solid var(--line); }
+  .bottom-block { grid-template-columns:1fr; }
+  .bottom-block > div { border-right:none; border-bottom:1px solid var(--line); }
+  .bottom-block > div:last-child { border-bottom:none; }
+  .drawing-frame { padding:10px; }
+}
+</style>
 </head>
 <body>
 
-<!-- ═══════════════ BOOT OVERLAY ═══════════════ -->
-<div id="boot-overlay">
-    <div id="boot-text"></div>
-</div>
+<!-- Crosshair -->
+<div id="crosshair-h"></div>
+<div id="crosshair-v"></div>
+<div id="coord-readout">X: 0000.0 &nbsp; Y: 0000.0</div>
 
-<!-- ═══════════════ MAIN CONTENT ═══════════════ -->
-<div class="container" id="main-content">
+<!-- Section cut line -->
+<div id="section-cut"></div>
 
-    <!-- HEADER -->
-    <header class="site-header">
-        <div>
-            <h1>Mustafa Furkan Özel</h1>
-            <p class="subtitle">Computational Mechanics · FEA / CFD · Python · R&D</p>
-        </div>
-        <div class="header-actions">
-            <a href="Academic CV.pdf" download aria-label="CV indir">⬇ CV.pdf</a>
-            <button onclick="document.getElementById('term-input').focus()" aria-label="Terminale odaklan">❯ terminal</button>
-        </div>
-    </header>
+<div class="drawing-frame">
 
-    <!-- BENTO GRID -->
-    <div class="bento">
+  <!-- Registration marks -->
+  <div class="reg-mark tl"></div>
+  <div class="reg-mark tr"></div>
+  <div class="reg-mark bl"></div>
+  <div class="reg-mark br"></div>
 
-        <!-- ▸ TERMINAL (8 col, 2 row) -->
-        <div class="card col-8 row-2" style="padding:0; overflow:hidden;">
-            <div class="terminal-window" id="terminal">
-                <div class="term-titlebar">
-                    <span class="term-dot r"></span>
-                    <span class="term-dot y"></span>
-                    <span class="term-dot g"></span>
-                    <span class="term-title">furkan@furkanis.me — zsh</span>
-                    <span class="term-status" id="term-status">● connected</span>
-                </div>
-                <div class="term-body" id="term-body" role="log" aria-live="polite" aria-label="Terminal çıktı alanı"></div>
-                <div class="term-input-row">
-                    <span class="term-prompt">furkan@me ~$</span>
-                    <label for="term-input" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Terminal komut girişi</label>
-                    <input type="text" id="term-input" placeholder="help yazın..." autocomplete="off" spellcheck="false" aria-label="Terminal komut girişi">
-                </div>
-            </div>
-        </div>
+  <!-- ═══ TITLE BLOCK ═══ -->
+  <header class="title-block">
+    <div class="tb-main">
+      <h1 class="tb-name">MUSTAFA FURKAN ÖZEL</h1>
+      <p class="tb-role">Computational Mechanics Engineer — FEA / CFD / Python</p>
+    </div>
+    <div class="tb-meta">
+      <div><span>DWG NO</span><span>MFO-2026-001</span></div>
+      <div><span>REV</span><span>C</span></div>
+      <div><span>SCALE</span><span>1 : 1</span></div>
+      <div><span>DATE</span><span>2026-07-22</span></div>
+    </div>
+  </header>
 
-        <!-- ▸ HAKKIMDA (4 col) -->
-        <div class="card col-4" id="hakkimda">
-            <div class="card-label"><span class="dot"></span> Hakkımda</div>
-            <p class="about-text">
-                <strong>Hesaplamalı mekanik</strong>, sonlu elemanlar analizi (FEA) ve <strong>Python tabanlı yapısal optimizasyon</strong> alanında uzmanlaşmış Makine Mühendisi. Teorik yapısal modelleme ile pratik R&D çözümlerini birleştirme konusunda kanıtlanmış deneyim. <strong>CRC Press / Taylor & Francis</strong> yayın yazarı.
-            </p>
-            <div class="tag-row">
-                <span class="tag">MSc — OSTİM Teknik</span>
-                <span class="tag">BSc — Selçuk Üni.</span>
-                <span class="tag">BSc — Anadolu (İşletme)</span>
-            </div>
-        </div>
+  <!-- ═══ SECTIONS ═══ -->
+  <div class="sections">
 
-        <!-- ▸ YAYINLAR (4 col) -->
-        <div class="card col-4" id="yayinlar">
-            <div class="card-label"><span class="dot"></span> Yayın & Araştırma</div>
-            <div class="pub">
-                <p class="pub-title">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"</p>
-                <p class="pub-meta">Özel, M. F. & Girard, H. (2025) — CRC Press / Taylor & Francis, pp. 35–46</p>
-            </div>
-            <div class="pub">
-                <p class="pub-title">Yüksek Lisans Tezi — Shear Buckling in Thin-Walled Closed-Section Beams</p>
-                <p class="pub-meta">Danışman: Doç. Dr. Hande Girard — OSTİM Teknik Üni.</p>
-            </div>
-        </div>
+    <!-- SEC.01 — EĞİTİM -->
+    <section class="panel" id="egitim" aria-label="Eğitim">
+      <div class="sec-head">
+        <span class="sec-num">SEC. 01</span>
+        <span class="sec-title">Eğitim</span>
+        <span class="sec-dim"></span>
+      </div>
+      <div class="edu-item">
+        <p class="edu-degree">MSc — Makine Mühendisliği</p>
+        <p class="edu-school">OSTİM Teknik Üniversitesi, Ankara</p>
+        <p class="edu-date">2022 – 2025 · GPA 3.07/4.00</p>
+        <p class="edu-note">Tez: "Prevention of Shear Buckling in Thin-Walled Closed-Section Beams: Insights from Python-Based Structural Analysis" — Danışman: Doç. Dr. Hande Girard</p>
+      </div>
+      <div class="edu-item">
+        <p class="edu-degree">BSc — Makine Mühendisliği</p>
+        <p class="edu-school">Selçuk Üniversitesi, Konya</p>
+        <p class="edu-date">2016 – 2021 · GPA 3.11/4.00 · Onur Öğrencisi</p>
+      </div>
+      <div class="edu-item">
+        <p class="edu-degree">BSc — İşletme</p>
+        <p class="edu-school">Anadolu Üniversitesi, Eskişehir</p>
+        <p class="edu-date">2017 – 2021 · GPA 2.89/4.00 · Yüksek Onur</p>
+      </div>
+    </section>
 
-        <!-- ▸ DENEYİM (6 col) -->
-        <div class="card col-6" id="deneyim">
-            <div class="card-label"><span class="dot"></span> Deneyim</div>
-            <div class="tl">
-                <div class="tl-item">
-                    <p class="tl-role">Satış Mühendisi (Teknik Danışman)</p>
-                    <p class="tl-org">Akifsan Makina — Ankara</p>
-                    <p class="tl-date">Şub 2024 – Eyl 2025</p>
-                    <p class="tl-desc">Endüstriyel müşterilere ileri işleme ve kesici takımlar konusunda teknik danışmanlık.</p>
-                </div>
-                <div class="tl-item">
-                    <p class="tl-role">R&D ve Proje Koordinatörü</p>
-                    <p class="tl-org">Fixus Solar Montaj Sistemleri — Ankara</p>
-                    <p class="tl-date">May 2023 – Şub 2024</p>
-                    <p class="tl-desc">Güneş montaj sistemlerinin rüzgâr/kar dinamik yüklerine karşı yapısal optimizasyonu.</p>
-                </div>
-                <div class="tl-item">
-                    <p class="tl-role">Tasarım & Analiz Mühendisi</p>
-                    <p class="tl-org">Theta Temiz Enerji Teknolojileri — Ankara</p>
-                    <p class="tl-date">Oca 2022 – Kas 2022</p>
-                    <p class="tl-desc">TÜBİTAK projelerinde ANSYS Fluent & Mechanical ile CFD ve yapısal analiz.</p>
-                </div>
-            </div>
-        </div>
+    <!-- SEC.02 — DENEYİM -->
+    <section class="panel" id="deneyim" aria-label="Deneyim">
+      <div class="sec-head">
+        <span class="sec-num">SEC. 02</span>
+        <span class="sec-title">Deneyim</span>
+        <span class="sec-dim"></span>
+      </div>
+      <div class="exp-item">
+        <p class="exp-role">Satış Mühendisi (Teknik Danışman)</p>
+        <p class="exp-org">Akifsan Makina — Ankara</p>
+        <p class="exp-date">ŞUB 2024 – EYL 2025</p>
+        <p class="exp-desc">Endüstriyel müşterilere ileri işleme, kesici takımlar ve ekipman konusunda teknik danışmanlık. Teknik katalog ve mühendislik dokümantasyonu yönetimi.</p>
+      </div>
+      <div class="exp-item">
+        <p class="exp-role">R&D ve Proje Koordinatörü</p>
+        <p class="exp-org">Fixus Solar Montaj Sistemleri — Ankara</p>
+        <p class="exp-date">MAY 2023 – ŞUB 2024</p>
+        <p class="exp-desc">Güneş montaj sistemlerinin rüzgâr/kar dinamik yüklerine karşı yapısal optimizasyonu. Uluslararası standartlara uygunluk analizi ve maliyet düşürücü tasarım çözümleri.</p>
+      </div>
+      <div class="exp-item">
+        <p class="exp-role">Tasarım & Analiz Mühendisi</p>
+        <p class="exp-org">Theta Temiz Enerji Teknolojileri — Ankara</p>
+        <p class="exp-date">OCA 2022 – KAS 2022</p>
+        <p class="exp-desc">TÜBİTAK destekli projelerde ANSYS Fluent & Mechanical ile CFD ve yapısal analiz. Matematiksel modellerin 3D tasarım ve prototiplere dönüştürülmesi.</p>
+      </div>
+    </section>
 
-        <!-- ▸ YETKİNLİKLER (6 col) -->
-        <div class="card col-6" id="yetkinlikler">
-            <div class="card-label"><span class="dot"></span> Teknik Yetkinlikler</div>
-            <div class="skill-group">
-                <p class="skill-cat c1">Hesaplamalı Mekanik</p>
-                <div class="tag-row" style="margin-top:4px">
-                    <span class="tag">FEA</span><span class="tag">CFD</span><span class="tag">Yapısal Dinamik</span><span class="tag">Kırılma Mekaniği</span><span class="tag">Çok Ölçekli Modelleme</span>
-                </div>
-            </div>
-            <div class="skill-group">
-                <p class="skill-cat c2">Yazılım</p>
-                <div class="tag-row" style="margin-top:4px">
-                    <span class="tag">ANSYS Mechanical</span><span class="tag">ANSYS Fluent</span><span class="tag">Fusion 360</span><span class="tag">SolidWorks</span><span class="tag">MATLAB</span><span class="tag">AutoCAD</span>
-                </div>
-            </div>
-            <div class="skill-group">
-                <p class="skill-cat c3">Programlama</p>
-                <div class="tag-row" style="margin-top:4px">
-                    <span class="tag">Python (FEA Scripting)</span><span class="tag">Yapısal Optimizasyon</span><span class="tag">Otomasyon</span>
-                </div>
-            </div>
-            <div class="skill-group">
-                <p class="skill-cat c4">R&D</p>
-                <div class="tag-row" style="margin-top:4px">
-                    <span class="tag">Prototipleme</span><span class="tag">TÜBİTAK Koordinasyonu</span><span class="tag">Teknik Dokümantasyon</span>
-                </div>
-            </div>
-        </div>
+    <!-- SEC.03 — YAYIN & ARAŞTIRMA -->
+    <section class="panel" id="yayin" aria-label="Yayınlar">
+      <div class="sec-head">
+        <span class="sec-num">SEC. 03</span>
+        <span class="sec-title">Yayın & Araştırma</span>
+        <span class="sec-dim"></span>
+      </div>
+      <div class="pub-item">
+        <p class="pub-title">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"</p>
+        <p class="pub-meta">Özel, M. F. & Girard, H. (2025) — Advances in Aerospace Engineering, CRC Press / Taylor & Francis, pp. 35–46</p>
+      </div>
+      <div class="pub-item">
+        <p class="pub-title">Yüksek Lisans Tezi — Shear Buckling in Thin-Walled Closed-Section Beams</p>
+        <p class="pub-meta">Python-based FEA algorithms for thin-walled structural optimization · Advisor: Assoc. Prof. Dr. Hande Girard</p>
+      </div>
+    </section>
 
-        <!-- ▸ FEA SİMÜLASYONU (6 col) -->
-        <div class="card col-6" id="simulasyon">
-            <div class="card-label"><span class="dot"></span> FEA Gerilim Simülasyonu <span style="margin-left:auto;font-size:0.55rem;opacity:0.5">fare ile etkileşim</span></div>
-            <canvas id="fea-canvas" aria-label="Von Mises gerilme dağılımı simülasyonu"></canvas>
-        </div>
+    <!-- SEC.04 — TEKNİK YETKİNLİKLER -->
+    <section class="panel" id="yetkinlikler" aria-label="Yetkinlikler">
+      <div class="sec-head">
+        <span class="sec-num">SEC. 04</span>
+        <span class="sec-title">Teknik Yetkinlikler</span>
+        <span class="sec-dim"></span>
+      </div>
+      <p class="skill-cat c1">Hesaplamalı Mekanik</p>
+      <div class="skill-tags">
+        <span>FEA</span><span>CFD</span><span>Yapısal Dinamik</span><span>Kırılma Mekaniği</span><span>Çok Ölçekli Modelleme</span>
+      </div>
+      <p class="skill-cat c2">Mühendislik Yazılımları</p>
+      <div class="skill-tags">
+        <span>ANSYS Mechanical</span><span>ANSYS Fluent</span><span>Fusion 360</span><span>SolidWorks</span><span>MATLAB</span><span>AutoCAD</span>
+      </div>
+      <p class="skill-cat c3">Programlama</p>
+      <div class="skill-tags">
+        <span>Python — FEA Scripting</span><span>Yapısal Optimizasyon</span><span>Otomasyon</span>
+      </div>
+      <p class="skill-cat c4">R&D</p>
+      <div class="skill-tags">
+        <span>Prototipleme</span><span>TÜBİTAK Koordinasyonu</span><span>Teknik Dokümantasyon</span><span>Termo-akışkan Dinamiği</span>
+      </div>
+    </section>
 
-        <!-- ▸ SERTİFİKALAR (3 col) -->
-        <div class="card col-4" id="sertifikalar">
-            <div class="card-label"><span class="dot"></span> Sertifikalar</div>
-            <ul class="cert-list">
-                <li>ANSYS Fluent — CFD Analiz Mühendisliği (2022)</li>
-                <li>Fusion 360 — Generative Design (2022)</li>
-                <li>Multi-Body Dynamics: Teori & Uygulama (2021)</li>
-                <li>TEI Havacılık Motorları Okulu (2021)</li>
-                <li>SolidWorks & ANSYS Parametrik Tasarım (2020)</li>
-            </ul>
-        </div>
+    <!-- SEC.05 — SERTİFİKALAR -->
+    <section class="panel" id="sertifikalar" aria-label="Sertifikalar">
+      <div class="sec-head">
+        <span class="sec-num">SEC. 05</span>
+        <span class="sec-title">Sertifikalar</span>
+        <span class="sec-dim"></span>
+      </div>
+      <div class="cert-item">ANSYS Fluent — CFD Analysis Engineer Training (2022)</div>
+      <div class="cert-item">Fusion 360 — Design, Manufacturing & Generative Design (2022)</div>
+      <div class="cert-item">Multi-Body Dynamics: Theory & Application (2021)</div>
+      <div class="cert-item">TEI Aviation Engines School (2021)</div>
+      <div class="cert-item">Parametric Design with SolidWorks & ANSYS (2020)</div>
+      <div class="cert-item">ANSYS Mechanical Introduction (2020)</div>
+    </section>
 
-        <!-- ▸ İLETİŞİM (3 col) -->
-        <div class="card col-4" id="iletisim">
-            <div class="card-label"><span class="dot"></span> İletişim</div>
-            <a href="mailto:furkan.ozel@yahoo.com" class="contact-row">
-                <span class="contact-icon">✉</span> furkan.ozel@yahoo.com
-            </a>
-            <a href="tel:+905432209980" class="contact-row">
-                <span class="contact-icon">☎</span> +90 543 220 9980
-            </a>
-            <div class="contact-row">
-                <span class="contact-icon">📍</span> Ankara, Türkiye
-            </div>
-            <a href="Academic CV.pdf" download class="cv-btn">⬇ Akademik CV İndir (PDF)</a>
-        </div>
+    <!-- SEC.06 — İLETİŞİM / NOTES -->
+    <section class="panel" id="iletisim" aria-label="İletişim">
+      <div class="sec-head">
+        <span class="sec-num">SEC. 06</span>
+        <span class="sec-title">İletişim / Notes</span>
+        <span class="sec-dim"></span>
+      </div>
+      <a href="mailto:furkan.ozel@yahoo.com" class="note-row">
+        <span class="note-icon">✉</span> furkan.ozel@yahoo.com
+      </a>
+      <a href="tel:+905432209980" class="note-row">
+        <span class="note-icon">☎</span> +90 543 220 9980
+      </a>
+      <div class="note-row">
+        <span class="note-icon">📍</span> Ankara, Türkiye
+      </div>
+      <div class="note-row" style="opacity:0.5">
+        <span class="note-icon">🗣</span> Türkçe (Ana dil) · İngilizce (B1 — Profesyonel)
+      </div>
+      <a href="Academic CV.pdf" download class="cv-link">⬇ AKADEMİK CV İNDİR (PDF)</a>
+    </section>
 
-    </div><!-- /bento -->
+  </div><!-- /sections -->
 
-    <footer class="site-footer">
-        <span>© 2026 Mustafa Furkan Özel</span>
-        <span>Computational Mechanics · FEA · CFD · Python</span>
-    </footer>
-</div>
+  <!-- ═══ BOTTOM TITLE BLOCK ═══ -->
+  <footer class="bottom-block">
+    <div>
+      <span class="label">GENERAL TOLERANCES</span>
+      <span class="value">±0.01 mm UNLESS OTHERWISE SPECIFIED</span>
+    </div>
+    <div>
+      <span class="label">DRAWN BY</span>
+      <span class="value">M. F. ÖZEL — ANKARA, TÜRKİYE</span>
+    </div>
+    <div>
+      <span class="label">SHEET</span>
+      <span class="value">1 OF 1 · DO NOT SCALE DRAWING</span>
+    </div>
+  </footer>
 
-<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+</div><!-- /drawing-frame -->
+
 <script>
-(function() {
-    'use strict';
+(function(){
+  'use strict';
 
-    /* ─────────────────────────────────────────
-       1. BOOT SEQUENCE
-       ───────────────────────────────────────── */
-    const bootLines = [
-        '[    0.000000] furkanOS v2.6.1 — initializing kernel...',
-        '[    0.001204] CPU: Intel Core i7-12700H @ 2.30GHz (14 cores)',
-        '[    0.003891] Memory: 32768MB OK',
-        '[    0.007102] Loading modules: fea.ko cfd.ko python3.ko ansys.ko',
-        '[    0.012440] Mounting /dev/portfolio ... done',
-        '[    0.015873] Starting computational mechanics daemon ... [ OK ]',
-        '[    0.019204] Loading mesh generator (C-profil, 24x18 grid) ... [ OK ]',
-        '[    0.023551] Initializing Von Mises stress solver ... [ OK ]',
-        '[    0.027890] Connecting to furkanis.me ... [ OK ]',
-        '[    0.031204] All systems nominal.',
-        '',
-        '  ███████╗██╗   ██╗██████╗ ██╗  ██╗██╗   ██╗███╗   ██╗',
-        '  ██╔════╝██║   ██║██╔══██╗██║ ██╔╝██║   ██║████╗  ██║',
-        '  █████╗  ██║   ██║██████╔╝█████╔╝ ██║   ██║██╔██╗ ██║',
-        '  ██╔══╝  ██║   ██║██╔══██╗██╔═██╗ ██║   ██║██║╚██╗██║',
-        '  ██║     ╚██████╔╝██║  ██║██║  ██╗╚██████╔╝██║ ╚████║',
-        '  ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝',
-        '',
-        '  Mustafa Furkan Özel — Computational Mechanics Engineer',
-        '  Type "help" to see available commands.',
-        ''
-    ];
+  /* ── Crosshair follower ── */
+  const ch = document.getElementById('crosshair-h');
+  const cv = document.getElementById('crosshair-v');
+  const coord = document.getElementById('coord-readout');
 
-    const bootEl = document.getElementById('boot-text');
-    const overlay = document.getElementById('boot-overlay');
-    const mainContent = document.getElementById('main-content');
-    let bootIdx = 0;
+  document.addEventListener('mousemove', function(e){
+    ch.style.top = e.clientY + 'px';
+    cv.style.left = e.clientX + 'px';
+    coord.textContent =
+      'X: ' + e.clientX.toFixed(1).padStart(6,'0') +
+      '  Y: ' + e.clientY.toFixed(1).padStart(6,'0');
+  });
 
-    function typeBootLine() {
-        if (bootIdx < bootLines.length) {
-            const line = bootLines[bootIdx];
-            bootEl.textContent += line + '\n';
-            bootIdx++;
-            const delay = line.startsWith('[') ? 60 + Math.random() * 80 :
-                          line.includes('═') || line.includes('╔') || line.includes('╚') || line.includes('║') ? 30 : 100;
-            setTimeout(typeBootLine, delay);
-        } else {
-            bootEl.innerHTML += '<span class="cursor-blink"></span>';
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                mainContent.classList.add('visible');
-                setTimeout(() => { termInput.focus(); }, 400);
-            }, 800);
-        }
-    }
-    setTimeout(typeBootLine, 300);
+  /* ── Section cut sweep on load ── */
+  const cut = document.getElementById('section-cut');
+  setTimeout(function(){ cut.classList.add('sweep'); }, 200);
+  setTimeout(function(){ cut.remove(); }, 1600);
 
-    // Skip boot on click / keypress
-    function skipBoot() {
-        if (!overlay.classList.contains('hidden')) {
-            bootIdx = bootLines.length;
-            bootEl.textContent = bootLines.join('\n') + '\n';
-            overlay.classList.add('hidden');
-            mainContent.classList.add('visible');
-            setTimeout(() => termInput.focus(), 200);
-        }
-    }
-    overlay.addEventListener('click', skipBoot);
-    document.addEventListener('keydown', function handler(e) {
-        if (e.key === 'Escape' || e.key === 'Enter') {
-            skipBoot();
-            document.removeEventListener('keydown', handler);
-        }
+  /* ── Reveal panels on scroll ── */
+  const panels = document.querySelectorAll('.panel');
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
     });
+  }, { threshold: 0.12 });
 
-    /* ─────────────────────────────────────────
-       2. TERMINAL ENGINE
-       ───────────────────────────────────────── */
-    const termBody  = document.getElementById('term-body');
-    const termInput = document.getElementById('term-input');
-    const history   = [];
-    let histIdx     = -1;
-
-    function print(text, cls = 'out') {
-        const div = document.createElement('div');
-        div.className = 'term-line ' + cls;
-        div.textContent = text;
-        termBody.appendChild(div);
-        termBody.scrollTop = termBody.scrollHeight;
-    }
-
-    function printHTML(html, cls = 'out') {
-        const div = document.createElement('div');
-        div.className = 'term-line ' + cls;
-        div.innerHTML = html;
-        termBody.appendChild(div);
-        termBody.scrollTop = termBody.scrollHeight;
-    }
-
-    function typePrint(text, cls = 'out', speed = 12) {
-        return new Promise(resolve => {
-            const div = document.createElement('div');
-            div.className = 'term-line ' + cls;
-            termBody.appendChild(div);
-            let i = 0;
-            const iv = setInterval(() => {
-                div.textContent += text[i];
-                i++;
-                termBody.scrollTop = termBody.scrollHeight;
-                if (i >= text.length) { clearInterval(iv); resolve(); }
-            }, speed);
-        });
-    }
-
-    function scroll(id) {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    const ASCII_LOGO = [
-        '  ███████╗██╗   ██╗██████╗ ██╗  ██╗██╗   ██╗███╗   ██╗',
-        '  ██╔════╝██║   ██║██╔══██╗██║ ██╔╝██║   ██║████╗  ██║',
-        '  █████╗  ██║   ██║██████╔╝█████╔╝ ██║   ██║██╔██╗ ██║',
-        '  ██╔══╝  ██║   ██║██╔══██╗██╔═██╗ ██║   ██║██║╚██╗██║',
-        '  ██║     ╚██████╔╝██║  ██║██║  ██╗╚██████╔╝██║ ╚████║',
-        '  ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝'
-    ];
-
-    const NEOFETCH = [
-        '        .--.          furkan@furkanis.me',
-        '       |o_o |         ─────────────────────',
-        '       |:_/ |         OS:       furkanOS 2.6.1 (Ankara)',
-        '      //   \\ \\        Kernel:   Computational Mechanics',
-        '     (|     | )       Shell:    zsh 5.9',
-        '    /\'\\_   _/`\\       Uptime:   4 years (MSc → PhD)',
-        '    \\___)=(___/       Packages: ANSYS, Fluent, Fusion360',
-        '                      Language: Python 3.x, MATLAB',
-        '                      Theme:    Von Mises [Dark]',
-        '                      CPU:      FEA Solver (24x18 mesh)',
-        '                      Memory:   32768 MB / 32768 MB'
-    ];
-
-    const commands = {
-        help() {
-            print('Kullanılabilir komutlar:', 'info');
-            print('');
-            const cmds = [
-                ['neofetch',       'Sistem bilgisi + ASCII logo'],
-                ['whoami',         'Hakkımda'],
-                ['ls',             'Bölümleri listele'],
-                ['cd <bölüm>',     'Bölüme git (hakkimda, deneyim, yayinlar, yetkinlikler, iletisim)'],
-                ['cat yayin.txt',  'Yayın bilgisi'],
-                ['cat deneyim.txt','Deneyim bilgisi'],
-                ['skills',         'Teknik yetkinlikler'],
-                ['cv --download',  'Akademik CV indir'],
-                ['theme <dark|light>', 'Tema değiştir'],
-                ['fea',            'FEA simülasyonuna git'],
-                ['date',           'Tarih/saat'],
-                ['history',        'Komut geçmişi'],
-                ['sudo hire-me',   '???'],
-                ['clear',          'Terminali temizle'],
-            ];
-            cmds.forEach(([cmd, desc]) => {
-                printHTML(`  <span style="color:var(--accent);min-width:180px;display:inline-block">${cmd}</span><span style="color:var(--text-dim)">${desc}</span>`);
-            });
-        },
-
-        neofetch() {
-            NEOFETCH.forEach(l => print(l, 'ascii'));
-        },
-
-        whoami() {
-            print('Mustafa Furkan Özel', 'accent');
-            print('Hesaplamalı Mekanik Mühendisi — FEA, CFD, Python', 'out');
-            print('MSc Mechanical Engineering, OSTİM Teknik Üniversitesi', 'dim');
-            print('CRC Press / Taylor & Francis yayın yazarı', 'dim');
-            print('Ankara, Türkiye', 'dim');
-        },
-
-        ls() {
-            printHTML('<span style="color:var(--accent)">hakkimda/</span>  <span style="color:var(--accent)">deneyim/</span>  <span style="color:var(--accent)">yayinlar/</span>  <span style="color:var(--accent)">yetkinlikler/</span>  <span style="color:var(--accent)">sertifikalar/</span>  <span style="color:var(--accent)">iletisim/</span>  <span style="color:var(--accent)">simulasyon/</span>  <span style="color:var(--green)">cv.pdf</span>');
-        },
-
-        skills() {
-            print('── Hesaplamalı Mekanik ──', 'info');
-            print('  FEA · CFD · Yapısal Dinamik · Kırılma Mekaniği · Çok Ölçekli Modelleme', 'out');
-            print('── Yazılım ──', 'info');
-            print('  ANSYS Mechanical · ANSYS Fluent · Fusion 360 · SolidWorks · MATLAB · AutoCAD', 'out');
-            print('── Programlama ──', 'info');
-            print('  Python (FEA Scripting & Otomasyon) · Yapısal Optimizasyon', 'out');
-            print('── R&D ──', 'info');
-            print('  Prototipleme · TÜBİTAK Koordinasyonu · Teknik Dokümantasyon', 'out');
-        },
-
-        date() {
-            print(new Date().toLocaleString('tr-TR', { dateStyle: 'full', timeStyle: 'medium' }), 'info');
-        },
-
-        history() {
-            if (history.length === 0) { print('Geçmiş boş.', 'dim'); return; }
-            history.forEach((h, i) => print(`  ${i + 1}  ${h}`, 'dim'));
-        },
-
-        clear() {
-            termBody.innerHTML = '';
-        },
-
-        fea() {
-            scroll('simulasyon');
-            print('FEA simülasyonuna yönlendiriliyorsunuz...', 'ok');
-        }
-    };
-
-    // cd command
-    function handleCd(arg) {
-        const map = {
-            'hakkimda': 'hakkimda', 'deneyim': 'deneyim', 'yayinlar': 'yayinlar',
-            'yetkinlikler': 'yetkinlikler', 'iletisim': 'iletisim',
-            'sertifikalar': 'sertifikalar', 'simulasyon': 'simulasyon',
-            'fea': 'simulasyon'
-        };
-        if (map[arg]) {
-            scroll(map[arg]);
-            print(`→ ${arg}/ dizinine gidiliyor...`, 'ok');
-        } else {
-            print(`cd: no such directory: ${arg}`, 'err');
-        }
-    }
-
-    // cat command
-    function handleCat(arg) {
-        if (arg === 'yayin.txt' || arg === 'yayın.txt') {
-            print('── Yayınlar ──', 'info');
-            print('Özel, M. F. & Girard, H. (2025). "Shear Buckling in Thin-Walled', 'out');
-            print('Structures: Insights from Python for Structural Analysis."', 'out');
-            print('Advances in Aerospace Engineering — CRC Press / Taylor & Francis, pp. 35–46', 'dim');
-            print('');
-            print('MSc Tezi: "Prevention of Shear Buckling in Thin-Walled Closed-Section', 'out');
-            print('Beams: Insights from Python-Based Structural Analysis"', 'out');
-            print('Danışman: Doç. Dr. Hande Girard — OSTİM Teknik Üni.', 'dim');
-        } else if (arg === 'deneyim.txt') {
-            print('── Deneyim ──', 'info');
-            print('[2024–2025] Satış Mühendisi (Teknik Danışman) — Akifsan Makina, Ankara', 'out');
-            print('[2023–2024] R&D ve Proje Koordinatörü — Fixus Solar, Ankara', 'out');
-            print('[2022]      Tasarım & Analiz Mühendisi — Theta Temiz Enerji, Ankara', 'out');
-        } else {
-            print(`cat: ${arg}: No such file or directory`, 'err');
-        }
-    }
-
-    // theme command
-    function handleTheme(arg) {
-        if (arg === 'light' || arg === 'industrial') {
-            document.documentElement.style.setProperty('--bg', '#e8e8ec');
-            document.documentElement.style.setProperty('--bg-card', '#f2f2f5');
-            document.documentElement.style.setProperty('--bg-term', '#f5f5f8');
-            document.documentElement.style.setProperty('--border', '#d0d0d8');
-            document.documentElement.style.setProperty('--border-hi', '#b8b8c4');
-            document.documentElement.style.setProperty('--text', '#2a2a30');
-            document.documentElement.style.setProperty('--text-dim', '#6b6b76');
-            document.documentElement.style.setProperty('--text-bright', '#111113');
-            print('Tema: Endüstriyel (açık) olarak değiştirildi.', 'ok');
-        } else if (arg === 'dark') {
-            document.documentElement.style.setProperty('--bg', '#0a0a0b');
-            document.documentElement.style.setProperty('--bg-card', '#111113');
-            document.documentElement.style.setProperty('--bg-term', '#0c0c0e');
-            document.documentElement.style.setProperty('--border', '#1e1e22');
-            document.documentElement.style.setProperty('--border-hi', '#2a2a30');
-            document.documentElement.style.setProperty('--text', '#c9c9ce');
-            document.documentElement.style.setProperty('--text-dim', '#6b6b76');
-            document.documentElement.style.setProperty('--text-bright', '#f0f0f2');
-            print('Tema: Karanlık olarak değiştirildi.', 'ok');
-        } else {
-            print('Kullanım: theme <dark|light>', 'warn');
-        }
-    }
-
-    // Main command router
-    async function execute(raw) {
-        const input = raw.trim();
-        if (!input) return;
-
-        print(input, 'cmd');
-        history.push(input);
-        histIdx = history.length;
-
-        const parts = input.split(/\s+/);
-        const cmd = parts[0].toLowerCase();
-        const arg = parts.slice(1).join(' ').toLowerCase();
-
-        if (cmd === 'cd') { handleCd(arg); return; }
-        if (cmd === 'cat') { handleCat(arg); return; }
-        if (cmd === 'theme') { handleTheme(arg); return; }
-
-        if (cmd === 'cv' && (arg.includes('download') || arg.includes('indir'))) {
-            const a = document.createElement('a');
-            a.href = 'Academic CV.pdf';
-            a.download = 'Mustafa_Furkan_Ozel_CV.pdf';
-            a.click();
-            print('İndirme başlatıldı: Mustafa_Furkan_Ozel_CV.pdf', 'ok');
-            return;
-        }
-
-        if (cmd === 'sudo' && arg === 'hire-me') {
-            await typePrint('[sudo] password for furkan: ', 'warn', 30);
-            await new Promise(r => setTimeout(r, 600));
-            print('✓ Access granted. E-posta: furkan.ozel@yahoo.com', 'ok');
-            print('  Let\'s build something extraordinary together.', 'accent');
-            return;
-        }
-
-        if (commands[cmd]) {
-            await commands[cmd]();
-        } else {
-            print(`zsh: command not found: ${cmd}`, 'err');
-            print('  "help" yazarak komutları görebilirsiniz.', 'dim');
-        }
-    }
-
-    // Input handling
-    termInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            const val = this.value;
-            this.value = '';
-            execute(val);
-        }
-        // Command history (↑ / ↓)
-        else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            if (histIdx > 0) { histIdx--; this.value = history[histIdx]; }
-        }
-        else if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            if (histIdx < history.length - 1) { histIdx++; this.value = history[histIdx]; }
-            else { histIdx = history.length; this.value = ''; }
-        }
-        // Tab completion
-        else if (e.key === 'Tab') {
-            e.preventDefault();
-            const val = this.value.toLowerCase().trim();
-            const allCmds = ['help','neofetch','whoami','ls','cd','cat','skills','cv','theme','fea','date','history','clear','sudo'];
-            const match = allCmds.filter(c => c.startsWith(val));
-            if (match.length === 1) this.value = match[0] + ' ';
-            else if (match.length > 1) {
-                print(match.join('  '), 'dim');
-            }
-        }
-    });
-
-    // Focus terminal on click
-    document.getElementById('terminal').addEventListener('click', () => termInput.focus());
-
-    /* ─────────────────────────────────────────
-       3. FEA CANVAS — Von Mises Simulation
-       ───────────────────────────────────────── */
-    const canvas = document.getElementById('fea-canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        let W, H, mx = -1, my = -1;
-
-        function resize() {
-            const r = canvas.parentElement.getBoundingClientRect();
-            W = canvas.width = r.width - 48;
-            H = canvas.height = Math.max(240, r.height - 80);
-        }
-        resize();
-        window.addEventListener('resize', resize);
-
-        function vmColor(s) {
-            s = Math.max(0, Math.min(1, s));
-            let r, g, b;
-            if (s < 0.25)      { r=0; g=Math.round(s*4*255); b=255; }
-            else if (s < 0.5)  { r=0; g=255; b=Math.round((1-(s-0.25)*4)*255); }
-            else if (s < 0.75) { r=Math.round((s-0.5)*4*255); g=255; b=0; }
-            else               { r=255; g=Math.round((1-(s-0.75)*4)*255); b=0; }
-            return `rgb(${r},${g},${b})`;
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, W, H);
-            const cx = W*0.45, cy = H*0.5;
-            const w = W*0.22, h = H*0.4, t = Math.max(6, W*0.02);
-
-            // Grid
-            ctx.strokeStyle = 'rgba(100,100,120,0.06)';
-            ctx.lineWidth = 0.5;
-            for (let x=0;x<W;x+=16){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
-            for (let y=0;y<H;y+=16){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-
-            const lx = mx>=0?mx:cx, ly = my>=0?my:cy-h*0.3;
-            const cols=28, rows=20;
-            const cw=(w*2.4)/cols, ch=(h*1.6)/rows;
-            const sx=cx-w*1.2, sy=cy-h*0.8;
-
-            for(let i=0;i<cols;i++){
-                for(let j=0;j<rows;j++){
-                    const px=sx+i*cw+cw/2, py=sy+j*ch+ch/2;
-                    const inTop = py>cy-h/2-t && py<cy-h/2+t && px>cx-w/2 && px<cx+w/2;
-                    const inBot = py>cy+h/2-t && py<cy+h/2+t && px>cx-w/2 && px<cx+w/2;
-                    const inWeb = px>cx-t/2 && px<cx+t/2 && py>cy-h/2 && py<cy+h/2;
-                    const inLipT = px>cx+w/2-t && px<cx+w/2 && py>cy-h/2-t && py<cy-h/2+t*2;
-                    const inLipB = px>cx+w/2-t && px<cx+w/2 && py>cy+h/2-t*2 && py<cy+h/2+t;
-                    if(inTop||inBot||inWeb||inLipT||inLipB){
-                        const d=Math.sqrt((px-lx)**2+(py-ly)**2);
-                        const stress=Math.max(0,1-d/(Math.sqrt(W*W+H*H)*0.45));
-                        ctx.fillStyle=vmColor(stress);
-                        ctx.globalAlpha=0.65+stress*0.35;
-                        ctx.fillRect(px-cw/2,py-ch/2,cw-0.5,ch-0.5);
-                    }
-                }
-            }
-            ctx.globalAlpha=1;
-
-            // Contour
-            ctx.strokeStyle='rgba(200,200,210,0.5)';
-            ctx.lineWidth=1.5;
-            ctx.beginPath();
-            ctx.moveTo(cx-w/2,cy-h/2);ctx.lineTo(cx+w/2,cy-h/2);
-            ctx.moveTo(cx,cy-h/2);ctx.lineTo(cx,cy+h/2);
-            ctx.moveTo(cx-w/2,cy+h/2);ctx.lineTo(cx+w/2,cy+h/2);
-            ctx.stroke();
-
-            // Load arrow
-            ctx.strokeStyle='#ff5f57';ctx.lineWidth=2;
-            ctx.beginPath();ctx.moveTo(lx,ly-25);ctx.lineTo(lx,ly);ctx.stroke();
-            ctx.fillStyle='#ff5f57';
-            ctx.beginPath();ctx.moveTo(lx,ly+4);ctx.lineTo(lx-5,ly-6);ctx.lineTo(lx+5,ly-6);ctx.closePath();ctx.fill();
-            ctx.fillStyle='rgba(255,255,255,0.6)';
-            ctx.font='10px "JetBrains Mono",monospace';
-            ctx.fillText('F = 12.5 kN',lx+10,ly-15);
-
-            // Legend
-            const lx2=W-24,ly2=H*0.15,lh=H*0.7;
-            for(let i=0;i<lh;i++){ctx.fillStyle=vmColor(1-i/lh);ctx.fillRect(lx2,ly2+i,10,1);}
-            ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='8px "JetBrains Mono",monospace';
-            ctx.fillText('σ_max',lx2-8,ly2-5);ctx.fillText('σ_min',lx2-8,ly2+lh+12);
-
-            ctx.fillStyle='rgba(255,255,255,0.2)';ctx.font='9px "JetBrains Mono",monospace';
-            ctx.fillText('Von Mises Stress [MPa] — C-Channel Cross Section',8,H-8);
-
-            requestAnimationFrame(draw);
-        }
-        draw();
-
-        canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});
-        canvas.addEventListener('mouseleave',()=>{mx=-1;my=-1;});
-        canvas.addEventListener('touchmove',e=>{e.preventDefault();const r=canvas.getBoundingClientRect();mx=e.touches[0].clientX-r.left;my=e.touches[0].clientY-r.top;},{passive:false});
-        canvas.addEventListener('touchend',()=>{mx=-1;my=-1;});
-    }
+  panels.forEach(function(p, i){
+    p.style.transitionDelay = (i * 0.07) + 's';
+    observer.observe(p);
+  });
 
 })();
 </script>
