@@ -5,16 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mustafa Furkan Özel — Computational Mechanics Engineer</title>
 <meta name="description" content="FEA, CFD, Python-based structural optimization. MSc Mechanical Engineering. CRC Press / Taylor & Francis author.">
+<meta name="theme-color" content="#08080a">
 <meta property="og:title" content="M. Furkan Özel — Computational Mechanics">
 <meta property="og:description" content="FEA · CFD · Python · ANSYS · Structural Optimization">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://furkanis.me">
-<meta property="og:image" content="https://furkanis.me/og-image.png">
+<meta property="og:image" content="https://furkanis.me/og-image.svg">
 <link rel="canonical" href="https://furkanis.me">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Mustafa Furkan Özel","jobTitle":"Computational Mechanics Engineer","url":"https://furkanis.me","email":"furkan.ozel@yahoo.com","telephone":"+905432209980","address":{"@type":"PostalAddress","addressLocality":"Ankara","addressCountry":"TR"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"OSTİM Technical University"},{"@type":"CollegeOrUniversity","name":"Selçuk University"},{"@type":"CollegeOrUniversity","name":"Anadolu University"}],"knowsAbout":["Finite Element Analysis","Computational Fluid Dynamics","Python","ANSYS","Structural Optimization","Fracture Mechanics"]}
+</script>
+<!-- Analytics: Plausible hesabı açıldığında yorumdan çıkarın
+<script defer data-domain="furkanis.me" src="https://plausible.io/js/script.js"></script>
+-->
 <style>
 :root{
   --bg:#08080a;--bg2:#0e0e11;--text:#e8e6e1;--dim:#55555a;--faint:#222226;
@@ -47,18 +54,17 @@ a{color:inherit;text-decoration:none}
 #page-intro span{font-family:var(--syne);font-size:clamp(1.5rem,4vw,2.5rem);font-weight:800;letter-spacing:.1em;animation:ip 1.2s ease-in-out infinite alternate}
 @keyframes ip{0%{opacity:.3;transform:scale(.97)}100%{opacity:1;transform:scale(1)}}
 
-/* ══ 3D CANVAS — FIXED, NO SCROLL FADE ══ */
 #fea-3d{position:fixed;top:0;right:0;width:52%;height:100vh;z-index:0;display:block}
-#load-control{position:fixed;bottom:36px;right:36px;z-index:3;display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.08em}
+#load-control{position:fixed;bottom:36px;right:36px;z-index:3;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.08em}
 #load-slider{-webkit-appearance:none;width:120px;height:2px;background:var(--faint);outline:none;cursor:none}
 #load-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:none}
 #load-value{color:var(--accent);min-width:52px}
-#fea-status{position:fixed;top:50%;right:26%;transform:translateY(-50%);z-index:1;
-  font-family:var(--mono);font-size:.6rem;color:var(--dim);letter-spacing:.1em;pointer-events:none}
+#fea-status{position:fixed;top:50%;right:26%;transform:translateY(-50%);z-index:1;font-family:var(--mono);font-size:.6rem;color:var(--dim);letter-spacing:.1em;pointer-events:none}
 @media(max-width:860px){
-  #fea-3d{width:100%;opacity:.07;pointer-events:none}
-  #load-control,#fea-status{display:none}
+  #fea-3d{width:100%;opacity:.15;pointer-events:none}
+  #load-control{display:flex;bottom:14px;right:14px;left:14px;justify-content:center;background:rgba(8,8,10,.85);padding:10px 16px;border:1px solid var(--faint);border-radius:8px}
+  #load-slider{width:160px}
+  #fea-status{display:none}
 }
 
 .wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,5vw,60px)}
@@ -189,7 +195,7 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
 #mesh-modal.open{display:flex}
 #mesh-modal h2{font-family:var(--syne);font-size:1.1rem;font-weight:700}
 #mesh-modal .sub{font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.1em}
-#mesh-canvas{border:1px solid var(--faint);background:var(--bg2);cursor:crosshair;max-width:95vw}
+#mesh-canvas{border:1px solid var(--faint);background:var(--bg2);cursor:crosshair;max-width:95vw;max-height:60vh}
 .mesh-hud{display:flex;gap:28px;font-family:var(--mono);font-size:.65rem;color:var(--dim)}
 .mesh-hud strong{color:var(--accent)}
 .mesh-btns{display:flex;gap:12px}
@@ -232,24 +238,24 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
       <span class="rl"><span>FURKAN</span></span><br>
       <span class="rl"><span class="outline">ÖZEL</span></span>
     </h1>
-    <p class="hero-sub reveal">Bridging <strong>theoretical structural modeling</strong> with practical <strong>R&D solutions</strong>. FEA, CFD & Python-based optimization for aerospace & advanced manufacturing.</p>
+    <p class="hero-sub reveal">Bridging <strong>theoretical structural modeling</strong> with practical <strong>R&D solutions</strong>. FEA, CFD &amp; Python-based optimization for aerospace &amp; advanced manufacturing.</p>
   </div>
   <div class="hero-scroll" aria-hidden="true"><span>Scroll</span><div class="line"></div></div>
 </section>
 
 <div id="marquee" aria-hidden="true">
   <div class="mq-track">
-    <span>Finite Element Analysis <em>·</em></span><span>Computational Fluid Dynamics <em>·</em></span><span>Python FEA Scripting <em>·</em></span><span>ANSYS Mechanical & Fluent <em>·</em></span><span>Structural Optimization <em>·</em></span><span>Fracture Mechanics <em>·</em></span>
-    <span>Finite Element Analysis <em>·</em></span><span>Computational Fluid Dynamics <em>·</em></span><span>Python FEA Scripting <em>·</em></span><span>ANSYS Mechanical & Fluent <em>·</em></span><span>Structural Optimization <em>·</em></span><span>Fracture Mechanics <em>·</em></span>
+    <span>Finite Element Analysis <em>·</em></span><span>Computational Fluid Dynamics <em>·</em></span><span>Python FEA Scripting <em>·</em></span><span>ANSYS Mechanical &amp; Fluent <em>·</em></span><span>Structural Optimization <em>·</em></span><span>Fracture Mechanics <em>·</em></span>
+    <span>Finite Element Analysis <em>·</em></span><span>Computational Fluid Dynamics <em>·</em></span><span>Python FEA Scripting <em>·</em></span><span>ANSYS Mechanical &amp; Fluent <em>·</em></span><span>Structural Optimization <em>·</em></span><span>Fracture Mechanics <em>·</em></span>
   </div>
 </div>
 
 <section id="manifesto">
   <div class="wrap">
     <div class="sec-label magnetic reveal"><span class="num">01</span> Manifesto</div>
-    <p class="man-text" id="man-text">I develop Python-based algorithms integrated with finite element frameworks to evaluate and optimize complex shear buckling phenomena in thin-walled structures — bridging theoretical structural modeling with practical R&D solutions applicable to aerospace and advanced manufacturing.</p>
+    <p class="man-text" id="man-text">I develop Python-based algorithms integrated with finite element frameworks to evaluate and optimize complex shear buckling phenomena in thin-walled structures — bridging theoretical structural modeling with practical R&amp;D solutions applicable to aerospace and advanced manufacturing.</p>
     <div class="stats">
-      <div class="reveal"><div class="stat-num"><span class="ctr" data-t="3">0</span><span class="sfx">+</span></div><div class="stat-lbl">Years R&D</div></div>
+      <div class="reveal"><div class="stat-num"><span class="ctr" data-t="3">0</span><span class="sfx">+</span></div><div class="stat-lbl">Years R&amp;D</div></div>
       <div class="reveal"><div class="stat-num"><span class="ctr" data-t="1">0</span></div><div class="stat-lbl">CRC Press Publication</div></div>
       <div class="reveal"><div class="stat-num"><span class="ctr" data-t="2">0</span></div><div class="stat-lbl">Bachelor's Degrees</div></div>
       <div class="reveal"><div class="stat-num"><span class="ctr" data-t="6">0</span></div><div class="stat-lbl">Certifications</div></div>
@@ -270,17 +276,17 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
       </article>
       <article class="exp-card reveal tilt">
         <div class="exp-idx">02</div>
-        <h3 class="exp-role">R&D and Project Coordinator</h3>
+        <h3 class="exp-role">R&amp;D and Project Coordinator</h3>
         <p class="exp-org">Fixus Solar Mounting Systems · Ankara</p>
         <p class="exp-date">MAY 2023 — FEB 2024</p>
         <p class="exp-desc">Led structural optimization of solar mounting systems against <strong>dynamic wind and snow loads</strong>. Rigorous calculations ensuring compliance with international standards. Novel designs achieving <strong>substantial cost reductions</strong>.</p>
       </article>
       <article class="exp-card reveal tilt">
         <div class="exp-idx">03</div>
-        <h3 class="exp-role">Design & Analysis Engineer</h3>
+        <h3 class="exp-role">Design &amp; Analysis Engineer</h3>
         <p class="exp-org">Theta Clean Energy Technologies · Ankara</p>
         <p class="exp-date">JAN 2022 — NOV 2022</p>
-        <p class="exp-desc"><strong>TÜBİTAK-supported</strong> clean energy projects. CFD and structural analyses using <strong>ANSYS Fluent & Mechanical</strong>. Translated theoretical models into functional 3D designs and physical prototypes.</p>
+        <p class="exp-desc"><strong>TÜBİTAK-supported</strong> clean energy projects. CFD and structural analyses using <strong>ANSYS Fluent &amp; Mechanical</strong>. Translated theoretical models into functional 3D designs and physical prototypes.</p>
       </article>
     </div>
   </div>
@@ -290,7 +296,7 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
   <div class="wrap">
     <div class="sec-label magnetic reveal"><span class="num">03</span> Publication</div>
     <div class="pub-split">
-      <blockquote class="pub-quote reveal">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"<span class="jrn">Advances in Aerospace Engineering — CRC Press / Taylor & Francis, 2025 · pp. 35–46</span></blockquote>
+      <blockquote class="pub-quote reveal">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"<span class="jrn">Advances in Aerospace Engineering — CRC Press / Taylor &amp; Francis, 2025 · pp. 35–46</span></blockquote>
       <div class="pub-detail reveal">
         <p>Co-authored with <strong>Assoc. Prof. Dr. Hande Girard</strong> (Atılım University). Developed <strong>Python-based algorithms</strong> integrated with finite element frameworks to evaluate and optimize <strong>shear buckling phenomena</strong> in thin-walled structures.</p>
         <p style="margin-top:12px">Master's thesis extended this work: <strong>"Prevention of Shear Buckling in Thin-Walled Closed-Section Beams"</strong> at OSTİM Technical University.</p>
@@ -307,14 +313,14 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
       <div class="sk-block reveal"><h3>Computational Mechanics</h3><ul><li>FEA</li><li>CFD</li><li>Structural Dynamics</li><li>Multiscale Modeling</li><li>Fracture Mechanics</li></ul></div>
       <div class="sk-block reveal"><h3>Engineering Software</h3><ul><li>ANSYS Mechanical</li><li>ANSYS Fluent</li><li>Fusion 360</li><li>SolidWorks</li><li>MATLAB</li><li>AutoCAD</li></ul></div>
       <div class="sk-block reveal"><h3>Programming</h3><ul><li>Python — FEA Scripting</li><li>Structural Optimization</li><li>Automation</li></ul></div>
-      <div class="sk-block reveal"><h3>R&D</h3><ul><li>Prototyping</li><li>Thermo-fluid Dynamics</li><li>TÜBİTAK Coordination</li><li>Technical Documentation</li></ul></div>
+      <div class="sk-block reveal"><h3>R&amp;D</h3><ul><li>Prototyping</li><li>Thermo-fluid Dynamics</li><li>TÜBİTAK Coordination</li><li>Technical Documentation</li></ul></div>
     </div>
   </div>
 </section>
 
 <section id="education">
   <div class="wrap">
-    <div class="sec-label magnetic reveal"><span class="num">05</span> Education & Certifications</div>
+    <div class="sec-label magnetic reveal"><span class="num">05</span> Education &amp; Certifications</div>
     <div class="edu-grid">
       <div>
         <div class="edu-item reveal">
@@ -333,7 +339,7 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
           <p class="edu-deg">BSc — Business Administration</p>
           <p class="edu-sch">Anadolu University, Eskişehir</p>
           <p class="edu-meta">2017 – 2021 · GPA 2.89/4.00 · High Honor</p>
-          <p class="edu-note"><strong>Relevance:</strong> Project management, systemic efficiency, and R&D coordination.</p>
+          <p class="edu-note"><strong>Relevance:</strong> Project management, systemic efficiency, and R&amp;D coordination.</p>
         </div>
         <div class="lang-row reveal">
           <span class="lang-item"><strong>Turkish</strong> — Native</span>
@@ -342,10 +348,10 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
       </div>
       <div>
         <div class="cert-item reveal">ANSYS Fluent — CFD Analysis Engineer (2022)</div>
-        <div class="cert-item reveal">Fusion 360 — Design & Generative Design (2022)</div>
-        <div class="cert-item reveal">Multi-Body Dynamics: Theory & Application (2021)</div>
+        <div class="cert-item reveal">Fusion 360 — Design &amp; Generative Design (2022)</div>
+        <div class="cert-item reveal">Multi-Body Dynamics: Theory &amp; Application (2021)</div>
         <div class="cert-item reveal">TEI Aviation Engines School (2021)</div>
-        <div class="cert-item reveal">Parametric Design — SolidWorks & ANSYS (2020)</div>
+        <div class="cert-item reveal">Parametric Design — SolidWorks &amp; ANSYS (2020)</div>
         <div class="cert-item reveal">ANSYS Mechanical Introduction (2020)</div>
       </div>
     </div>
@@ -359,7 +365,7 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
       <div class="ref-card reveal">
         <p class="ref-name">Assoc. Prof. Dr. Hande Girard</p>
         <p class="ref-title">Associate Professor of Aerospace Engineering, Atılım University</p>
-        <p class="ref-role">Master's Thesis Advisor & Co-author</p>
+        <p class="ref-role">Master's Thesis Advisor &amp; Co-author</p>
         <p class="ref-contact"><a href="mailto:hande.girard@atilim.edu.tr">hande.girard@atilim.edu.tr</a><br>+90 312 586 88 84</p>
       </div>
       <div class="ref-card reveal">
@@ -388,7 +394,7 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
 
 <footer>
   <div class="wrap ft-inner">
-    <p class="ft-manifesto">"Bridging <em>theoretical structural modeling</em> with practical <em>R&D solutions</em> — from Python-based FEA algorithms to physical prototypes."</p>
+    <p class="ft-manifesto">"Bridging <em>theoretical structural modeling</em> with practical <em>R&amp;D solutions</em> — from Python-based FEA algorithms to physical prototypes."</p>
     <div class="ft-meta">
       © 2026 MUSTAFA FURKAN ÖZEL<br>
       REFERENCES: GIRARD (ATILIM) · BAL (OSTİM)<br>
@@ -416,8 +422,8 @@ footer{border-top:1px solid var(--faint);padding:32px 0 28px;position:relative;z
   </div>
 </div>
 
-<!-- ══ THREE.JS — jsdelivr CDN ══ -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.0.42/dist/lenis.min.js"></script>
 
 <script>
 (function(){
@@ -491,9 +497,9 @@ if(!RM){document.querySelectorAll('.tilt').forEach(function(card){
   card.addEventListener('mouseleave',function(){card.style.transform='perspective(700px) rotateY(0) rotateX(0) translateY(0)'});
 })}
 
-/* ══════════════════════════════════════════════
-   3D FEA — THREE.JS C-CHANNEL (FIXED, NO FADE)
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   3D FEA + LENIS — window.load
+   ══════════════════════════════════════ */
 var feaC=document.getElementById('fea-3d');
 var loadCtrl=document.getElementById('load-control');
 var slider=document.getElementById('load-slider');
@@ -501,60 +507,40 @@ var loadVal=document.getElementById('load-value');
 var statusEl=document.getElementById('fea-status');
 
 function vmColor(s){
-  s=Math.max(0,Math.min(1,s));
-  var r,g,b;
-  if(s<.25){r=0;g=s*4;b=1}
-  else if(s<.5){r=0;g=1;b=1-(s-.25)*4}
-  else if(s<.75){r=(s-.5)*4;g=1;b=0}
-  else{r=1;g=1-(s-.75)*4;b=0}
+  s=Math.max(0,Math.min(1,s));var r,g,b;
+  if(s<.25){r=0;g=s*4;b=1}else if(s<.5){r=0;g=1;b=1-(s-.25)*4}
+  else if(s<.75){r=(s-.5)*4;g=1;b=0}else{r=1;g=1-(s-.75)*4;b=0}
   return[r,g,b];
 }
 
 function initThree(){
   if(typeof THREE==='undefined'){initFallback();return}
   try{
-    var W=Math.floor(window.innerWidth*.52);
-    var H=window.innerHeight;
-
+    var W=Math.floor(window.innerWidth*.52),H=window.innerHeight;
     var scene=new THREE.Scene();
     var camera=new THREE.PerspectiveCamera(42,W/H,.1,100);
-    camera.position.set(3.5,2.5,6.5);
-    camera.lookAt(0,0,0);
-
+    camera.position.set(3.5,2.5,6.5);camera.lookAt(0,0,0);
     var renderer=new THREE.WebGLRenderer({canvas:feaC,alpha:true,antialias:true});
     renderer.setSize(W,H,false);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
     renderer.setClearColor(0x000000,0);
 
-    /* C-channel cross-section */
     var shape=new THREE.Shape();
     var cw=1.4,ch=2.4,ct=.22;
-    shape.moveTo(-cw/2,-ch/2);
-    shape.lineTo(cw/2,-ch/2);
-    shape.lineTo(cw/2,-ch/2+ct);
-    shape.lineTo(-cw/2+ct,-ch/2+ct);
-    shape.lineTo(-cw/2+ct,ch/2-ct);
-    shape.lineTo(cw/2,ch/2-ct);
-    shape.lineTo(cw/2,ch/2);
-    shape.lineTo(-cw/2,ch/2);
-    shape.closePath();
+    shape.moveTo(-cw/2,-ch/2);shape.lineTo(cw/2,-ch/2);shape.lineTo(cw/2,-ch/2+ct);
+    shape.lineTo(-cw/2+ct,-ch/2+ct);shape.lineTo(-cw/2+ct,ch/2-ct);
+    shape.lineTo(cw/2,ch/2-ct);shape.lineTo(cw/2,ch/2);shape.lineTo(-cw/2,ch/2);shape.closePath();
 
     var geo=new THREE.ExtrudeGeometry(shape,{depth:4,bevelEnabled:false,curveSegments:1});
     geo.center();
-
     var pos=geo.attributes.position;
-    var colArr=new Float32Array(pos.count*3);
-    geo.setAttribute('color',new THREE.Float32BufferAttribute(colArr,3));
+    geo.setAttribute('color',new THREE.Float32BufferAttribute(new Float32Array(pos.count*3),3));
 
-    var mat=new THREE.MeshPhongMaterial({vertexColors:true,flatShading:true,shininess:25,specular:0x222222});
-    var mesh=new THREE.Mesh(geo,mat);
+    var mesh=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({vertexColors:true,flatShading:true,shininess:25,specular:0x222222}));
     scene.add(mesh);
+    mesh.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({wireframe:true,color:0xffffff,transparent:true,opacity:.06})));
 
-    var wire=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({wireframe:true,color:0xffffff,transparent:true,opacity:.06}));
-    mesh.add(wire);
-
-    var dL=new THREE.DirectionalLight(0xffffff,.75);
-    dL.position.set(5,5,5);scene.add(dL);
+    var dL=new THREE.DirectionalLight(0xffffff,.75);dL.position.set(5,5,5);scene.add(dL);
     scene.add(new THREE.AmbientLight(0x404050,.55));
 
     function updateColors(lf){
@@ -563,76 +549,42 @@ function initThree(){
         var x=p.getX(i),y=p.getY(i),z=p.getZ(i);
         var d=Math.sqrt(x*x+(y-1.2)*(y-1.2)+z*z);
         var st=Math.max(0,1-d/3.5)*lf;
-        var rgb=vmColor(st);
-        c.setXYZ(i,rgb[0],rgb[1],rgb[2]);
+        var rgb=vmColor(st);c.setXYZ(i,rgb[0],rgb[1],rgb[2]);
       }
       c.needsUpdate=true;
     }
     updateColors(.35);
 
-    slider.addEventListener('input',function(){
-      updateColors(slider.value/100);
-      loadVal.textContent=slider.value+' kN';
-    });
+    slider.addEventListener('input',function(){updateColors(slider.value/100);loadVal.textContent=slider.value+' kN'});
 
-    /* Mouse rotation — window-level, right half only */
     var drag=false,px=0,py=0;
-    window.addEventListener('mousedown',function(e){
-      if(e.clientX>window.innerWidth*.48){drag=true;px=e.clientX;py=e.clientY}
-    });
-    window.addEventListener('mousemove',function(e){
-      if(!drag)return;
-      mesh.rotation.y+=(e.clientX-px)*.006;
-      mesh.rotation.x+=(e.clientY-py)*.006;
-      px=e.clientX;py=e.clientY;
-    });
+    window.addEventListener('mousedown',function(e){if(e.clientX>window.innerWidth*.48){drag=true;px=e.clientX;py=e.clientY}});
+    window.addEventListener('mousemove',function(e){if(!drag)return;mesh.rotation.y+=(e.clientX-px)*.006;mesh.rotation.x+=(e.clientY-py)*.006;px=e.clientX;py=e.clientY});
     window.addEventListener('mouseup',function(){drag=false});
-
-    /* Touch rotation */
     feaC.addEventListener('touchstart',function(e){drag=true;px=e.touches[0].clientX;py=e.touches[0].clientY},{passive:true});
-    feaC.addEventListener('touchmove',function(e){
-      if(!drag)return;
-      mesh.rotation.y+=(e.touches[0].clientX-px)*.006;
-      mesh.rotation.x+=(e.touches[0].clientY-py)*.006;
-      px=e.touches[0].clientX;py=e.touches[0].clientY;
-    },{passive:true});
+    feaC.addEventListener('touchmove',function(e){if(!drag)return;mesh.rotation.y+=(e.touches[0].clientX-px)*.006;mesh.rotation.x+=(e.touches[0].clientY-py)*.006;px=e.touches[0].clientX;py=e.touches[0].clientY},{passive:true});
     feaC.addEventListener('touchend',function(){drag=false});
 
-    /* Render loop */
-    (function anim(){
-      requestAnimationFrame(anim);
-      mesh.rotation.y+=.003;
-      renderer.render(scene,camera);
-    })();
+    (function anim(){requestAnimationFrame(anim);mesh.rotation.y+=.003;renderer.render(scene,camera)})();
 
-    /* Resize */
     window.addEventListener('resize',function(){
-      W=Math.floor(window.innerWidth*.52);
-      H=window.innerHeight;
-      camera.aspect=W/H;
-      camera.updateProjectionMatrix();
-      renderer.setSize(W,H,false);
+      W=Math.floor(window.innerWidth*.52);H=window.innerHeight;
+      camera.aspect=W/H;camera.updateProjectionMatrix();renderer.setSize(W,H,false);
     });
 
     statusEl.style.display='none';
-
-  }catch(err){
-    console.warn('Three.js init failed:',err);
-    initFallback();
-  }
+  }catch(err){console.warn('Three.js failed:',err);initFallback()}
 }
 
-/* ── Canvas 2D Fallback ── */
 function initFallback(){
   statusEl.textContent='2D MODE';
   var ctx=feaC.getContext('2d');
-  var fw=feaC.width=Math.floor(window.innerWidth*.52);
-  var fh=feaC.height=window.innerHeight;
-  var fmx=fw/2,fmy=fh*.35;
+  var fw=feaC.width=Math.floor(window.innerWidth*.52),fh=feaC.height=window.innerHeight;
+  var fmx=fw/2,fmy=fh*.35,fallbackLoad=.35;
   feaC.addEventListener('mousemove',function(e){var r=feaC.getBoundingClientRect();fmx=e.clientX-r.left;fmy=e.clientY-r.top});
+  slider.addEventListener('input',function(){fallbackLoad=slider.value/100;loadVal.textContent=slider.value+' kN'});
   (function draw(){
-    requestAnimationFrame(draw);
-    ctx.clearRect(0,0,fw,fh);
+    requestAnimationFrame(draw);ctx.clearRect(0,0,fw,fh);
     var cx=fw*.45,cy=fh*.5,w=fw*.16,h=fh*.32,t=Math.max(6,fw*.02);
     var cols=22,rows=16,cww=w*2.4/cols,chh=h*1.6/rows,sx=cx-w*1.2,sy=cy-h*.8;
     for(var i=0;i<cols;i++)for(var j=0;j<rows;j++){
@@ -642,28 +594,32 @@ function initFallback(){
       var inW=ppx>cx-t/2&&ppx<cx+t/2&&ppy>cy-h/2&&ppy<cy+h/2;
       if(inT||inB||inW){
         var dd=Math.sqrt((ppx-fmx)*(ppx-fmx)+(ppy-fmy)*(ppy-fmy));
-        var st=Math.max(0,1-dd/(Math.sqrt(fw*fw+fh*fh)*.35));
+        var st=Math.max(0,1-dd/(Math.sqrt(fw*fw+fh*fh)*.35))*fallbackLoad;
         var rgb=vmColor(st);
         ctx.fillStyle='rgb('+Math.round(rgb[0]*255)+','+Math.round(rgb[1]*255)+','+Math.round(rgb[2]*255)+')';
-        ctx.globalAlpha=.55+st*.45;
-        ctx.fillRect(ppx-cww/2,ppy-chh/2,cww-1,chh-1);
+        ctx.globalAlpha=.55+st*.45;ctx.fillRect(ppx-cww/2,ppy-chh/2,cww-1,chh-1);
       }
     }
-    ctx.globalAlpha=1;
-    ctx.strokeStyle='rgba(200,200,210,.35)';ctx.lineWidth=1.5;
+    ctx.globalAlpha=1;ctx.strokeStyle='rgba(200,200,210,.35)';ctx.lineWidth=1.5;
     ctx.beginPath();ctx.moveTo(cx-w/2,cy-h/2);ctx.lineTo(cx+w/2,cy-h/2);
     ctx.moveTo(cx,cy-h/2);ctx.lineTo(cx,cy+h/2);
     ctx.moveTo(cx-w/2,cy+h/2);ctx.lineTo(cx+w/2,cy+h/2);ctx.stroke();
   })();
-  slider.addEventListener('input',function(){loadVal.textContent=slider.value+' kN'});
   window.addEventListener('resize',function(){fw=feaC.width=Math.floor(window.innerWidth*.52);fh=feaC.height=window.innerHeight});
 }
 
-initThree();
+/* ── Load: Three.js + Lenis ── */
+window.addEventListener('load',function(){
+  initThree();
+  if(typeof Lenis!=='undefined'&&!RM){
+    var lenis=new Lenis({duration:1.2,smooth:true});
+    (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(performance.now());
+  }
+});
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════
    EASTER EGG: MESH LAB
-   ══════════════════════════════════════════════ */
+   ══════════════════════════════════════ */
 var modal=document.getElementById('mesh-modal');
 var mC=document.getElementById('mesh-canvas');
 var mCtx=mC.getContext('2d');
@@ -675,23 +631,15 @@ var G=5,CW=560,CH=440,PX=60,PY=50;
 var SX=(CW-2*PX)/(G-1),SY=(CH-2*PY)/(G-1);
 var nodes=[],dragN=-1,timeLeft=60,tIv=null;
 var tris=[];
-for(var i=0;i<G-1;i++)for(var j=0;j<G-1;j++){
-  var a=i*G+j,b=a+1,c=a+G,d=c+1;
-  tris.push([a,b,c],[b,d,c]);
-}
-function initNodes(){
-  nodes=[];
-  for(var i=0;i<G;i++)for(var j=0;j<G;j++){
-    nodes.push({x:PX+i*SX+(Math.random()-.5)*SX*.75,y:PY+j*SY+(Math.random()-.5)*SY*.75});
-  }
-}
+for(var i=0;i<G-1;i++)for(var j=0;j<G-1;j++){var a=i*G+j,b=a+1,c=a+G,d=c+1;tris.push([a,b,c],[b,d,c])}
+
+function initNodes(){nodes=[];for(var i=0;i<G;i++)for(var j=0;j<G;j++){nodes.push({x:PX+i*SX+(Math.random()-.5)*SX*.75,y:PY+j*SY+(Math.random()-.5)*SY*.75})}}
 function triQ(a,b,c){
   var ab=Math.hypot(b.x-a.x,b.y-a.y),bc=Math.hypot(c.x-b.x,c.y-b.y),ca=Math.hypot(a.x-c.x,a.y-c.y);
   if(ab<1||bc<1||ca<1)return 0;
   var A=Math.acos(Math.max(-1,Math.min(1,(ab*ab+ca*ca-bc*bc)/(2*ab*ca))));
   var B=Math.acos(Math.max(-1,Math.min(1,(ab*ab+bc*bc-ca*ca)/(2*ab*bc))));
-  var C=Math.PI-A-B;
-  return Math.min(A,B,C)*180/Math.PI/60;
+  return Math.min(A,B,Math.PI-A-B)*180/Math.PI/60;
 }
 function score(){var s=0;tris.forEach(function(t){s+=triQ(nodes[t[0]],nodes[t[1]],nodes[t[2]])});return Math.round(s/tris.length*100)}
 function drawMesh(){
@@ -702,10 +650,7 @@ function drawMesh(){
     mCtx.fillStyle=q>.75?'rgba(78,203,141,.12)':q>.45?'rgba(240,160,60,.12)':'rgba(224,85,85,.12)';
     mCtx.fill();mCtx.strokeStyle='rgba(200,200,210,.18)';mCtx.lineWidth=.5;mCtx.stroke();
   });
-  nodes.forEach(function(n,i){
-    mCtx.beginPath();mCtx.arc(n.x,n.y,i===dragN?7:4,0,Math.PI*2);
-    mCtx.fillStyle=i===dragN?'#ff4d00':'#e8e6e1';mCtx.fill();
-  });
+  nodes.forEach(function(n,i){mCtx.beginPath();mCtx.arc(n.x,n.y,i===dragN?7:4,0,Math.PI*2);mCtx.fillStyle=i===dragN?'#ff4d00':'#e8e6e1';mCtx.fill()});
   scoreEl.textContent=score()+'%';
 }
 function startGame(){
@@ -720,33 +665,29 @@ function endGame(){
   if(s>b){localStorage.setItem('meshBest',s);bestEl.textContent=s+'%';msgEl.textContent='🎉 New best: '+s+'%!'}
   else msgEl.textContent='Time up! Score: '+s+'%';
 }
+function meshCoords(e){
+  var r=mC.getBoundingClientRect();
+  return{x:(e.clientX-r.left)*(CW/r.width),y:(e.clientY-r.top)*(CH/r.height)};
+}
 mC.addEventListener('mousedown',function(e){
-  var r=mC.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
-  var md=22,mi=-1;
-  nodes.forEach(function(n,i){var d=Math.hypot(n.x-x,n.y-y);if(d<md){md=d;mi=i}});
-  dragN=mi;
+  var p=meshCoords(e),md=22,mi=-1;
+  nodes.forEach(function(n,i){var d=Math.hypot(n.x-p.x,n.y-p.y);if(d<md){md=d;mi=i}});dragN=mi;
 });
 mC.addEventListener('mousemove',function(e){
-  if(dragN<0)return;
-  var r=mC.getBoundingClientRect();
-  nodes[dragN].x=Math.max(8,Math.min(CW-8,e.clientX-r.left));
-  nodes[dragN].y=Math.max(8,Math.min(CH-8,e.clientY-r.top));
-  drawMesh();
+  if(dragN<0)return;var p=meshCoords(e);
+  nodes[dragN].x=Math.max(8,Math.min(CW-8,p.x));nodes[dragN].y=Math.max(8,Math.min(CH-8,p.y));drawMesh();
 });
 window.addEventListener('mouseup',function(){dragN=-1});
 mC.addEventListener('touchstart',function(e){
   var r=mC.getBoundingClientRect(),t=e.touches[0];
-  var x=t.clientX-r.left,y=t.clientY-r.top;
-  var md=30,mi=-1;
-  nodes.forEach(function(n,i){var d=Math.hypot(n.x-x,n.y-y);if(d<md){md=d;mi=i}});
-  dragN=mi;
+  var p={x:(t.clientX-r.left)*(CW/r.width),y:(t.clientY-r.top)*(CH/r.height)};
+  var md=30,mi=-1;nodes.forEach(function(n,i){var d=Math.hypot(n.x-p.x,n.y-p.y);if(d<md){md=d;mi=i}});dragN=mi;
 },{passive:true});
 mC.addEventListener('touchmove',function(e){
   if(dragN<0)return;e.preventDefault();
   var r=mC.getBoundingClientRect(),t=e.touches[0];
-  nodes[dragN].x=Math.max(8,Math.min(CW-8,t.clientX-r.left));
-  nodes[dragN].y=Math.max(8,Math.min(CH-8,t.clientY-r.top));
-  drawMesh();
+  nodes[dragN].x=Math.max(8,Math.min(CW-8,(t.clientX-r.left)*(CW/r.width)));
+  nodes[dragN].y=Math.max(8,Math.min(CH-8,(t.clientY-r.top)*(CH/r.height)));drawMesh();
 },{passive:false});
 mC.addEventListener('touchend',function(){dragN=-1});
 function openMesh(){modal.classList.add('open');startGame()}
