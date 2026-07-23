@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#08080a"/>
+  <rect x="0" y="0" width="1200" height="4" fill="#ff4d00"/>
+  <line x1="80" y1="520" x2="1120" y2="520" stroke="#222226" stroke-width="1"/>
+  <text x="80" y="220" font-family="monospace" font-size="72" font-weight="800" fill="#e8e6e1" letter-spacing="-2">MUSTAFA FURKAN</text>
+  <text x="80" y="310" font-family="monospace" font-size="72" font-weight="800" fill="none" stroke="#55555a" stroke-width="1" letter-spacing="-2">ÖZEL</text>
+  <text x="80" y="380" font-family="monospace" font-size="20" fill="#ff4d00" letter-spacing="6">COMPUTATIONAL MECHANICS ENGINEER</text>
+  <text x="80" y="480" font-family="monospace" font-size="16" fill="#55555a" letter-spacing="3">FEA · CFD · PYTHON · ANSYS · STRUCTURAL OPTIMIZATION</text>
+  <text x="80" y="570" font-family="monospace" font-size="14" fill="#55555a" letter-spacing="2">furkanis.me — Ankara, Türkiye</text>
+  <text x="1120" y="570" font-family="monospace" font-size="14" fill="#222226" text-anchor="end">DWG: MFO-2026-001 REV C</text>
+</svg>
