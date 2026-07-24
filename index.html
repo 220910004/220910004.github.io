@@ -30,26 +30,19 @@ button{font-family:inherit}
 .skip{position:fixed;top:-60px;left:20px;z-index:999999;background:var(--a);color:#fff;
 font-family:var(--mo);font-size:11px;padding:8px 18px;transition:top .3s}
 .skip:focus{top:14px}
-
-/* cursor */
 #c1,#c2{position:fixed;border-radius:50%;pointer-events:none;z-index:999998;transform:translate(-50%,-50%)}
 #c1{width:4px;height:4px;background:var(--a)}
 #c2{width:28px;height:28px;border:1px solid rgba(255,77,0,.25);
 transition:width .35s var(--e),height .35s var(--e),border-color .35s,background .35s}
 #c2.h{width:52px;height:52px;background:rgba(255,77,0,.04);border-color:rgba(255,77,0,.6)}
 @media(pointer:coarse){#c1,#c2{display:none}body{cursor:auto}}
-
-/* overlays */
 #vig{position:fixed;inset:0;z-index:10;pointer-events:none;
 background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.6) 100%)}
 #grn{position:fixed;inset:0;z-index:11;pointer-events:none;opacity:.025;mix-blend-mode:overlay;
 background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 background-size:256px}
-
 canvas#cv{position:fixed;inset:0;z-index:0}
 #sp{height:1800vh;position:relative;z-index:-1}
-
-/* ── loader ── */
 #ld{position:fixed;inset:0;z-index:90000;background:#000;display:flex;flex-direction:column;
 align-items:center;justify-content:center;gap:28px;transition:opacity 1s var(--e),visibility 1s}
 #ld.off{opacity:0;visibility:hidden;pointer-events:none}
@@ -57,8 +50,6 @@ align-items:center;justify-content:center;gap:28px;transition:opacity 1s var(--e
 #ld .br{width:160px;height:1px;background:#1a1a1a;overflow:hidden}
 #ld .fl{height:100%;width:0;background:var(--a);transition:width .15s linear}
 #ld .pc{font-family:var(--mo);font-size:10px;color:#444;letter-spacing:.25em}
-
-/* ── intro ── */
 #it{position:fixed;inset:0;z-index:80000;background:#000;display:flex;flex-direction:column;
 align-items:center;justify-content:center;gap:16px;opacity:0;visibility:hidden;
 transition:opacity 1s var(--e),visibility 1s}
@@ -68,44 +59,31 @@ transition:opacity 1s var(--e),visibility 1s}
 #it .sb{font-family:var(--mo);font-size:9px;color:#555;letter-spacing:.35em;text-transform:uppercase}
 #it .bt{display:flex;flex-direction:column;gap:10px;margin-top:24px}
 #it .bt button{font-family:var(--mo);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
-padding:15px 44px;border:1px solid #1e1e1e;background:none;color:#666;cursor:none;
-transition:all .4s var(--e)}
+padding:15px 44px;border:1px solid #1e1e1e;background:none;color:#666;cursor:none;transition:all .4s var(--e)}
 #it .bt button:hover{border-color:#444;color:#ccc}
 #it .bt button.p{border-color:var(--a);color:var(--a)}
 #it .bt button.p:hover{background:rgba(255,77,0,.05);color:#fff;border-color:var(--a)}
-
-/* ── typo ── */
 #ty{position:fixed;inset:0;z-index:5;pointer-events:none;display:flex;align-items:center;justify-content:center}
 #tt{font-family:var(--sy);font-size:clamp(48px,12vw,140px);font-weight:800;letter-spacing:-.04em;
 line-height:.9;text-align:center;opacity:0}
-
-/* ── sections ── */
 .sc{position:fixed;inset:0;z-index:6;display:flex;align-items:center;
 padding:0 clamp(32px,9vw,140px);opacity:0;pointer-events:none;will-change:opacity}
 .sc.on{pointer-events:auto}
 .si{max-width:560px}
-.sn{font-family:var(--mo);font-size:9px;letter-spacing:.4em;color:var(--a);text-transform:uppercase;
-display:block;margin-bottom:24px}
-.st{font-family:var(--sy);font-size:clamp(36px,7vw,80px);font-weight:800;line-height:.95;
-letter-spacing:-.03em;margin-bottom:20px}
+.sn{font-family:var(--mo);font-size:9px;letter-spacing:.4em;color:var(--a);text-transform:uppercase;display:block;margin-bottom:24px}
+.st{font-family:var(--sy);font-size:clamp(36px,7vw,80px);font-weight:800;line-height:.95;letter-spacing:-.03em;margin-bottom:20px}
 .sd{font-size:clamp(13px,1.5vw,16px);font-weight:300;color:var(--g);line-height:1.8;max-width:400px}
 .sd b{color:#fff;font-weight:500}
 .sm{font-family:var(--mo);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
 color:var(--a);background:none;border:1px solid rgba(255,77,0,.35);padding:12px 30px;
 margin-top:28px;cursor:none;transition:all .4s var(--e);display:inline-block}
 .sm:hover{background:rgba(255,77,0,.07);border-color:var(--a)}
-
-/* hero */
 #s0 .si{max-width:700px}
-.he{font-family:var(--mo);font-size:clamp(8px,1.2vw,10px);letter-spacing:.5em;text-transform:uppercase;
-color:var(--a);display:block;margin-bottom:28px}
-.hn{font-family:var(--sy);font-size:clamp(52px,11vw,120px);font-weight:800;line-height:.88;
-letter-spacing:-.04em;margin-bottom:24px}
+.he{font-family:var(--mo);font-size:clamp(8px,1.2vw,10px);letter-spacing:.5em;text-transform:uppercase;color:var(--a);display:block;margin-bottom:28px}
+.hn{font-family:var(--sy);font-size:clamp(52px,11vw,120px);font-weight:800;line-height:.88;letter-spacing:-.04em;margin-bottom:24px}
 .hn .o{-webkit-text-stroke:1px #555;color:transparent}
 .hs{font-size:clamp(13px,1.5vw,16px);font-weight:300;color:var(--g);line-height:1.8;max-width:380px}
 .hs b{color:#fff;font-weight:500}
-
-/* contact */
 #s7 .si{text-align:center;max-width:500px;margin:0 auto}
 .ce{display:inline-block;font-family:var(--mo);font-size:clamp(13px,2vw,18px);
 border-bottom:1px solid var(--a);padding-bottom:6px;transition:color .3s;cursor:none;margin-top:8px}
@@ -116,33 +94,24 @@ padding:11px 22px;border:1px solid #1e1e1e;transition:all .35s;cursor:none}
 .cl a:hover{color:#fff;border-color:#444}
 .cl a.p{color:var(--a);border-color:rgba(255,77,0,.5)}
 .cl a.p:hover{background:rgba(255,77,0,.06)}
-
-/* ── hud ── */
 #hd{position:fixed;top:0;left:0;width:100%;z-index:8;pointer-events:none;
 padding:24px 32px;display:flex;justify-content:space-between;align-items:flex-start}
-#hl{font-family:var(--mo);font-size:8px;color:rgba(156,156,156,.3);letter-spacing:.25em;
-text-transform:uppercase;line-height:2.4}
+#hl{font-family:var(--mo);font-size:8px;color:rgba(156,156,156,.3);letter-spacing:.25em;text-transform:uppercase;line-height:2.4}
 #hr{display:flex;gap:8px;pointer-events:auto}
 .hb{font-family:var(--mo);font-size:8px;letter-spacing:.18em;text-transform:uppercase;
 padding:9px 18px;border:1px solid #1a1a1a;background:rgba(0,0,0,.3);color:#555;cursor:none;
 transition:all .35s;backdrop-filter:blur(10px)}
 .hb:hover{border-color:#444;color:#ccc}
 .hb.on{border-color:var(--a);color:var(--a)}
-
-/* cue */
 #cu{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:8;pointer-events:none;
 font-family:var(--mo);font-size:8px;letter-spacing:.4em;color:rgba(156,156,156,.35);
 text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px}
 #cu i{display:block;width:1px;height:40px;background:linear-gradient(to bottom,var(--a),transparent);
 animation:cp 2.4s ease-in-out infinite}
 @keyframes cp{0%,100%{opacity:.2;transform:scaleY(.4)}50%{opacity:1;transform:scaleY(1)}}
-
-/* fly hint */
 #fh{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:9;pointer-events:none;
 font-family:var(--mo);font-size:9px;letter-spacing:.15em;color:#666;text-transform:uppercase;
 background:rgba(0,0,0,.5);padding:10px 24px;border:1px solid #1a1a1a;backdrop-filter:blur(10px);display:none}
-
-/* ── popup ── */
 #po{position:fixed;inset:0;z-index:95000;background:rgba(0,0,0,.8);backdrop-filter:blur(16px);
 display:none;align-items:center;justify-content:center;opacity:0;transition:opacity .4s var(--e)}
 #po.open{display:flex;opacity:1}
@@ -206,10 +175,7 @@ display:flex;gap:8px;align-items:baseline}
 font-family:var(--mo);font-size:9px;letter-spacing:.15em;text-transform:uppercase;
 border:1px solid var(--a);color:var(--a);transition:all .3s;cursor:none}
 .pcta:hover{background:rgba(255,77,0,.07)}
-
-@media(prefers-reduced-motion:reduce){
-*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
@@ -231,7 +197,7 @@ border:1px solid var(--a);color:var(--a);transition:all .3s;cursor:none}
 </div>
 </div>
 
-<canvas id="cv" aria-label="3D landscape"></canvas>
+<canvas id="cv" aria-label="3D buckled-plate stress field — scroll to traverse the analysis"></canvas>
 <div id="ty" aria-hidden="true"><div id="tt"></div></div>
 
 <div id="hd">
@@ -318,7 +284,6 @@ border:1px solid var(--a);color:var(--a);transition:all .3s;cursor:none}
 'use strict';
 var RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* cursor */
 var c1=document.getElementById('c1'),c2=document.getElementById('c2'),mx=0,my=0,rx=0,ry=0;
 addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;c1.style.left=mx+'px';c1.style.top=my+'px'});
 (function a(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(a)})();
@@ -326,7 +291,6 @@ document.querySelectorAll('button,a,.pe,.psb,.prc').forEach(function(el){
 el.addEventListener('mouseenter',function(){c2.classList.add('h')});
 el.addEventListener('mouseleave',function(){c2.classList.remove('h')})});
 
-/* popup data */
 var PD=[
 {n:'01',t:'Manifesto',h:'<p class="pb">I develop <b>Python-based algorithms</b> integrated with finite element frameworks to evaluate and optimize complex <b>shear buckling phenomena</b> in thin-walled structures — bridging theoretical structural modeling with practical R&D solutions applicable to <b>aerospace</b> and <b>advanced manufacturing</b>. Co-author of a published book chapter on structural buckling.</p><div class="pst"><div><div class="n">3<span class="x">+</span></div><div class="l">Years R&D</div></div><div><div class="n">1</div><div class="l">CRC Press</div></div><div><div class="n">2</div><div class="l">BSc Degrees</div></div><div><div class="n">6</div><div class="l">Certifications</div></div></div>'},
 {n:'02',t:'Experience',h:'<div class="pe"><p class="r">Sales Engineer — Technical Consultant</p><p class="o">Akifsan Makina · Ankara</p><p class="d">FEB 2024 — SEP 2025</p><p class="p">Expert technical consultation on <b>advanced machining, cutting tools</b> and industrial equipment. Analyzed manufacturing constraints to recommend optimal specifications.</p></div><div class="pe"><p class="r">R&D and Project Coordinator</p><p class="o">Fixus Solar Mounting Systems · Ankara</p><p class="d">MAY 2023 — FEB 2024</p><p class="p">Led structural optimization against <b>dynamic wind/snow loads</b>. International standards compliance. Novel designs achieving <b>substantial cost reductions</b>.</p></div><div class="pe"><p class="r">Design & Analysis Engineer</p><p class="o">Theta Clean Energy Technologies · Ankara</p><p class="d">JAN 2022 — NOV 2022</p><p class="p"><b>TÜBİTAK-supported</b> projects. CFD & structural analyses with <b>ANSYS Fluent & Mechanical</b>. Theoretical models → functional 3D designs → physical prototypes.</p></div>'},
@@ -343,7 +307,6 @@ po.addEventListener('click',function(e){if(e.target===po)closeP()});
 addEventListener('keydown',function(e){if(e.key==='Escape')closeP()});
 document.querySelectorAll('.sm').forEach(function(b){b.addEventListener('click',function(){openP(+this.dataset.i)})});
 
-/* sound */
 var ac=null,son=false,mg=null;
 function iS(){if(ac)return;ac=new(AudioContext||webkitAudioContext)();
 mg=ac.createGain();mg.gain.value=0;mg.connect(ac.destination);
@@ -363,7 +326,6 @@ function tS(on){iS();son=on;if(ac.state==='suspended')ac.resume();
 mg.gain.linearRampToValueAtTime(on?1:0,ac.currentTime+.8);
 var b=document.getElementById('bsn');b.textContent=on?'Sound on':'Sound off';b.classList.toggle('on',on)}
 
-/* loader + intro */
 var ld=document.getElementById('ld'),lf=document.getElementById('lf'),lp=document.getElementById('lp');
 var it=document.getElementById('it'),lv=0;
 var li=setInterval(function(){lv+=Math.random()*10+4;if(lv>100)lv=100;
@@ -374,36 +336,32 @@ document.getElementById('bs').addEventListener('click',function(){tS(true);it.cl
 document.getElementById('bn').addEventListener('click',function(){it.classList.add('off')});
 document.getElementById('bsn').addEventListener('click',function(){tS(!son)});
 
-/* ══ THREE ══ */
 var cv=document.getElementById('cv'),tt=document.getElementById('tt'),
 cu=document.getElementById('cu'),fh=document.getElementById('fh');
 
-function hs(x,y){var n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n)}
-function sn(x,y){var ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy,
-sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);
-return hs(ix,iy)*(1-sx)*(1-sy)+hs(ix+1,iy)*sx*(1-sy)+hs(ix,iy+1)*(1-sx)*sy+hs(ix+1,iy+1)*sx*sy}
-function fb(x,y){var v=0,a=.5,f=1;for(var i=0;i<6;i++){v+=a*sn(x*f,y*f);a*=.48;f*=2.1}return v}
+/* ══ BUCKLED THIN-PLATE MODE SHAPE (not organic terrain) ══ */
 function tH(x,z){
-var b=fb(x*.006+50,z*.006+50)*35-12;
-var r=Math.abs(fb(x*.015+100,z*.015+100)-.5)*12;
-return b+r}
+  return 3.2*Math.sin(x*0.16)*Math.sin(z*0.14)
+       + 2.4*Math.sin(x*0.29+0.6)*Math.cos(z*0.24)
+       + 1.8*Math.cos(x*0.11 - z*0.19)
+       + 1.2*Math.sin((x+z)*0.37);
+}
 
 if(typeof THREE!=='undefined'){
 var W=innerWidth,H=innerHeight;
 var scene=new THREE.Scene();
 scene.fog=new THREE.FogExp2(0x000000,.0035);
 var camera=new THREE.PerspectiveCamera(48,W/H,.1,800);
-camera.position.set(0,40,100);camera.lookAt(0,0,0);
+camera.position.set(0,22,100);camera.lookAt(0,0,0);
 var renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
 renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.setClearColor(0x000000);
 
-var dl=new THREE.DirectionalLight(0xffffff,.4);dl.position.set(50,80,40);scene.add(dl);
-var dl2=new THREE.DirectionalLight(0xff4d00,.06);dl2.position.set(-40,30,-60);scene.add(dl2);
-scene.add(new THREE.AmbientLight(0x1a1a1a,.6));
+var dl=new THREE.DirectionalLight(0xffffff,.5);dl.position.set(50,80,40);scene.add(dl);
+var dl2=new THREE.DirectionalLight(0xff4d00,.10);dl2.position.set(-40,25,-60);scene.add(dl2);
+scene.add(new THREE.AmbientLight(0x222222,.5));
 
-/* terrain */
-var TS=500,TG=220;
+var TS=500,TG=240;
 var tG=new THREE.PlaneGeometry(TS,TS,TG,TG);
 tG.rotateX(-Math.PI/2);
 var tp=tG.attributes.position;
@@ -412,9 +370,8 @@ tG.computeVertexNormals();
 
 var tM=new THREE.ShaderMaterial({
 uniforms:{
-uL:{value:new THREE.Color(0x060606)},
-uM:{value:new THREE.Color(0x1a1a1a)},
-uH:{value:new THREE.Color(0x3a3a3a)},
+uL:{value:new THREE.Color(0x080808)},
+uH:{value:new THREE.Color(0x5a5a5a)},
 uA:{value:new THREE.Color(0xff4d00)},
 uFC:{value:new THREE.Color(0x000000)},
 uFD:{value:.0035}
@@ -425,48 +382,47 @@ vertexShader:[
 'vec4 mv=modelViewMatrix*vec4(position,1.);vD=-mv.z;',
 'gl_Position=projectionMatrix*mv;}'].join('\n'),
 fragmentShader:[
-'uniform vec3 uL,uM,uH,uA,uFC;uniform float uFD;',
+'uniform vec3 uL,uH,uA,uFC;uniform float uFD;',
 'varying float vE;varying vec3 vN;varying float vD;varying vec2 vU;',
 'void main(){',
-'float h=clamp((vE+12.)/35.,0.,1.);',
-'vec3 c=h<.5?mix(uL,uM,h*2.):mix(uM,uH,(h-.5)*2.);',
-/* contour */
-'float ct=abs(fract(vE*.4)-.5);',
-'ct=smoothstep(0.,.025,ct);',
-'c=mix(c,uA,(1.-ct)*.08);',
-/* grid */
-'vec2 g=abs(fract(vU*100.-.5)-.5)/fwidth(vU*100.);',
+'float h=clamp((vE+9.)/18.,0.,1.);',
+'vec3 c=mix(uL,uH,h);',
+/* iso-stress / iso-displacement contour lines (orange) */
+'float ct=abs(fract(vE*0.6)-0.5);',
+'ct=smoothstep(0.0,0.035,ct);',
+'c=mix(uA,c,ct*0.8+0.2);',
+/* finite-element mesh grid (faint) */
+'vec2 g=abs(fract(vU*90.-.5)-.5)/fwidth(vU*90.);',
 'float ln=min(g.x,g.y);float gm=1.-min(ln,1.);',
-'c=mix(c,uA,gm*.04);',
-/* slope */
-'float sl=1.-vN.y;c*=1.-sl*.25;',
+'c=mix(c,vec3(0.7),gm*0.05);',
+/* slope shading */
+'float sl=1.-vN.y;c*=1.-sl*0.2;',
 /* fog */
 'float ff=1.-exp(-uFD*uFD*vD*vD);',
 'c=mix(c,uFC,clamp(ff,0.,1.));',
 'gl_FragColor=vec4(c,1.);}'].join('\n'),
 side:THREE.DoubleSide,extensions:{derivatives:true}});
 scene.add(new THREE.Mesh(tG,tM));
-scene.add(new THREE.Mesh(tG,new THREE.MeshBasicMaterial({wireframe:true,color:0x333333,transparent:true,opacity:.03})));
+/* FE mesh wireframe — visible like the mockup grid */
+scene.add(new THREE.Mesh(tG,new THREE.MeshBasicMaterial({wireframe:true,color:0x999999,transparent:true,opacity:.10})));
 
-/* camera path */
 var cp=new THREE.CatmullRomCurve3([
-new THREE.Vector3(0,40,100),
-new THREE.Vector3(-35,28,40),
-new THREE.Vector3(30,22,-15),
-new THREE.Vector3(-20,35,-70),
-new THREE.Vector3(35,18,-125),
-new THREE.Vector3(-30,30,-180),
-new THREE.Vector3(20,24,-235),
-new THREE.Vector3(-15,28,-290),
-new THREE.Vector3(10,32,-345),
-new THREE.Vector3(-5,38,-400),
-new THREE.Vector3(0,50,-450)
+new THREE.Vector3(0,22,100),
+new THREE.Vector3(-35,18,40),
+new THREE.Vector3(30,16,-15),
+new THREE.Vector3(-20,24,-70),
+new THREE.Vector3(35,14,-125),
+new THREE.Vector3(-30,20,-180),
+new THREE.Vector3(20,16,-235),
+new THREE.Vector3(-15,18,-290),
+new THREE.Vector3(10,22,-345),
+new THREE.Vector3(-5,26,-400),
+new THREE.Vector3(0,32,-450)
 ]);
 
 var secs=[];for(var i=0;i<8;i++)secs.push(document.getElementById('s'+i));
 var SN=8,tl=['Hey','I\'m Furkan','This is my stress field'];
 
-/* freeflight */
 var ff=false,yaw=0,pitch=0,keys={};
 document.getElementById('bf').addEventListener('click',function(){
 ff=!ff;this.classList.toggle('on',ff);
@@ -497,8 +453,7 @@ addEventListener('scroll',function(){
 var ms=document.documentElement.scrollHeight-innerHeight;
 prog=ms>0?scrollY/ms:0},{passive:true});
 
-var cPos=new THREE.Vector3(0,40,100);
-var clock=new THREE.Clock();
+var cPos=new THREE.Vector3(0,22,100);
 (function anim(){
 requestAnimationFrame(anim);
 if(ff)uFF();
@@ -507,14 +462,12 @@ var p=cp.getPointAt(Math.min(prog,.999));
 var l=cp.getPointAt(Math.min(prog+.02,.999));
 cPos.lerp(p,.05);camera.position.copy(cPos);camera.lookAt(l)}
 
-/* typo */
 var tp2=prog*18/3;
 if(tp2<tl.length){var li2=Math.min(Math.floor(tp2),tl.length-1),lt=tp2-li2;
 var op=lt<.1?lt/.1:lt>.9?(1-lt)/.1:1;
 tt.textContent=tl[li2];tt.style.opacity=op}
 else tt.style.opacity=0;
 
-/* sections */
 var sp2=prog*SN,si=Math.min(Math.floor(sp2),SN-1),st=sp2-si;
 for(var i=0;i<SN;i++){
 if(i===si){var o=st<.07?st/.07:st>.93?(1-st)/.07:1;
