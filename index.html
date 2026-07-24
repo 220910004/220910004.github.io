@@ -6,7 +6,7 @@
 <title>Mustafa Furkan Özel — Computational Mechanics Engineer</title>
 <meta name="description" content="FEA, CFD, Python-based structural optimization. MSc Mechanical Engineering. CRC Press author.">
 <meta name="theme-color" content="#050507">
-<meta property="og:title" content="M. Furkan Özel — Stress Field">
+<meta property="og:title" content="M. Furkan Özel — Inside The Mesh">
 <meta property="og:description" content="FEA · CFD · Python · ANSYS · Structural Optimization">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://furkanis.me">
@@ -20,13 +20,9 @@
 {"@context":"https://schema.org","@type":"Person","name":"Mustafa Furkan Özel","jobTitle":"Computational Mechanics Engineer","url":"https://furkanis.me","email":"furkan.ozel@yahoo.com","address":{"@type":"PostalAddress","addressLocality":"Ankara","addressCountry":"TR"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"OSTİM Technical University"},{"@type":"CollegeOrUniversity","name":"Selçuk University"}],"knowsAbout":["Finite Element Analysis","Computational Fluid Dynamics","Python","ANSYS","Structural Optimization"]}
 </script>
 <style>
-:root{
-  --bg:#050507;--text:#e8e6e1;--dim:#55555a;--faint:#1a1a1e;
-  --accent:#ff4d00;--syne:'Syne',sans-serif;--grot:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;
-  --ease:cubic-bezier(.16,1,.3,1);
-}
+:root{--bg:#050507;--text:#e8e6e1;--dim:#6a6a72;--faint:#1a1a1f;--accent:#ff4d00;
+--syne:'Syne',sans-serif;--grot:'Space Grotesk',sans-serif;--mono:'JetBrains Mono',monospace;--ease:cubic-bezier(.16,1,.3,1)}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:auto}
 body{background:var(--bg);color:var(--text);font-family:var(--grot);overflow-x:hidden;cursor:none}
 ::selection{background:var(--accent);color:#fff}
 a{color:inherit;text-decoration:none}
@@ -34,323 +30,273 @@ a{color:inherit;text-decoration:none}
 .skip-link{position:fixed;top:-100%;left:16px;z-index:100000;background:var(--accent);color:#fff;font-family:var(--mono);font-size:.7rem;padding:8px 16px;transition:top .2s}
 .skip-link:focus{top:12px}
 
-/* Cursor */
 #cur-d,#cur-r{position:fixed;z-index:99999;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)}
 #cur-d{width:5px;height:5px;background:var(--accent)}
 #cur-r{width:32px;height:32px;border:1px solid rgba(255,77,0,.3);transition:width .3s var(--ease),height .3s var(--ease),background .3s}
 #cur-r.hov{width:52px;height:52px;background:rgba(255,77,0,.05);border-color:var(--accent)}
 @media(pointer:coarse){#cur-d,#cur-r{display:none}body{cursor:auto}}
 
-/* Grain */
-#grain{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.025;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px}
+#grain{position:fixed;inset:0;z-index:9998;pointer-events:none;opacity:.022;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px}
 
-/* Progress */
 #prog{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:9999;width:0}
 
 /* 3D Canvas */
 #field{position:fixed;top:0;left:0;width:100%;height:100vh;z-index:0}
 
+/* Spacer for scroll */
+#spacer{height:800vh;position:relative;z-index:-1}
+
 /* HUD */
-#hud-load{position:fixed;bottom:28px;right:28px;z-index:3;display:flex;align-items:center;gap:10px;
-  font-family:var(--mono);font-size:.55rem;color:var(--dim);letter-spacing:.08em;
-  background:rgba(5,5,7,.7);padding:10px 16px;border:1px solid var(--faint);backdrop-filter:blur(8px)}
-#hud-load input{-webkit-appearance:none;width:110px;height:2px;background:var(--faint);outline:none;cursor:none}
-#hud-load input::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--accent);cursor:none}
-#hud-load .val{color:var(--accent);min-width:48px}
-#hud-stress{position:fixed;top:28px;right:28px;z-index:3;font-family:var(--mono);font-size:.6rem;color:var(--dim);
-  letter-spacing:.06em;background:rgba(5,5,7,.7);padding:8px 14px;border:1px solid var(--faint);backdrop-filter:blur(8px)}
+#hud-stress{position:fixed;top:24px;right:24px;z-index:4;font-family:var(--mono);font-size:.58rem;color:var(--dim);
+letter-spacing:.06em;background:rgba(5,5,7,.65);padding:8px 14px;border:1px solid var(--faint);backdrop-filter:blur(8px)}
 #hud-stress strong{color:var(--accent)}
-#data-stream{position:fixed;top:0;left:12px;z-index:2;font-family:var(--mono);font-size:.5rem;color:rgba(255,77,0,.12);
-  line-height:1.8;pointer-events:none;overflow:hidden;height:100vh;width:80px;mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 85%,transparent)}
-@media(max-width:860px){#data-stream{display:none}#hud-stress{display:none}
-  #hud-load{bottom:14px;right:14px;left:14px;justify-content:center}}
+#hud-load{position:fixed;bottom:24px;right:24px;z-index:4;display:flex;align-items:center;gap:10px;
+font-family:var(--mono);font-size:.52rem;color:var(--dim);letter-spacing:.08em;
+background:rgba(5,5,7,.65);padding:10px 16px;border:1px solid var(--faint);backdrop-filter:blur(8px)}
+#hud-load input{-webkit-appearance:none;width:100px;height:2px;background:var(--faint);outline:none;cursor:none}
+#hud-load input::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:var(--accent);cursor:none}
+#hud-load .vl{color:var(--accent);min-width:46px}
+#hud-depth{position:fixed;bottom:24px;left:24px;z-index:4;font-family:var(--mono);font-size:.52rem;color:var(--dim);
+letter-spacing:.08em;background:rgba(5,5,7,.65);padding:8px 14px;border:1px solid var(--faint);backdrop-filter:blur(8px)}
+#hud-depth strong{color:var(--accent)}
+#data-stream{position:fixed;top:0;left:10px;z-index:3;font-family:var(--mono);font-size:.48rem;color:rgba(255,77,0,.1);
+line-height:1.9;pointer-events:none;overflow:hidden;height:100vh;width:72px;
+mask-image:linear-gradient(to bottom,transparent,#000 15%,#000 85%,transparent)}
+@media(max-width:860px){#data-stream,#hud-stress,#hud-depth{display:none}
+#hud-load{bottom:12px;right:12px;left:12px;justify-content:center}}
 
-/* Sections */
-.sec{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;padding:0 clamp(20px,6vw,80px)}
-.sec-inner{max-width:640px;background:rgba(5,5,7,.55);backdrop-filter:blur(12px);border:1px solid var(--faint);padding:clamp(28px,4vw,48px)}
-.sec-num{font-family:var(--mono);font-size:.55rem;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:1.2rem;display:flex;align-items:center;gap:12px}
-.sec-num::after{content:'';flex:1;height:1px;background:var(--faint)}
-.sec-title{font-family:var(--syne);font-size:clamp(1.6rem,4vw,2.8rem);font-weight:800;line-height:1.05;margin-bottom:1.2rem;letter-spacing:-.02em}
-.sec-body{font-size:clamp(.8rem,1.4vw,.95rem);font-weight:300;color:var(--dim);line-height:1.75}
-.sec-body strong{color:var(--text);font-weight:500}
+/* Zones */
+.zone{position:fixed;top:0;left:0;width:100%;height:100vh;display:flex;align-items:center;
+padding:0 clamp(24px,7vw,100px);opacity:0;pointer-events:none;z-index:2;
+transition:opacity .1s linear;will-change:opacity}
+.zone.active{pointer-events:auto}
+.zone-inner{max-width:580px;background:rgba(5,5,7,.5);backdrop-filter:blur(14px);
+border:1px solid var(--faint);padding:clamp(24px,3.5vw,44px)}
+.z-num{font-family:var(--mono);font-size:.52rem;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:12px}
+.z-num::after{content:'';flex:1;height:1px;background:var(--faint)}
+.z-title{font-family:var(--syne);font-size:clamp(1.5rem,3.5vw,2.6rem);font-weight:800;line-height:1.05;margin-bottom:1rem;letter-spacing:-.02em}
+.z-body{font-size:clamp(.78rem,1.3vw,.92rem);font-weight:300;color:var(--dim);line-height:1.75}
+.z-body strong{color:var(--text);font-weight:500}
 
-/* Hero */
-#hero{justify-content:flex-start}
-#hero .sec-inner{background:none;border:none;backdrop-filter:none;padding:0;max-width:700px}
-.hero-eyebrow{font-family:var(--mono);font-size:clamp(.55rem,1vw,.68rem);letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem}
-.hero-name{font-family:var(--syne);font-size:clamp(2.8rem,9vw,7rem);font-weight:800;line-height:.92;letter-spacing:-.03em;margin-bottom:1.2rem}
-.hero-name .ol{-webkit-text-stroke:1px var(--dim);color:transparent}
-.hero-sub{font-size:clamp(.82rem,1.5vw,1rem);font-weight:300;color:var(--dim);max-width:420px;line-height:1.7}
-.hero-sub strong{color:var(--text);font-weight:500}
-.hero-cue{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.5rem;letter-spacing:.25em;color:var(--dim);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:6px}
-.hero-cue .ln{width:1px;height:40px;background:linear-gradient(to bottom,var(--accent),transparent);animation:cue 2s ease-in-out infinite}
+/* Hero zone */
+#z0 .zone-inner{background:none;border:none;backdrop-filter:none;padding:0;max-width:680px}
+.h-eyebrow{font-family:var(--mono);font-size:clamp(.52rem,1vw,.65rem);letter-spacing:.35em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem}
+.h-name{font-family:var(--syne);font-size:clamp(2.6rem,8.5vw,6.5rem);font-weight:800;line-height:.92;letter-spacing:-.03em;margin-bottom:1.2rem}
+.h-name .ol{-webkit-text-stroke:1px var(--dim);color:transparent}
+.h-sub{font-size:clamp(.8rem,1.4vw,.98rem);font-weight:300;color:var(--dim);max-width:400px;line-height:1.7}
+.h-sub strong{color:var(--text);font-weight:500}
+.h-cue{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:3;font-family:var(--mono);font-size:.48rem;
+letter-spacing:.25em;color:var(--dim);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:5px}
+.h-cue .ln{width:1px;height:36px;background:linear-gradient(to bottom,var(--accent),transparent);animation:cue 2s ease-in-out infinite}
 @keyframes cue{0%,100%{opacity:.3;transform:scaleY(.6)}50%{opacity:1;transform:scaleY(1)}}
 
 /* Stats */
-.stats{display:flex;gap:clamp(24px,4vw,56px);margin-top:2rem;flex-wrap:wrap}
-.st-n{font-family:var(--syne);font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:800;line-height:1}
+.stats{display:flex;gap:clamp(20px,3.5vw,48px);margin-top:1.8rem;flex-wrap:wrap}
+.st-n{font-family:var(--syne);font-size:clamp(1.4rem,3vw,2.2rem);font-weight:800;line-height:1}
 .st-n .sx{color:var(--accent);font-size:.55em}
-.st-l{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+.st-l{font-family:var(--mono);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:3px}
 
-/* Experience cards */
-.exp-row{display:flex;flex-direction:column;gap:16px;margin-top:1.5rem}
-.exp-c{border:1px solid var(--faint);padding:clamp(16px,2.5vw,24px);transition:border-color .3s}
+/* Experience */
+.exp-c{border:1px solid var(--faint);padding:clamp(14px,2vw,20px);margin-bottom:10px;transition:border-color .3s}
 .exp-c:hover{border-color:var(--accent)}
-.exp-c .r{font-family:var(--syne);font-size:.9rem;font-weight:700}
-.exp-c .o{font-family:var(--mono);font-size:.58rem;color:var(--accent);margin-top:2px}
-.exp-c .d{font-family:var(--mono);font-size:.5rem;color:var(--dim);margin-top:1px}
-.exp-c .p{font-size:.72rem;font-weight:300;color:var(--dim);margin-top:8px;line-height:1.6}
+.exp-c .r{font-family:var(--syne);font-size:.85rem;font-weight:700}
+.exp-c .o{font-family:var(--mono);font-size:.55rem;color:var(--accent);margin-top:2px}
+.exp-c .d{font-family:var(--mono);font-size:.48rem;color:var(--dim);margin-top:1px}
+.exp-c .p{font-size:.7rem;font-weight:300;color:var(--dim);margin-top:7px;line-height:1.6}
 .exp-c .p strong{color:var(--text);font-weight:500}
 
 /* Publication */
-.pub-q{font-family:var(--syne);font-size:clamp(1rem,2vw,1.4rem);font-weight:600;line-height:1.4;border-left:3px solid var(--accent);padding-left:20px;margin-bottom:1.2rem}
-.pub-j{font-family:var(--mono);font-size:.55rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:10px}
-.pub-tag{display:inline-block;font-family:var(--mono);font-size:.5rem;padding:4px 12px;border:1px solid var(--accent);color:var(--accent);margin-top:14px;letter-spacing:.1em}
+.pub-q{font-family:var(--syne);font-size:clamp(.95rem,1.8vw,1.3rem);font-weight:600;line-height:1.4;
+border-left:3px solid var(--accent);padding-left:18px;margin-bottom:1rem}
+.pub-j{font-family:var(--mono);font-size:.52rem;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-top:8px}
+.pub-tag{display:inline-block;font-family:var(--mono);font-size:.48rem;padding:4px 12px;border:1px solid var(--accent);color:var(--accent);margin-top:12px;letter-spacing:.1em}
 
 /* Skills */
-.sk-g{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:1.5rem}
+.sk-g{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:1.2rem}
 @media(max-width:600px){.sk-g{grid-template-columns:1fr}}
-.sk-b{border:1px solid var(--faint);padding:16px;transition:border-color .3s}
+.sk-b{border:1px solid var(--faint);padding:14px;transition:border-color .3s}
 .sk-b:hover{border-color:var(--accent)}
-.sk-b h4{font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px}
+.sk-b h4{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
 .sk-b:nth-child(1) h4{color:var(--accent)}.sk-b:nth-child(2) h4{color:#3b5bff}
 .sk-b:nth-child(3) h4{color:#4ecb8d}.sk-b:nth-child(4) h4{color:#f0a03c}
 .sk-b ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px}
-.sk-b li{font-size:.6rem;font-weight:300;padding:3px 9px;border:1px solid var(--faint);color:var(--dim);transition:all .2s}
+.sk-b li{font-size:.58rem;font-weight:300;padding:3px 8px;border:1px solid var(--faint);color:var(--dim);transition:all .2s}
 .sk-b li:hover{border-color:var(--text);color:var(--text)}
 
 /* Education */
-.edu-i{padding:14px 0;border-bottom:1px solid var(--faint)}
+.edu-i{padding:12px 0;border-bottom:1px solid var(--faint)}
 .edu-i:last-child{border-bottom:none}
-.edu-d{font-family:var(--syne);font-size:.88rem;font-weight:700}
-.edu-s{font-family:var(--mono);font-size:.58rem;color:var(--accent);margin-top:2px}
-.edu-m{font-family:var(--mono);font-size:.5rem;color:var(--dim);margin-top:1px}
-.edu-n{font-size:.68rem;font-weight:300;color:var(--dim);margin-top:6px;line-height:1.6}
+.edu-d{font-family:var(--syne);font-size:.85rem;font-weight:700}
+.edu-s{font-family:var(--mono);font-size:.55rem;color:var(--accent);margin-top:2px}
+.edu-m{font-family:var(--mono);font-size:.48rem;color:var(--dim);margin-top:1px}
+.edu-n{font-size:.66rem;font-weight:300;color:var(--dim);margin-top:5px;line-height:1.55}
 .edu-n strong{color:var(--text);font-weight:500}
-.cert-i{font-size:.65rem;font-weight:300;color:var(--dim);padding:6px 0;border-bottom:1px solid var(--faint);display:flex;gap:8px;align-items:baseline}
+.cert-i{font-size:.62rem;font-weight:300;color:var(--dim);padding:5px 0;border-bottom:1px solid var(--faint);display:flex;gap:7px;align-items:baseline}
 .cert-i:last-child{border-bottom:none}
-.cert-i::before{content:'▸';color:var(--accent);font-size:.5rem}
-.lang-r{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
-.lang-i{font-family:var(--mono);font-size:.58rem;color:var(--dim)}
+.cert-i::before{content:'▸';color:var(--accent);font-size:.48rem}
+.lang-r{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.lang-i{font-family:var(--mono);font-size:.55rem;color:var(--dim)}
 .lang-i strong{color:var(--text);font-weight:500}
 
 /* References */
-.ref-g{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:1.5rem}
+.ref-g{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:1.2rem}
 @media(max-width:600px){.ref-g{grid-template-columns:1fr}}
-.ref-c{border:1px solid var(--faint);padding:20px;transition:border-color .3s}
+.ref-c{border:1px solid var(--faint);padding:18px;transition:border-color .3s}
 .ref-c:hover{border-color:var(--accent)}
-.ref-n{font-family:var(--syne);font-size:.9rem;font-weight:700}
-.ref-t{font-size:.68rem;font-weight:300;color:var(--dim);margin-top:3px;line-height:1.5}
-.ref-r{font-family:var(--mono);font-size:.52rem;color:var(--accent);margin-top:8px}
-.ref-ct{font-family:var(--mono);font-size:.55rem;color:var(--dim);margin-top:6px;line-height:1.7}
+.ref-n{font-family:var(--syne);font-size:.85rem;font-weight:700}
+.ref-t{font-size:.66rem;font-weight:300;color:var(--dim);margin-top:3px;line-height:1.5}
+.ref-r{font-family:var(--mono);font-size:.5rem;color:var(--accent);margin-top:7px}
+.ref-ct{font-family:var(--mono);font-size:.52rem;color:var(--dim);margin-top:5px;line-height:1.7}
 .ref-ct a{border-bottom:1px solid var(--faint);transition:all .2s}
 .ref-ct a:hover{color:var(--accent);border-color:var(--accent)}
 
 /* Contact */
-#contact .sec-inner{text-align:center;max-width:560px;margin:0 auto}
-.cta{font-family:var(--syne);font-size:clamp(1.8rem,5vw,3.5rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem}
+#z7 .zone-inner{text-align:center;max-width:520px;margin:0 auto}
+.cta{font-family:var(--syne);font-size:clamp(1.6rem,4.5vw,3.2rem);font-weight:800;line-height:1.1;margin-bottom:1.2rem}
 .cta .hl{color:var(--accent)}
-.cta-e{display:inline-block;font-family:var(--mono);font-size:clamp(.75rem,1.6vw,1rem);border-bottom:1px solid var(--accent);padding-bottom:4px;transition:color .3s;cursor:none}
+.cta-e{display:inline-block;font-family:var(--mono);font-size:clamp(.72rem,1.5vw,.95rem);border-bottom:1px solid var(--accent);padding-bottom:4px;transition:color .3s;cursor:none}
 .cta-e:hover{color:var(--accent)}
-.cta-l{display:flex;justify-content:center;gap:14px;margin-top:2rem;flex-wrap:wrap}
-.cta-l a{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:9px 18px;border:1px solid var(--faint);transition:all .3s;cursor:none}
+.cta-l{display:flex;justify-content:center;gap:12px;margin-top:1.8rem;flex-wrap:wrap}
+.cta-l a{font-family:var(--mono);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:9px 16px;border:1px solid var(--faint);transition:all .3s;cursor:none}
 .cta-l a:hover{color:var(--text);border-color:var(--accent);background:rgba(255,77,0,.04)}
 .cta-l a.pri{color:var(--accent);border-color:var(--accent)}
 
 /* Footer */
-footer{position:relative;z-index:1;border-top:1px solid var(--faint);padding:28px clamp(20px,6vw,80px);display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
-footer p{font-family:var(--mono);font-size:.48rem;color:var(--dim);letter-spacing:.08em;line-height:2}
-footer em{font-style:normal;color:var(--accent)}
-
-/* Reveal */
-.rv{opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
-.rv.vis{opacity:1;transform:translateY(0)}
+footer{position:fixed;bottom:0;left:0;width:100%;z-index:3;padding:10px clamp(24px,7vw,100px);
+display:flex;justify-content:space-between;font-family:var(--mono);font-size:.42rem;color:rgba(85,85,90,.4);
+letter-spacing:.06em;pointer-events:none}
+footer em{font-style:normal;color:rgba(255,77,0,.3)}
 
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  .rv{opacity:1!important;transform:none!important}
+*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
 <body>
 
-<a href="#main" class="skip-link">Skip to content</a>
+<a href="#z0" class="skip-link">Skip to content</a>
 <div id="cur-d" aria-hidden="true"></div>
 <div id="cur-r" aria-hidden="true"></div>
 <div id="grain" aria-hidden="true"></div>
 <div id="prog" aria-hidden="true"></div>
-<canvas id="field" aria-label="Interactive 3D FEA stress field — move mouse to apply load"></canvas>
-
+<canvas id="field" aria-label="3D FEA mesh tunnel — scroll to travel, move mouse to apply load"></canvas>
 <div id="data-stream" aria-hidden="true"></div>
 
-<div id="hud-stress">σ_vm = <strong id="stress-val">0.0</strong> MPa</div>
+<div id="hud-stress">σ_vm = <strong id="sv">0.0</strong> MPa</div>
+<div id="hud-depth">DEPTH <strong id="dv">0.0</strong> m</div>
 <div id="hud-load">
-  <label for="load-sl">LOAD</label>
-  <input type="range" id="load-sl" min="0" max="100" value="40" aria-label="Applied load kN">
-  <span class="val" id="load-vl">40 kN</span>
+  <label for="ls">LOAD</label>
+  <input type="range" id="ls" min="0" max="100" value="40" aria-label="Applied load kN">
+  <span class="vl" id="lv">40 kN</span>
 </div>
 
-<main id="main">
-
-<!-- HERO -->
-<section class="sec" id="hero">
-  <div class="sec-inner">
-    <p class="hero-eyebrow rv">Computational Mechanics Engineer</p>
-    <h1 class="hero-name rv">MUSTAFA<br>FURKAN<br><span class="ol">ÖZEL</span></h1>
-    <p class="hero-sub rv">Bridging <strong>theoretical structural modeling</strong> with practical <strong>R&D solutions</strong>. FEA, CFD & Python-based optimization for aerospace & advanced manufacturing.</p>
+<!-- ═══ ZONES ═══ -->
+<div class="zone active" id="z0">
+  <div class="zone-inner">
+    <p class="h-eyebrow">Computational Mechanics Engineer</p>
+    <h1 class="h-name">MUSTAFA<br>FURKAN<br><span class="ol">ÖZEL</span></h1>
+    <p class="h-sub">Bridging <strong>theoretical structural modeling</strong> with practical <strong>R&D solutions</strong>. FEA, CFD & Python-based optimization for aerospace & advanced manufacturing.</p>
   </div>
-  <div class="hero-cue" aria-hidden="true"><span>Analyze</span><div class="ln"></div></div>
-</section>
+</div>
 
-<!-- 01 MANIFESTO -->
-<section class="sec" id="s1">
-  <div class="sec-inner rv">
-    <div class="sec-num">01 / Manifesto</div>
-    <h2 class="sec-title">LOAD →<br>DEFORM →<br>OPTIMIZE</h2>
-    <p class="sec-body">I develop <strong>Python-based algorithms</strong> integrated with finite element frameworks to evaluate and optimize complex <strong>shear buckling phenomena</strong> in thin-walled structures — bridging theoretical modeling with practical R&D solutions applicable to <strong>aerospace</strong> and <strong>advanced manufacturing</strong>.</p>
+<div class="zone" id="z1">
+  <div class="zone-inner">
+    <div class="z-num">01 / Manifesto</div>
+    <h2 class="z-title">LOAD →<br>DEFORM →<br>OPTIMIZE</h2>
+    <p class="z-body">I develop <strong>Python-based algorithms</strong> integrated with finite element frameworks to evaluate and optimize complex <strong>shear buckling phenomena</strong> in thin-walled structures — bridging theoretical modeling with practical R&D for <strong>aerospace</strong> and <strong>advanced manufacturing</strong>.</p>
     <div class="stats">
       <div><div class="st-n">3<span class="sx">+</span></div><div class="st-l">Years R&D</div></div>
-      <div><div class="st-n">1</div><div class="st-l">CRC Press Pub.</div></div>
+      <div><div class="st-n">1</div><div class="st-l">CRC Press</div></div>
       <div><div class="st-n">2</div><div class="st-l">BSc Degrees</div></div>
-      <div><div class="st-n">6</div><div class="st-l">Certifications</div></div>
+      <div><div class="st-n">6</div><div class="st-l">Certs</div></div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- 02 EXPERIENCE -->
-<section class="sec" id="s2">
-  <div class="sec-inner rv">
-    <div class="sec-num">02 / Experience</div>
-    <h2 class="sec-title">Field<br>History</h2>
-    <div class="exp-row">
-      <div class="exp-c">
-        <p class="r">Sales Engineer — Technical Consultant</p>
-        <p class="o">Akifsan Makina · Ankara</p>
-        <p class="d">FEB 2024 — SEP 2025</p>
-        <p class="p">Expert consultation on <strong>advanced machining & cutting tools</strong>. Analyzed manufacturing constraints to recommend optimal specifications.</p>
-      </div>
-      <div class="exp-c">
-        <p class="r">R&D and Project Coordinator</p>
-        <p class="o">Fixus Solar Mounting Systems · Ankara</p>
-        <p class="d">MAY 2023 — FEB 2024</p>
-        <p class="p">Structural optimization against <strong>dynamic wind/snow loads</strong>. International standards compliance. <strong>Substantial cost reductions</strong>.</p>
-      </div>
-      <div class="exp-c">
-        <p class="r">Design & Analysis Engineer</p>
-        <p class="o">Theta Clean Energy Technologies · Ankara</p>
-        <p class="d">JAN 2022 — NOV 2022</p>
-        <p class="p"><strong>TÜBİTAK-supported</strong> projects. CFD & structural analysis with <strong>ANSYS Fluent & Mechanical</strong>. Theoretical models → physical prototypes.</p>
-      </div>
-    </div>
+<div class="zone" id="z2">
+  <div class="zone-inner">
+    <div class="z-num">02 / Experience</div>
+    <h2 class="z-title">Field<br>History</h2>
+    <div class="exp-c"><p class="r">Sales Engineer — Technical Consultant</p><p class="o">Akifsan Makina · Ankara</p><p class="d">FEB 2024 — SEP 2025</p><p class="p">Expert consultation on <strong>advanced machining & cutting tools</strong>. Manufacturing constraints analysis.</p></div>
+    <div class="exp-c"><p class="r">R&D and Project Coordinator</p><p class="o">Fixus Solar Mounting Systems · Ankara</p><p class="d">MAY 2023 — FEB 2024</p><p class="p">Structural optimization against <strong>dynamic wind/snow loads</strong>. International standards. <strong>Cost reductions</strong>.</p></div>
+    <div class="exp-c"><p class="r">Design & Analysis Engineer</p><p class="o">Theta Clean Energy · Ankara</p><p class="d">JAN 2022 — NOV 2022</p><p class="p"><strong>TÜBİTAK</strong> projects. CFD & structural with <strong>ANSYS Fluent & Mechanical</strong>. Models → prototypes.</p></div>
   </div>
-</section>
+</div>
 
-<!-- 03 PUBLICATION -->
-<section class="sec" id="s3">
-  <div class="sec-inner rv">
-    <div class="sec-num">03 / Publication</div>
-    <h2 class="sec-title">Peak<br>Stress</h2>
-    <blockquote class="pub-q">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"<span class="pub-j">Advances in Aerospace Engineering — CRC Press / Taylor & Francis, 2025 · pp. 35–46</span></blockquote>
-    <p class="sec-body">Co-authored with <strong>Assoc. Prof. Dr. Hande Girard</strong>. Python-based algorithms + FEA frameworks for <strong>shear buckling optimization</strong> in thin-walled structures. Extended in MSc thesis at OSTİM Technical University.</p>
+<div class="zone" id="z3">
+  <div class="zone-inner">
+    <div class="z-num">03 / Publication</div>
+    <h2 class="z-title">Peak<br>Stress</h2>
+    <blockquote class="pub-q">"Shear Buckling in Thin-Walled Structures: Insights from Python for Structural Analysis"<span class="pub-j">CRC Press / Taylor & Francis, 2025 · pp. 35–46</span></blockquote>
+    <p class="z-body">Co-authored with <strong>Assoc. Prof. Dr. Hande Girard</strong>. Python + FEA for <strong>shear buckling optimization</strong>. Extended in MSc thesis at OSTİM Technical University.</p>
     <span class="pub-tag">Peer-Reviewed Book Chapter</span>
   </div>
-</section>
+</div>
 
-<!-- 04 SKILLS -->
-<section class="sec" id="s4">
-  <div class="sec-inner rv">
-    <div class="sec-num">04 / Competencies</div>
-    <h2 class="sec-title">Material<br>Properties</h2>
+<div class="zone" id="z4">
+  <div class="zone-inner">
+    <div class="z-num">04 / Competencies</div>
+    <h2 class="z-title">Material<br>Properties</h2>
     <div class="sk-g">
-      <div class="sk-b"><h4>Computational Mechanics</h4><ul><li>FEA</li><li>CFD</li><li>Structural Dynamics</li><li>Multiscale Modeling</li><li>Fracture Mechanics</li></ul></div>
-      <div class="sk-b"><h4>Engineering Software</h4><ul><li>ANSYS Mechanical</li><li>ANSYS Fluent</li><li>Fusion 360</li><li>SolidWorks</li><li>MATLAB</li><li>AutoCAD</li></ul></div>
-      <div class="sk-b"><h4>Programming</h4><ul><li>Python — FEA Scripting</li><li>Structural Optimization</li><li>Automation</li></ul></div>
-      <div class="sk-b"><h4>R&D</h4><ul><li>Prototyping</li><li>Thermo-fluid Dynamics</li><li>TÜBİTAK Coordination</li><li>Technical Documentation</li></ul></div>
+      <div class="sk-b"><h4>Comp. Mechanics</h4><ul><li>FEA</li><li>CFD</li><li>Structural Dynamics</li><li>Multiscale</li><li>Fracture</li></ul></div>
+      <div class="sk-b"><h4>Software</h4><ul><li>ANSYS Mech.</li><li>ANSYS Fluent</li><li>Fusion 360</li><li>SolidWorks</li><li>MATLAB</li></ul></div>
+      <div class="sk-b"><h4>Programming</h4><ul><li>Python FEA</li><li>Optimization</li><li>Automation</li></ul></div>
+      <div class="sk-b"><h4>R&D</h4><ul><li>Prototyping</li><li>Thermo-fluid</li><li>TÜBİTAK</li><li>Documentation</li></ul></div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- 05 EDUCATION -->
-<section class="sec" id="s5">
-  <div class="sec-inner rv">
-    <div class="sec-num">05 / Education</div>
-    <h2 class="sec-title">Boundary<br>Conditions</h2>
-    <div class="edu-i">
-      <p class="edu-d">MSc — Mechanical Engineering</p>
-      <p class="edu-s">OSTİM Technical University, Ankara</p>
-      <p class="edu-m">2022–2025 · GPA 3.07/4.00</p>
-      <p class="edu-n"><strong>Thesis:</strong> Shear Buckling in Thin-Walled Closed-Section Beams — Python-Based FEA. Advisor: Assoc. Prof. Dr. Hande Girard</p>
-      <p class="edu-n"><strong>Focus:</strong> Computational Solid Mechanics · FEA · Machine Vibrations · Fracture Mechanics</p>
-    </div>
-    <div class="edu-i">
-      <p class="edu-d">BSc — Mechanical Engineering</p>
-      <p class="edu-s">Selçuk University, Konya</p>
-      <p class="edu-m">2016–2021 · GPA 3.11/4.00 · Honors</p>
-    </div>
-    <div class="edu-i">
-      <p class="edu-d">BSc — Business Administration</p>
-      <p class="edu-s">Anadolu University, Eskişehir</p>
-      <p class="edu-m">2017–2021 · GPA 2.89/4.00 · High Honor</p>
-      <p class="edu-n"><strong>Relevance:</strong> Project management, systemic efficiency, R&D coordination.</p>
-    </div>
-    <div class="lang-r">
-      <span class="lang-i"><strong>Turkish</strong> — Native</span>
-      <span class="lang-i"><strong>English</strong> — B1 Professional</span>
-    </div>
-    <div style="margin-top:20px">
-      <div class="cert-i">ANSYS Fluent — CFD Analysis Engineer (2022)</div>
-      <div class="cert-i">Fusion 360 — Design & Generative Design (2022)</div>
-      <div class="cert-i">Multi-Body Dynamics: Theory & Application (2021)</div>
-      <div class="cert-i">TEI Aviation Engines School (2021)</div>
-      <div class="cert-i">Parametric Design — SolidWorks & ANSYS (2020)</div>
-      <div class="cert-i">ANSYS Mechanical Introduction (2020)</div>
+<div class="zone" id="z5">
+  <div class="zone-inner">
+    <div class="z-num">05 / Education</div>
+    <h2 class="z-title">Boundary<br>Conditions</h2>
+    <div class="edu-i"><p class="edu-d">MSc — Mechanical Engineering</p><p class="edu-s">OSTİM Technical University</p><p class="edu-m">2022–2025 · GPA 3.07</p><p class="edu-n"><strong>Thesis:</strong> Shear Buckling — Python-Based FEA. <strong>Focus:</strong> Comp. Solid Mechanics · FEA · Vibrations · Fracture</p></div>
+    <div class="edu-i"><p class="edu-d">BSc — Mechanical Engineering</p><p class="edu-s">Selçuk University</p><p class="edu-m">2016–2021 · GPA 3.11 · Honors</p></div>
+    <div class="edu-i"><p class="edu-d">BSc — Business Administration</p><p class="edu-s">Anadolu University</p><p class="edu-m">2017–2021 · GPA 2.89 · High Honor</p><p class="edu-n"><strong>Relevance:</strong> Project management, R&D coordination.</p></div>
+    <div class="lang-r"><span class="lang-i"><strong>Turkish</strong> Native</span><span class="lang-i"><strong>English</strong> B1</span></div>
+    <div style="margin-top:14px">
+      <div class="cert-i">ANSYS Fluent — CFD Engineer (2022)</div>
+      <div class="cert-i">Fusion 360 — Generative Design (2022)</div>
+      <div class="cert-i">Multi-Body Dynamics (2021)</div>
+      <div class="cert-i">TEI Aviation Engines (2021)</div>
+      <div class="cert-i">SolidWorks & ANSYS (2020)</div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- 06 REFERENCES -->
-<section class="sec" id="s6">
-  <div class="sec-inner rv">
-    <div class="sec-num">06 / References</div>
-    <h2 class="sec-title">Support<br>Reactions</h2>
+<div class="zone" id="z6">
+  <div class="zone-inner">
+    <div class="z-num">06 / References</div>
+    <h2 class="z-title">Support<br>Reactions</h2>
     <div class="ref-g">
-      <div class="ref-c">
-        <p class="ref-n">Assoc. Prof. Dr. Hande Girard</p>
-        <p class="ref-t">Associate Professor of Aerospace Engineering, Atılım University</p>
-        <p class="ref-r">Thesis Advisor & Co-author</p>
-        <p class="ref-ct"><a href="mailto:hande.girard@atilim.edu.tr">hande.girard@atilim.edu.tr</a><br>+90 312 586 88 84</p>
-      </div>
-      <div class="ref-c">
-        <p class="ref-n">Assist. Prof. Dr. Hikmet Bal</p>
-        <p class="ref-t">Assistant Professor of Aerospace Engineering, OSTİM Technical University</p>
-        <p class="ref-r">Academic Faculty Member</p>
-        <p class="ref-ct"><a href="mailto:hikmet.bal@ostimteknik.edu.tr">hikmet.bal@ostimteknik.edu.tr</a><br>+90 312 386 10 92 / Ext: 1911</p>
-      </div>
+      <div class="ref-c"><p class="ref-n">Assoc. Prof. Dr. Hande Girard</p><p class="ref-t">Aerospace Eng., Atılım University</p><p class="ref-r">Thesis Advisor & Co-author</p><p class="ref-ct"><a href="mailto:hande.girard@atilim.edu.tr">hande.girard@atilim.edu.tr</a><br>+90 312 586 88 84</p></div>
+      <div class="ref-c"><p class="ref-n">Assist. Prof. Dr. Hikmet Bal</p><p class="ref-t">Aerospace Eng., OSTİM Technical</p><p class="ref-r">Faculty Member</p><p class="ref-ct"><a href="mailto:hikmet.bal@ostimteknik.edu.tr">hikmet.bal@ostimteknik.edu.tr</a><br>+90 312 386 10 92</p></div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- 07 CONTACT -->
-<section class="sec" id="contact">
-  <div class="sec-inner rv">
-    <div class="sec-num" style="justify-content:center">07 / Contact</div>
+<div class="zone" id="z7">
+  <div class="zone-inner">
+    <div class="z-num" style="justify-content:center">07 / Contact</div>
     <h2 class="cta">Let's build something<br><span class="hl">extraordinary.</span></h2>
     <a href="mailto:furkan.ozel@yahoo.com" class="cta-e">furkan.ozel@yahoo.com</a>
     <div class="cta-l">
-      <a href="Academic CV.pdf" download class="pri">⬇ Download CV</a>
+      <a href="Academic CV.pdf" download class="pri">⬇ CV</a>
       <a href="tel:+905432209980">+90 543 220 9980</a>
-      <a href="#">Ankara, Türkiye</a>
+      <a href="#">Ankara, TR</a>
     </div>
   </div>
-</section>
+</div>
 
-</main>
+<div class="h-cue" id="cue" aria-hidden="true"><span>Scroll to analyze</span><div class="ln"></div></div>
 
-<footer>
-  <p>© 2026 MUSTAFA FURKAN ÖZEL<br><em>STRESS FIELD</em> — COMPUTATIONAL MECHANICS PORTFOLIO</p>
-  <p>REFERENCES: GIRARD (ATILIM) · BAL (OSTİM)<br>LAST UPDATED: JULY 2026 · ANKARA, TÜRKİYE</p>
+<footer aria-hidden="true">
+  <span>© 2026 M.F.Ö — <em>INSIDE THE MESH</em></span>
+  <span>GIRARD · BAL — ANKARA 2026</span>
 </footer>
+
+<div id="spacer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script>
@@ -358,194 +304,195 @@ footer em{font-style:normal;color:var(--accent)}
 'use strict';
 var RM=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ── Cursor ── */
+/* Cursor */
 var cd=document.getElementById('cur-d'),cr=document.getElementById('cur-r'),mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cd.style.left=mx+'px';cd.style.top=my+'px'});
 (function a(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(a)})();
 document.querySelectorAll('a,button,.exp-c,.sk-b,.ref-c').forEach(function(el){
-  el.addEventListener('mouseenter',function(){cr.classList.add('hov')});
-  el.addEventListener('mouseleave',function(){cr.classList.remove('hov')});
-});
+el.addEventListener('mouseenter',function(){cr.classList.add('hov')});
+el.addEventListener('mouseleave',function(){cr.classList.remove('hov')})});
 
-/* ── Progress ── */
-var prog=document.getElementById('prog');
-window.addEventListener('scroll',function(){
-  var h=document.documentElement.scrollHeight-window.innerHeight;
-  prog.style.width=(h>0?window.scrollY/h*100:0)+'%';
-},{passive:true});
-
-/* ── Reveal ── */
-var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv').forEach(function(el){ro.observe(el)});
-
-/* ── FEA Data Stream ── */
+/* Data stream */
 var ds=document.getElementById('data-stream');
-if(!RM){setInterval(function(){
-  var v=(Math.random()*2-1).toFixed(4);
-  var d=document.createElement('div');
-  d.textContent='['+v+']';
-  ds.appendChild(d);
-  if(ds.children.length>40)ds.removeChild(ds.firstChild);
-},180)}
+if(!RM)setInterval(function(){var d=document.createElement('div');d.textContent='['+(Math.random()*2-1).toFixed(4)+']';ds.appendChild(d);if(ds.children.length>45)ds.removeChild(ds.firstChild)},160);
 
 /* ══════════════════════════════════════
-   3D STRESS FIELD
+   3D MESH TUNNEL
    ══════════════════════════════════════ */
 var canvas=document.getElementById('field');
-var stressVal=document.getElementById('stress-val');
-var slider=document.getElementById('load-sl');
-var loadVl=document.getElementById('load-vl');
-var loadFactor=.4;
+var sv=document.getElementById('sv'),dv=document.getElementById('dv');
+var slider=document.getElementById('ls'),lv=document.getElementById('lv');
+var cue=document.getElementById('cue');
+var loadF=.4;
 
-/* Noise */
 function hash(x,y){var n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n)}
-function snoise(x,y){
-  var ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy;
-  var sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);
-  return hash(ix,iy)*(1-sx)*(1-sy)+hash(ix+1,iy)*sx*(1-sy)+hash(ix,iy+1)*(1-sx)*sy+hash(ix+1,iy+1)*sx*sy;
-}
-function fbm(x,y){var v=0,a=.5,f=1;for(var i=0;i<5;i++){v+=a*snoise(x*f,y*f);a*=.5;f*=2}return v}
-
-function vmC(s){
-  s=Math.max(0,Math.min(1,s));var r,g,b;
-  if(s<.25){r=0;g=s*4;b=1}else if(s<.5){r=0;g=1;b=1-(s-.25)*4}
-  else if(s<.75){r=(s-.5)*4;g=1;b=0}else{r=1;g=1-(s-.75)*4;b=0}
-  return[r,g,b];
-}
+function sn(x,y){var ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);
+return hash(ix,iy)*(1-sx)*(1-sy)+hash(ix+1,iy)*sx*(1-sy)+hash(ix,iy+1)*(1-sx)*sy+hash(ix+1,iy+1)*sx*sy}
+function fbm(x,y){var v=0,a=.5,f=1;for(var i=0;i<4;i++){v+=a*sn(x*f,y*f);a*=.5;f*=2}return v}
+function vmC(s){s=Math.max(0,Math.min(1,s));var r,g,b;
+if(s<.25){r=0;g=s*4;b=1}else if(s<.5){r=0;g=1;b=1-(s-.25)*4}
+else if(s<.75){r=(s-.5)*4;g=1;b=0}else{r=1;g=1-(s-.75)*4;b=0}return[r,g,b]}
 
 if(typeof THREE!=='undefined'){
-  var W=window.innerWidth,H=window.innerHeight;
-  var scene=new THREE.Scene();
-  scene.fog=new THREE.FogExp2(0x050507,.018);
-  var camera=new THREE.PerspectiveCamera(55,W/H,.1,200);
-  camera.position.set(0,18,30);camera.lookAt(0,0,0);
+var W=window.innerWidth,H=window.innerHeight;
+var scene=new THREE.Scene();
+scene.fog=new THREE.FogExp2(0x050507,.022);
+var camera=new THREE.PerspectiveCamera(60,W/H,.1,250);
+camera.position.set(0,0,5);
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
+renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setClearColor(0x050507);
 
-  var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:false});
-  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setClearColor(0x050507);
+/* Camera light */
+var camLight=new THREE.PointLight(0xffffff,.5,35);
+camera.add(camLight);scene.add(camera);
+scene.add(new THREE.AmbientLight(0x252530,.4));
 
-  /* Terrain mesh */
-  var SIZE=60,SEG=90;
-  var geo=new THREE.PlaneGeometry(SIZE,SIZE,SEG,SEG);
-  geo.rotateX(-Math.PI/2);
-  var pos=geo.attributes.position;
-  var baseY=new Float32Array(pos.count);
-  for(var i=0;i<pos.count;i++){
-    var x=pos.getX(i),z=pos.getZ(i);
-    var y=fbm(x*.06+50,z*.06+50)*8-4;
-    pos.setY(i,y);baseY[i]=y;
+/* Tunnel geometry */
+var TL=220,TR=9,SEG=140,RAD=22;
+var vCount=(SEG+1)*RAD;
+var posArr=new Float32Array(vCount*3);
+var colArr=new Float32Array(vCount*3);
+var baseR=new Float32Array(vCount);
+
+for(var i=0;i<=SEG;i++){
+  var z=-i*(TL/SEG);
+  for(var j=0;j<RAD;j++){
+    var idx=i*RAD+j;
+    var ang=(j/RAD)*Math.PI*2;
+    var nr=fbm(i*.06+50,j*.25+50)*3;
+    var r=TR+nr;
+    baseR[idx]=r;
+    posArr[idx*3]=Math.cos(ang)*r;
+    posArr[idx*3+1]=Math.sin(ang)*r;
+    posArr[idx*3+2]=z;
+    colArr[idx*3]=.12;colArr[idx*3+1]=.12;colArr[idx*3+2]=.16;
   }
-  geo.computeVertexNormals();
+}
 
-  var colArr=new Float32Array(pos.count*3);
-  geo.setAttribute('color',new THREE.Float32BufferAttribute(colArr,3));
+/* Line indices */
+var lineIdx=[];
+for(var i=0;i<=SEG;i++){for(var j=0;j<RAD;j++){
+  var c=i*RAD+j,nj=i*RAD+((j+1)%RAD);
+  lineIdx.push(c,nj);
+  if(i<SEG)lineIdx.push(c,(i+1)*RAD+j);
+}}
 
-  /* Solid mesh */
-  var mat=new THREE.MeshPhongMaterial({vertexColors:true,flatShading:true,shininess:10,specular:0x111111,transparent:true,opacity:.85});
-  var terrain=new THREE.Mesh(geo,mat);
-  scene.add(terrain);
+/* Points */
+var pGeo=new THREE.BufferGeometry();
+pGeo.setAttribute('position',new THREE.BufferAttribute(posArr,3));
+pGeo.setAttribute('color',new THREE.BufferAttribute(colArr,3));
+var pts=new THREE.Points(pGeo,new THREE.PointsMaterial({size:.12,vertexColors:true,transparent:true,opacity:.9,sizeAttenuation:true}));
+scene.add(pts);
 
-  /* Wireframe */
-  var wire=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({wireframe:true,color:0xffffff,transparent:true,opacity:.07}));
-  scene.add(wire);
+/* Lines */
+var lGeo=new THREE.BufferGeometry();
+lGeo.setAttribute('position',new THREE.BufferAttribute(posArr,3));
+lGeo.setAttribute('color',new THREE.BufferAttribute(colArr,3));
+lGeo.setIndex(lineIdx);
+var lns=new THREE.LineSegments(lGeo,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.12}));
+scene.add(lns);
 
-  /* Lights */
-  var dl=new THREE.DirectionalLight(0xffffff,.6);dl.position.set(10,20,10);scene.add(dl);
-  scene.add(new THREE.AmbientLight(0x303040,.5));
-  var pl=new THREE.PointLight(0xff4d00,.4,60);pl.position.set(0,10,0);scene.add(pl);
+/* Ring gates at zone boundaries */
+var ZN=8;
+for(var zi=0;zi<ZN;zi++){
+  var gz=-zi*(TL*.88/ZN);
+  var rGeo=new THREE.RingGeometry(TR+2.5,TR+3,32);
+  var rMat=new THREE.MeshBasicMaterial({color:0xff4d00,transparent:true,opacity:.06,side:THREE.DoubleSide});
+  var ring=new THREE.Mesh(rGeo,rMat);
+  ring.position.z=gz;
+  scene.add(ring);
+}
 
-  /* Load point */
-  var loadPt=new THREE.Vector3(0,0,0);
-  var raycaster=new THREE.Raycaster();
-  var mouse=new THREE.Vector2();
+/* Load interaction */
+var loadZ=0,loadAng=0;
+window.addEventListener('mousemove',function(e){
+  var nx=(e.clientX/W)*2-1,ny=-(e.clientY/H)*2+1;
+  loadAng=Math.atan2(ny,nx);
+  loadZ=camera.position.z-12;
+  sv.textContent=(loadF*250).toFixed(1);
+});
 
-  function updateColors(){
-    var c=geo.attributes.color;
-    for(var i=0;i<pos.count;i++){
-      var x=pos.getX(i),z=pos.getZ(i);
-      var d=Math.sqrt((x-loadPt.x)*(x-loadPt.x)+(z-loadPt.z)*(z-loadPt.z));
-      var st=Math.max(0,1-d/14)*loadFactor;
-      var rgb=vmC(st);c.setXYZ(i,rgb[0],rgb[1],rgb[2]);
+slider.addEventListener('input',function(){loadF=slider.value/100;lv.textContent=slider.value+' kN';sv.textContent=(loadF*250).toFixed(1)});
+
+function updateColors(){
+  var ca=pGeo.attributes.color;
+  for(var i=0;i<=SEG;i++){
+    var z=-i*(TL/SEG);
+    for(var j=0;j<RAD;j++){
+      var idx=i*RAD+j;
+      var ang=(j/RAD)*Math.PI*2;
+      var dz=Math.abs(z-loadZ);
+      var da=Math.abs(ang-loadAng);if(da>Math.PI)da=2*Math.PI-da;
+      var d=Math.sqrt(dz*dz+da*da*25);
+      var st=Math.max(0,1-d/18)*loadF;
+      var rgb=vmC(st);
+      var base=.1;
+      ca.setXYZ(idx,base+rgb[0]*(1-base),base+rgb[1]*(1-base),base+.04+rgb[2]*(1-base));
     }
-    c.needsUpdate=true;
   }
+  ca.needsUpdate=true;
+  lGeo.attributes.color.needsUpdate=true;
+}
+
+/* Zones */
+var zones=[];for(var i=0;i<ZN;i++)zones.push(document.getElementById('z'+i));
+var prog=document.getElementById('prog');
+
+window.addEventListener('scroll',function(){
+  var maxS=document.documentElement.scrollHeight-window.innerHeight;
+  var p=maxS>0?window.scrollY/maxS:0;
+  prog.style.width=(p*100)+'%';
+
+  /* Camera */
+  var cz=5-p*TL*.88;
+  camera.position.set(Math.sin(p*6)*.8,Math.cos(p*4)*.6,cz);
+  camera.lookAt(Math.sin(p*6+1)*.5,Math.cos(p*4+1)*.4,cz-16);
+  dv.textContent=Math.abs(cz-5).toFixed(1);
+
+  /* Load follows camera */
+  loadZ=cz-12;
+
+  /* Zones */
+  var zp=p*ZN;
+  var zi=Math.min(Math.floor(zp),ZN-1);
+  var zt=zp-zi;
+  for(var i=0;i<ZN;i++){
+    if(i===zi){
+      var op=zt<.1?zt/.1:zt>.9?(1-zt)/.1:1;
+      zones[i].style.opacity=op;
+      zones[i].classList.toggle('active',op>.3);
+    }else{
+      zones[i].style.opacity=0;
+      zones[i].classList.remove('active');
+    }
+  }
+
+  /* Cue fade */
+  cue.style.opacity=Math.max(0,1-p*12);
+
   updateColors();
+},{passive:true});
 
-  /* Deform terrain near load */
-  function deformTerrain(){
-    for(var i=0;i<pos.count;i++){
-      var x=pos.getX(i),z=pos.getZ(i);
-      var d=Math.sqrt((x-loadPt.x)*(x-loadPt.x)+(z-loadPt.z)*(z-loadPt.z));
-      var push=Math.max(0,1-d/8)*loadFactor*3;
-      pos.setY(i,baseY[i]-push);
-    }
-    pos.needsUpdate=true;
-    geo.computeVertexNormals();
-  }
+/* Render */
+(function anim(){
+  requestAnimationFrame(anim);
+  renderer.render(scene,camera);
+})();
 
-  /* Mouse → raycast → load point */
-  window.addEventListener('mousemove',function(e){
-    mouse.x=(e.clientX/W)*2-1;
-    mouse.y=-(e.clientY/H)*2+1;
-    raycaster.setFromCamera(mouse,camera);
-    var hits=raycaster.intersectObject(terrain);
-    if(hits.length>0){
-      loadPt.copy(hits[0].point);
-      pl.position.set(hits[0].x,hits[0].y+8,hits[0].z);
-      updateColors();deformTerrain();
-      var st=Math.max(0,1)*loadFactor*250;
-      stressVal.textContent=st.toFixed(1);
-    }
-  });
+window.addEventListener('resize',function(){
+  W=window.innerWidth;H=window.innerHeight;
+  camera.aspect=W/H;camera.updateProjectionMatrix();
+  renderer.setSize(W,H);
+});
 
-  slider.addEventListener('input',function(){
-    loadFactor=slider.value/100;
-    loadVl.textContent=slider.value+' kN';
-    updateColors();deformTerrain();
-  });
-
-  /* Camera checkpoints */
-  var cps=[
-    {p:[0,18,30],l:[0,0,0]},
-    {p:[-12,10,14],l:[-6,0,2]},
-    {p:[8,7,-2],l:[2,0,-8]},
-    {p:[0,14,-14],l:[0,2,-20]},
-    {p:[-10,8,-22],l:[-4,0,-26]},
-    {p:[6,10,-30],l:[0,0,-34]},
-    {p:[-6,12,-38],l:[0,1,-42]},
-    {p:[0,20,-46],l:[0,0,-55]}
-  ];
-  var cpV=cps.map(function(c){return{p:new THREE.Vector3(c.p[0],c.p[1],c.p[2]),l:new THREE.Vector3(c.l[0],c.l[1],c.l[2])}});
-
-  function smoothstep(t){return t*t*(3-2*t)}
-
-  window.addEventListener('scroll',function(){
-    var maxS=document.documentElement.scrollHeight-window.innerHeight;
-    var p=maxS>0?window.scrollY/maxS:0;
-    var n=cpV.length-1;
-    var idx=p*n;
-    var i=Math.min(Math.floor(idx),n-1);
-    var t=smoothstep(idx-i);
-    camera.position.lerpVectors(cpV[i].p,cpV[i+1].p,t);
-    var look=new THREE.Vector3().lerpVectors(cpV[i].l,cpV[i+1].l,t);
-    camera.lookAt(look);
-  },{passive:true});
-
-  /* Render */
-  (function anim(){
-    requestAnimationFrame(anim);
-    renderer.render(scene,camera);
-  })();
-
-  window.addEventListener('resize',function(){
-    W=window.innerWidth;H=window.innerHeight;
-    camera.aspect=W/H;camera.updateProjectionMatrix();
-    renderer.setSize(W,H);
-  });
+/* Initial */
+updateColors();
 
 }else{
-  canvas.style.background='radial-gradient(ellipse at 60% 40%,#0e0e14,#050507)';
+  canvas.style.background='radial-gradient(ellipse at 50% 50%,#0c0c14,#050507)';
   document.getElementById('hud-stress').style.display='none';
+  document.getElementById('hud-depth').style.display='none';
 }
 
 })();
