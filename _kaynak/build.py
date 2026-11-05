@@ -36,20 +36,29 @@ open('chk.js', 'w').write('\n;\n'.join(re.findall(r'<script>(.*?)</script>', src
 
 for f in glob.glob('logos/*.webp'):
     src = src.replace("logo:'%s'" % f, "logo:'data:image/webp;base64,%s'" % base64.b64encode(open(f, 'rb').read()).decode())
-src = src.replace('href="cv/', 'href="/cv/').replace('href="yazilar/rss.xml', 'href="/yazilar/rss.xml')
+src = src.replace('href="cv/', 'href="/cv/').replace('href="yazilar/"', 'href="/yazilar/"').replace('href="yazilar/rss.xml', 'href="/yazilar/rss.xml')
 shutil.rmtree('site/logos', ignore_errors=True)
 
 # ---------- posts ----------
 def parse_post(path):
-    raw = open(path, encoding='utf-8').read()
+    raw = open(path, encoding='utf-8').read().replace('\r\n', '\n').lstrip('\ufeff')
     m = re.match(r'---\n(.*?)\n---\n(.*)', raw, re.S)
-    meta = dict(re.findall(r'^(\w+):\s*(.*)$', m.group(1), re.M))
+    if not m:
+        raise SystemExit('HATA %s: dosya "---" satırlarıyla başlayan bilgi bloğuyla başlamalı.' % path)
+    meta = {k: v.strip() for k, v in re.findall(r'^(\w+):[ \t]*(.*)$', m.group(1), re.M)}
+    for key in ('title', 'slug', 'date', 'summary'):
+        if not meta.get(key):
+            raise SystemExit('HATA %s: "%s" satırı eksik ya da boş.' % (path, key))
+    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', meta['date']):
+        raise SystemExit('HATA %s: tarih YYYY-AA-GG biçiminde olmalı, örneğin 2026-11-20.' % path)
+    if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', meta['slug']):
+        raise SystemExit('HATA %s: slug yalnızca küçük harf, rakam ve tire içermeli (Türkçe karakter olmadan), örneğin rüzgar-yuku değil ruzgar-yuku.' % path)
     meta['draft'] = meta.get('draft', 'false').strip().lower() == 'true'
     meta['body_md'] = m.group(2)
     meta['lang'] = meta.get('lang', 'tr').strip()
     meta['words'] = len(re.findall(r'\w+', m.group(2)))
     return meta
-posts = sorted([p for p in (parse_post(f) for f in glob.glob('posts/*.md')) if not p['draft']],
+posts = sorted([p for p in (parse_post(f) for f in sorted(glob.glob('posts/*.md')) if not os.path.basename(f).startswith('_')) if not p['draft']],
                key=lambda p: p['date'], reverse=True)
 
 def fdate(d, lang):
@@ -219,7 +228,7 @@ def related(p):
     others = others[:3]
     tr = p['lang'] == 'tr'
     home = '/' if tr else '/en/'
-    more = ('<a class="rel-more" href="%s#sec-posts">%s</a>' % (home, 'Tüm yazılar →' if tr else 'All writing →'))
+    more = ('<a class="rel-more" href="/yazilar/">%s</a>' % ('Tüm yazılar →' if tr else 'All writing →'))
     if not others:
         return '<section class="related">%s</section>\n' % more
     items = ''.join('<li><a href="/yazilar/%s/" hreflang="%s"><time datetime="%s">%s</time><span lang="%s">%s</span></a></li>'
@@ -260,6 +269,28 @@ for p in posts:
     open('site/yazilar/%s/index.html' % p['slug'], 'w', encoding='utf-8').write(
         doc(lang, sub_head('%s | Mustafa Furkan Özel' % p.get('seo_title', p['title']), p['summary'], url, lang, extra), page_body, site_attr=False))
 
+# ---------- writing index ----------
+if posts:
+    li = ''.join('<li><a href="/yazilar/%s/" hreflang="%s"><time datetime="%s">%s</time><span lang="%s">%s<em>%s</em></span></a></li>'
+                 % (q['slug'], q['lang'], q['date'], fdate(q['date'], q['lang']), q['lang'], H.escape(q['title']), H.escape(q['summary'])) for q in posts)
+    ix_ld = {'@context': 'https://schema.org', '@type': 'Blog', 'name': 'furkanis.me · Yazılar', 'url': SITE + '/yazilar/', 'inLanguage': 'tr',
+             'author': {'@type': 'Person', '@id': SITE + '/#person', 'name': 'Mustafa Furkan Özel', 'url': SITE + '/'},
+             'blogPost': [{'@type': 'BlogPosting', 'headline': q['title'], 'url': '%s/yazilar/%s/' % (SITE, q['slug']), 'datePublished': q['date']} for q in posts]}
+    ix_extra = ('<meta property="og:type" content="website">\n<meta property="og:url" content="%s/yazilar/">\n'
+                '<meta property="og:title" content="Yazılar | Mustafa Furkan Özel">\n<meta property="og:image" content="%s/og.png">\n'
+                '<meta name="twitter:card" content="summary_large_image">\n<script type="application/ld+json">%s</script>\n'
+                '<style>.ix .rel-list span em{display:block; font-style:normal; font-family:var(--f-body); font-weight:400; font-size:var(--s-1); color:var(--ink-2); margin-top:.3rem; line-height:1.5}</style>\n'
+                ) % (SITE, SITE, json.dumps(ix_ld, ensure_ascii=False))
+    ix_body = ('<div class="wrap">\n' + sub_bar('tr') +
+               '<main><header class="article"><p class="eyebrow">Yazılar · %d</p><h1>Mühendislik notları</h1>'
+               '<p class="dek">Yapısal tasarım, sayısal analiz ve mühendislik otomasyonu üzerine sahadan notlar.</p></header>\n'
+               '<section class="related ix"><ul class="rel-list">%s</ul><a class="rel-more" href="/yazilar/rss.xml">RSS ile takip et</a></section></main>\n'
+               % (len(posts), li) + FOOT + '</div>\n')
+    os.makedirs('site/yazilar', exist_ok=True)
+    open('site/yazilar/index.html', 'w', encoding='utf-8').write(doc('tr', sub_head(
+        'Yazılar | Mustafa Furkan Özel', 'Mustafa Furkan Özel\'in yapısal tasarım, SAP2000, sonlu elemanlar ve Python ile mühendislik otomasyonu üzerine yazıları.',
+        SITE + '/yazilar/', 'tr', ix_extra), ix_body, site_attr=False))
+
 # ---------- RSS ----------
 from email.utils import format_datetime
 def rfc822(d): return format_datetime(datetime.datetime.strptime(d, '%Y-%m-%d').replace(hour=9, tzinfo=datetime.timezone(datetime.timedelta(hours=3))))
@@ -297,7 +328,12 @@ alt = ('      <xhtml:link rel="alternate" hreflang="tr" href="%s/"/>\n      <xht
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
 for u in [SITE + '/', SITE + '/en/']:
     sm += '  <url>\n    <loc>%s</loc>\n    <lastmod>%s</lastmod>\n%s  </url>\n' % (u, TODAY, alt)
+if posts:
+    sm += '  <url>\n    <loc>%s/yazilar/</loc>\n    <lastmod>%s</lastmod>\n  </url>\n' % (SITE, posts[0].get('updated', posts[0]['date']))
 for p in posts:
     sm += '  <url>\n    <loc>%s/yazilar/%s/</loc>\n    <lastmod>%s</lastmod>\n  </url>\n' % (SITE, p['slug'], p.get('updated', p['date']))
 open('site/sitemap.xml', 'w').write(sm + '</urlset>\n')
+# ---------- static files (CNAME, CV PDFs, share image, post images) ----------
+if os.path.isdir('static'):
+    shutil.copytree('static', 'site', dirs_exist_ok=True)
 print('built', len(posts), 'posts')
