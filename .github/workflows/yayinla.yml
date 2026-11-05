@@ -1,0 +1,44 @@
+# furkanis.me: _kaynak klasöründen siteyi üretir ve GitHub Pages'e yayımlar.
+# main dalına yapılan her kayıtta (commit) kendiliğinden çalışır.
+name: Siteyi yayınla
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - name: Gerekli paketleri kur
+        run: pip install fonttools==4.67.0 brotli==1.2.1 markdown==3.11 pillow==12.3.0
+      - name: Siteyi üret
+        working-directory: _kaynak
+        run: python build.py
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _kaynak/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
