@@ -231,10 +231,19 @@ shutil.rmtree('site/yazilar', ignore_errors=True)
 for p in posts:
     lang = p['lang']; url = '%s/yazilar/%s/' % (SITE, p['slug'])
     content = markdown.markdown(p['body_md'], extensions=['fenced_code', 'tables', 'sane_lists'])
-    ld = {'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': p['title'], 'description': p['summary'],
+    faq = []
+    fm = re.search(r'^## (?:Sık sorulan sorular|Frequently asked questions)\s*\n(.*?)(?=^## |\Z)', p['body_md'], re.S | re.M)
+    if fm:
+        for q, ans in re.findall(r'^### (.+?)\n+(.+?)(?=^### |\Z)', fm.group(1), re.S | re.M):
+            plain = re.sub(r'[`*_]|\[([^\]]*)\]\([^)]*\)', lambda m_: m_.group(1) or '', ans).strip()
+            faq.append({'@type': 'Question', 'name': q.strip(), 'acceptedAnswer': {'@type': 'Answer', 'text': plain}})
+    ld = {'@context': 'https://schema.org', '@type': 'BlogPosting', 'wordCount': p['words'], 'headline': p['title'], 'description': p['summary'],
           'datePublished': p['date'], 'dateModified': p.get('updated', p['date']), 'inLanguage': lang,
           'mainEntityOfPage': url, 'image': SITE + '/og.png',
           'author': {'@type': 'Person', '@id': SITE + '/#person', 'name': 'Mustafa Furkan Özel', 'url': SITE + '/'}}
+    if faq:
+        ld = {'@context': 'https://schema.org', '@graph': [dict(ld, **{'@context': None}), {'@type': 'FAQPage', 'mainEntity': faq}]}
+        ld['@graph'][0].pop('@context')
     extra = ('<meta property="og:type" content="article">\n<meta property="og:url" content="%s">\n'
              '<meta property="og:title" content="%s">\n<meta property="og:description" content="%s">\n'
              '<meta property="og:image" content="%s/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n'
@@ -249,7 +258,7 @@ for p in posts:
                  + FOOT + '</div>\n')
     os.makedirs('site/yazilar/' + p['slug'], exist_ok=True)
     open('site/yazilar/%s/index.html' % p['slug'], 'w', encoding='utf-8').write(
-        doc(lang, sub_head('%s | Mustafa Furkan Özel' % p['title'], p['summary'], url, lang, extra), page_body, site_attr=False))
+        doc(lang, sub_head('%s | Mustafa Furkan Özel' % p.get('seo_title', p['title']), p['summary'], url, lang, extra), page_body, site_attr=False))
 
 # ---------- RSS ----------
 from email.utils import format_datetime

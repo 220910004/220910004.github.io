@@ -6,6 +6,184 @@
   <atom:link href="https://furkanis.me/yazilar/rss.xml" rel="self" type="application/rss+xml"/>
   <description>Mustafa Furkan Özel: yapısal tasarım, sayısal analiz ve mühendislik otomasyonu üzerine yazılar.</description>
   <language>tr</language>
-  <lastBuildDate>Wed, 04 Nov 2026 14:03:21 +0000</lastBuildDate>
+  <lastBuildDate>Thu, 05 Nov 2026 09:00:00 +0300</lastBuildDate>
+  <item>
+    <title>SAP2000 Modelini Python ile Kurmak: OAPI&#x27;ye Adım Adım Giriş</title>
+    <link>https://furkanis.me/yazilar/sap2000-python-api/</link>
+    <guid isPermaLink="true">https://furkanis.me/yazilar/sap2000-python-api/</guid>
+    <pubDate>Thu, 05 Nov 2026 09:00:00 +0300</pubDate>
+    <dc:creator>Mustafa Furkan Özel</dc:creator>
+    <dc:language>tr</dc:language>
+    <description>SAP2000 modellerini Python ve OAPI ile koddan üretmek: bağlantı, malzeme, kesit, yük, kombinasyon, analiz ve sonuç okuma; sık yapılan hatalarla.</description>
+    <content:encoded><![CDATA[<p><strong>Kısaca:</strong> SAP2000, OAPI (Open Application Programming Interface) adı verilen bir programlama arayüzüyle dışarıdan kontrol edilebilir. Python'da <code>comtypes</code> paketiyle SAP2000'e bağlanıp malzeme, kesit, çubuk, mesnet, yük ve kombinasyonları kodla tanımlayabilir, analizi çalıştırıp sonuçları doğrudan okuyabilirsiniz. Bu yaklaşım özellikle güneş enerjisi santrali (GES) taşıyıcıları gibi birbirine benzeyen ama ölçüleri değişen modellerde saatler süren elle modellemeyi dakikalara indirir ve tekrar eden hataları ortadan kaldırır.</p>
+<p>Bu yazıda sıfırdan basit bir portal çerçeveyi Python ile kuruyor, analiz ediyor ve farklı açıklıklar için kendiliğinden yeniden çözdürüyoruz. Sonda, gerçek projelerde karşılaştığım hataları ve çözümlerini bulacaksınız.</p>
+<h2>SAP2000 OAPI nedir?</h2>
+<p>OAPI, SAP2000'in arayüzde yaptığınız hemen her işlemi bir fonksiyon çağrısı olarak sunan programlama arayüzüdür. Arayüzde "Define › Materials" menüsünden yaptığınız tanım, OAPI'de <code>SapModel.PropMaterial.SetMaterial(...)</code> çağrısına karşılık gelir. SAP2000 bu arayüzü Windows'un COM teknolojisiyle dışarı açar; bu yüzden Python, C#, VBA ve MATLAB gibi COM'a erişebilen her dilden kullanılabilir.</p>
+<p>Arayüzün resmi belgesi SAP2000 kurulum klasöründeki <code>CSI_OAPI_Documentation.chm</code> dosyasıdır. Her fonksiyonun parametreleri, birimleri ve örnek kodu bu dosyada yer alır. Bir fonksiyonun imzasından emin olmadığınızda ilk bakılacak yer burasıdır.</p>
+<h2>Neden modeli elle değil kodla kurmalı?</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Elle modelleme</th>
+<th>Python ile modelleme</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Benzer 10 varyant</td>
+<td>Her biri ayrı ayrı çizilir</td>
+<td>Tek döngüyle üretilir</td>
+</tr>
+<tr>
+<td>Ölçü değişikliği</td>
+<td>Model yeniden düzenlenir</td>
+<td>Bir parametre değişir</td>
+</tr>
+<tr>
+<td>Tekrar eden hata riski</td>
+<td>Her modelde yeniden doğar</td>
+<td>Bir kez düzeltilir</td>
+</tr>
+<tr>
+<td>Kayıt ve izlenebilirlik</td>
+<td>Ekran görüntüleri ve notlar</td>
+<td>Kodun kendisi belgedir</td>
+</tr>
+<tr>
+<td>Sonuçları rapora aktarmak</td>
+<td>Tablolardan kopyala yapıştır</td>
+<td>Doğrudan Excel'e veya rapora yazılır</td>
+</tr>
+</tbody>
+</table>
+<p>Kod yazmak ilk modelde daha uzun sürer. Kazanç, aynı tipte ikinci, üçüncü ve onuncu modelde ortaya çıkar.</p>
+<h2>Başlamak için neler gerekir?</h2>
+<ul>
+<li><strong>Windows ve kurulu bir SAP2000.</strong> OAPI, COM üzerinden çalıştığı için yalnızca Windows'ta kullanılabilir.</li>
+<li><strong>Python 3.</strong> SAP2000 ile aynı bit sürümünde (güncel sürümlerde 64 bit) bir Python kurulumu önerilir.</li>
+<li><strong>comtypes paketi:</strong> <code>pip install comtypes</code></li>
+<li><strong>OAPI belgesi:</strong> kurulum klasöründeki <code>CSI_OAPI_Documentation.chm</code></li>
+</ul>
+<h2>Adım 1: SAP2000'e bağlanmak</h2>
+<p>Aşağıdaki kod yüklü en güncel SAP2000 sürümünü başlatır ve modele erişim nesnesini (<code>SapModel</code>) verir. Bu nesne, sonraki bütün çağrıların giriş noktasıdır.</p>
+<pre><code class="language-python">import comtypes.client
+
+helper = comtypes.client.CreateObject(&quot;SAP2000v1.Helper&quot;)
+helper = helper.QueryInterface(comtypes.gen.SAP2000v1.cHelper)
+
+sap = helper.CreateObjectProgID(&quot;CSI.SAP2000.API.SapObject&quot;)
+sap.ApplicationStart()
+SapModel = sap.SapModel
+</code></pre>
+<p>Zaten açık olan bir SAP2000 penceresine bağlanmak isterseniz <code>CreateObjectProgID</code> ve <code>ApplicationStart</code> satırlarının yerine <code>sap = helper.GetObject("CSI.SAP2000.API.SapObject")</code> kullanabilirsiniz.</p>
+<h2>Adım 2: Her çağrının sonucunu kontrol etmek</h2>
+<p>OAPI fonksiyonları başarılı olduğunda <code>0</code>, başarısız olduğunda farklı bir değer döndürür. Hata vermez, sessizce devam eder. Bu yüzden ilk iş küçük bir kontrol fonksiyonu yazmaktır; kodun geri kalanında her çağrıyı bununla sarmak, hatanın nerede olduğunu anında gösterir.</p>
+<pre><code class="language-python">def kontrol(sonuc, adim):
+    kod = sonuc[-1] if isinstance(sonuc, (list, tuple)) else sonuc
+    if kod != 0:
+        raise RuntimeError(f&quot;{adim} başarısız oldu (dönüş kodu: {kod})&quot;)
+    return sonuc
+</code></pre>
+<p>Birden fazla değer döndüren fonksiyonlarda (örneğin yeni çubuğun adı) dönüş kodu listenin son elemanıdır; fonksiyon bu yüzden ikisini de ele alıyor.</p>
+<h2>Adım 3: Yeni model, birimler, malzeme ve kesit</h2>
+<pre><code class="language-python">KN_M_C = 6   # eUnits: kN, m, °C
+
+def model_baslat(SapModel):
+    kontrol(SapModel.InitializeNewModel(KN_M_C), &quot;Model başlatma&quot;)
+    kontrol(SapModel.File.NewBlank(), &quot;Boş model&quot;)
+
+    # S235 yapı çeliği (eMatType: 1 = çelik)
+    kontrol(SapModel.PropMaterial.SetMaterial(&quot;S235&quot;, 1), &quot;Malzeme&quot;)
+    kontrol(SapModel.PropMaterial.SetMPIsotropic(&quot;S235&quot;, 210e6, 0.3, 1.2e-5), &quot;Elastik özellikler&quot;)
+    kontrol(SapModel.PropMaterial.SetWeightAndMass(&quot;S235&quot;, 1, 78.5), &quot;Birim hacim ağırlığı&quot;)
+
+    # 100x100x4 kutu profil: dış yükseklik, dış genişlik, flanş ve gövde kalınlığı (m)
+    kontrol(SapModel.PropFrame.SetTube(&quot;KUTU100&quot;, &quot;S235&quot;, 0.10, 0.10, 0.004, 0.004), &quot;Kesit&quot;)
+</code></pre>
+<p>Birimler model başlatılırken belirlenir ve bütün sayılar o birimde yorumlanır. Burada elastisite modülü 210 GPa, yani kN/m² cinsinden <code>210e6</code> olarak girilir. Birim karışıklığı, OAPI ile çalışırken en sık rastlanan ve sonucu sessizce bozan hatadır.</p>
+<h2>Adım 4: Geometri ve mesnetler</h2>
+<pre><code class="language-python">def cerceve_kur(SapModel, L, H):
+    kontrol(SapModel.FrameObj.AddByCoord(0, 0, 0, 0, 0, H, &quot;&quot;, &quot;KUTU100&quot;, &quot;K1&quot;, &quot;Global&quot;), &quot;Sol kolon&quot;)
+    kontrol(SapModel.FrameObj.AddByCoord(L, 0, 0, L, 0, H, &quot;&quot;, &quot;KUTU100&quot;, &quot;K2&quot;, &quot;Global&quot;), &quot;Sağ kolon&quot;)
+    kontrol(SapModel.FrameObj.AddByCoord(0, 0, H, L, 0, H, &quot;&quot;, &quot;KUTU100&quot;, &quot;B1&quot;, &quot;Global&quot;), &quot;Kiriş&quot;)
+
+    ankastre = [True, True, True, True, True, True]
+    for kolon in (&quot;K1&quot;, &quot;K2&quot;):
+        alt, ust, ret = kontrol(SapModel.FrameObj.GetPoints(kolon, &quot;&quot;, &quot;&quot;), &quot;Kolon uçları&quot;)
+        kontrol(SapModel.PointObj.SetRestraint(alt, ankastre), &quot;Mesnet&quot;)
+</code></pre>
+<p><code>AddByCoord</code> aynı koordinattaki noktaları birleştirir, bu yüzden kiriş kolon üstlerine kendiliğinden bağlanır. Mesnet atarken nokta adını tahmin etmek yerine <code>GetPoints</code> ile çubuğun gerçek uç noktalarını almak, ilerideki birçok hatayı baştan önler.</p>
+<h2>Adım 5: Yükler ve kombinasyon</h2>
+<pre><code class="language-python">def yukle(SapModel, kar_yuku):
+    # eLoadPatternType: 1 = ölü yük, 7 = kar. Ölü yükte öz ağırlık çarpanı 1.
+    kontrol(SapModel.LoadPatterns.Add(&quot;G&quot;, 1, 1), &quot;Ölü yük deseni&quot;)
+    kontrol(SapModel.LoadPatterns.Add(&quot;S&quot;, 7, 0), &quot;Kar yükü deseni&quot;)
+
+    # Kirişe yerçekimi yönünde (Dir = 10) düzgün yayılı kar yükü, kN/m
+    kontrol(SapModel.FrameObj.SetLoadDistributed(&quot;B1&quot;, &quot;S&quot;, 1, 10, 0, 1, kar_yuku, kar_yuku), &quot;Kar yükü&quot;)
+
+    kontrol(SapModel.RespCombo.Add(&quot;KOMB1&quot;, 0), &quot;Kombinasyon&quot;)
+    kontrol(SapModel.RespCombo.SetCaseList(&quot;KOMB1&quot;, 0, &quot;G&quot;, 1.35), &quot;Kombinasyon: G&quot;)
+    kontrol(SapModel.RespCombo.SetCaseList(&quot;KOMB1&quot;, 0, &quot;S&quot;, 1.50), &quot;Kombinasyon: S&quot;)
+</code></pre>
+<p>Bir yük deseni eklendiğinde SAP2000 aynı adla bir yükleme durumunu da kendiliğinden oluşturur; kombinasyonda bu yükleme durumları kullanılır. Katsayılar burada yalnızca örnektir; gerçek projede ilgili yönetmeliğin kombinasyonlarını kullanın.</p>
+<h2>Adım 6: Analiz ve sonuç okuma</h2>
+<pre><code class="language-python">def analiz_et(SapModel, dosya):
+    kontrol(SapModel.File.Save(dosya), &quot;Kaydetme&quot;)
+    kontrol(SapModel.Analyze.RunAnalysis(), &quot;Analiz&quot;)
+
+    SapModel.Results.Setup.DeselectAllCasesAndCombosForOutput()
+    SapModel.Results.Setup.SetComboSelectedForOutput(&quot;KOMB1&quot;)
+
+    s = kontrol(SapModel.Results.FrameForce(&quot;B1&quot;, 0, 0, [], [], [], [], [], [],
+                                            [], [], [], [], [], [], []), &quot;Kiriş iç kuvvetleri&quot;)
+    M3 = s[13]   # dönen listede moment M3 dizisi
+    return max(abs(m) for m in M3)
+</code></pre>
+<p>SAP2000 analizden önce modelin kaydedilmesini ister. Sonuç fonksiyonları çıktıları liste olarak döndürür; hangi sırada döndüklerini OAPI belgesindeki fonksiyon imzasından okuyabilirsiniz.</p>
+<h2>Adım 7: Parametrik çalışma, asıl kazanç</h2>
+<p>Önceki adımları fonksiyon olarak yazmanın sebebi bu döngü. Aynı çerçeveyi üç farklı açıklık için kurup çözdürmek dört satır sürüyor:</p>
+<pre><code class="language-python">H = 3.0
+for L in (6.0, 8.0, 10.0):
+    model_baslat(SapModel)
+    cerceve_kur(SapModel, L, H)
+    yukle(SapModel, kar_yuku=2.0)
+    m_max = analiz_et(SapModel, rf&quot;C:\modeller\cerceve_L{L:.0f}.sdb&quot;)
+    print(f&quot;L = {L:4.1f} m  -&gt;  kirişte en büyük |M3| = {m_max:6.2f} kNm&quot;)
+
+sap.ApplicationExit(False)
+</code></pre>
+<p>Aynı yapı; kesit listesini taramak, farklı rüzgar ve kar bölgeleri için çözüm üretmek ya da bir GES sahasındaki farklı masa tiplerini tek seferde modellemek için genişletilebilir. Sonuçları <code>pandas</code> ile bir tabloya toplayıp Excel'e yazmak da birkaç satırlık iştir.</p>
+<h2>Sık yapılan hatalar ve çözümleri</h2>
+<p>Aşağıdakiler gerçek GES ve sera projelerinde karşılaştığım, çoğu hata mesajı bile vermeden sonucu bozan durumlar.</p>
+<h3>Tasarım sonuçları neden görünmüyor?</h3>
+<p>İki yaygın sebep var. Birincisi, soğuk şekillendirilmiş (cold-formed) kesitler sıcak haddelenmiş çelikle aynı tasarım modülünde kontrol edilmez: malzeme türü soğuk şekillendirilmiş olarak tanımlandıysa tasarım <code>SapModel.DesignSteel</code> altında değil <code>SapModel.DesignColdFormed</code> altında yürür. İkincisi, tasarımda kullanılacak kombinasyonlar ayrıca seçilmelidir; bunlar ilgili modülün <code>SetComboStrength</code> fonksiyonuyla işaretlenmezse tasarım çalışır ama beklediğiniz kombinasyonlar kontrol edilmez.</p>
+<h3>Örnek kod neden benim sürümümde çalışmıyor?</h3>
+<p>Bazı fonksiyonların imzası SAP2000 sürümleri arasında değişir ve yeni sürüm genellikle sonuna <code>_1</code>, <code>_2</code> gibi bir ek alır (örneğin soğuk şekillendirilmiş kesit tanımlayan <code>SetColdC</code> ve <code>SetColdC_1</code>). İnternetten bulduğunuz bir örnek çalışmıyorsa, kendi sürümünüzün <code>.chm</code> belgesinde fonksiyonun güncel adına ve parametre sırasına bakın.</p>
+<h3>Model neden mekanizma oluyor ya da kararsızlık uyarısı veriyor?</h3>
+<p>En sık üç sebep: çubuk uçlarına fazla serbestlik (release) verilmesi, mesnetlerin yanlış noktalara atanması ve aynı noktaya hem mesnet hem yay tanımlanması. Ayrıca bir çubuk analiz için parçalara bölündüyse, yay gibi atamaların bütün parçalara uygulandığından emin olun. Kod içinde nokta adlarını sıra numarasıyla tahmin etmek yerine <code>GetPoints</code> kullanmak bu hataların çoğunu önler.</p>
+<h3>Çaprazlar neden yük taşımıyor gibi görünüyor?</h3>
+<p>Döngüyle eleman üretirken bazı çubukların (örneğin X çaprazların) eleman listelerine eklenmesi unutulabilir ya da yanlış kesit atanabilir. Modeli kurduktan sonra çubuk sayısını ve kesit atamalarını kodla saydırıp beklenen değerle karşılaştırmak, bu tür eksikleri analizden önce yakalar.</p>
+<h3>Burkulma boyları neden yanlış hesaplanıyor?</h3>
+<p>SAP2000, birbirine bağlı ve aynı doğrultudaki çubukları tasarımda tek bir eleman gibi değerlendirebilir ve desteklenmemiş boyu buna göre hesaplar. Kodla ürettiğiniz parçalı elemanlarda desteklenmemiş boyların gerçek yanal destek noktalarıyla uyuştuğunu kontrol edin; gerekirse tasarım modülünün <code>SetOverwrite</code> fonksiyonuyla boyları elle tanımlayın.</p>
+<h2>Sık sorulan sorular</h2>
+<h3>OAPI ile ETABS de kontrol edilebilir mi?</h3>
+<p>Evet. ETABS de aynı mantıkta bir OAPI sunar; bağlantıda <code>SAP2000v1</code> yerine <code>ETABSv1</code>, <code>CSI.SAP2000.API.SapObject</code> yerine <code>CSI.ETABS.API.ETABSObject</code> kullanılır. Fonksiyonların büyük bölümü aynı adlarla çalışır.</p>
+<h3>Python yerine Excel VBA kullanabilir miyim?</h3>
+<p>Kullanabilirsiniz; OAPI dilden bağımsızdır. Python'un üstünlüğü; döngüler, sonuç işleme (<code>pandas</code>, <code>numpy</code>), grafik ve optimizasyon kütüphaneleriyle aynı yerde çalışabilmesidir.</p>
+<h3>Mevcut bir modeli açıp değiştirebilir miyim?</h3>
+<p>Evet. <code>SapModel.File.OpenFile(dosya_yolu)</code> ile kayıtlı bir <code>.sdb</code> modelini açıp kesitleri, yükleri ya da kombinasyonları kodla değiştirebilir ve yeniden çözdürebilirsiniz.</p>
+<h3>Kod yazmak elle modellemeden gerçekten hızlı mı?</h3>
+<p>Tek seferlik bir model için genellikle hayır. Aynı tipte birden fazla model, sık değişen ölçüler ya da çok sayıda kesit ve yük senaryosu varsa evet; kazanç her yeni varyantta büyür.</p>
+<h2>Kaynaklar</h2>
+<ul>
+<li>SAP2000 kurulum klasöründeki <code>CSI_OAPI_Documentation.chm</code> (resmi fonksiyon başvuru belgesi)</li>
+<li><a href="https://wiki.csiamerica.com/display/kb/OAPI">CSI Knowledge Base: OAPI</a></li>
+<li><a href="https://github.com/enthought/comtypes">comtypes, Python için COM paketi</a></li>
+</ul>
+<h2>Yazar hakkında</h2>
+<p><a href="/">Mustafa Furkan Özel</a>, Ankara'da çalışan bir makine mühendisi ve Gazi Üniversitesi'nde doktora öğrencisidir. Güneş enerjisi santralleri ve endüstriyel yapılar için çelik taşıyıcı sistemler tasarlıyor, SAP2000 modellerini Python ile otomatikleştiriyor. Soru ve önerileriniz için: hi@furkanis.me</p>]]></content:encoded>
+  </item>
 </channel>
 </rss>

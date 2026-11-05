@@ -465,6 +465,7 @@ p{margin:0; max-width:65ch}
 .print-only{display:none}
 
 /* writing carousel */
+.post [lang]{display:revert !important}
 .posts{
   list-style:none; margin:0; padding:0; display:grid; grid-auto-flow:column;
   grid-auto-columns:calc((100% - 1.25rem)/2); gap:1.25rem;
@@ -873,6 +874,46 @@ a.post-link:hover .post-title{text-decoration:underline; text-decoration-color:v
       </p>
     </div>
   </section>
+  
+  <section class="row" id="sec-posts" aria-labelledby="h-posts">
+    <h2 class="label" id="h-posts"><span lang="tr">Yazılar</span><span lang="en">Writing</span></h2>
+    <div class="body">
+      <ul class="posts" id="posts">
+        <li class="post"><a class="post-link" href="/yazilar/sap2000-python-api/" hreflang="tr">
+          <span class="post-meta"><time datetime="2026-11-05">5 Kas 2026</time> · 8 dk · TR</span>
+          <span class="post-title" lang="tr">SAP2000 Modelini Python ile Kurmak: OAPI&#x27;ye Adım Adım Giriş</span>
+          <span class="post-sum" lang="tr">SAP2000 modellerini Python ve OAPI ile koddan üretmek: bağlantı, malzeme, kesit, yük, kombinasyon, analiz ve sonuç okuma; sık yapılan hatalarla.</span>
+        </a></li>
+
+      </ul>
+      <div class="posts-nav">
+        <a class="rss" href="/yazilar/rss.xml"><span lang="tr">RSS ile takip et</span><span lang="en">Follow via RSS</span></a>
+        <span class="pn-group" id="posts-nav">
+          <button type="button" class="pn" id="posts-prev" aria-label="Önceki yazılar / Previous">←</button>
+          <button type="button" class="pn" id="posts-next" aria-label="Sonraki yazılar / Next">→</button>
+        </span>
+      </div>
+    </div>
+    <script>
+(function(){
+  var list = document.getElementById('posts'), nav = document.getElementById('posts-nav');
+  var prev = document.getElementById('posts-prev'), next = document.getElementById('posts-next');
+  function step(){ var c = list.querySelector('.post'); return c ? c.getBoundingClientRect().width + 16 : 300; }
+  function sync(){
+    var max = list.scrollWidth - list.clientWidth;
+    nav.hidden = max < 4;
+    prev.disabled = list.scrollLeft < 4;
+    next.disabled = max - list.scrollLeft < 4;
+  }
+  prev.addEventListener('click', function(){ list.scrollBy({left:-step(), behavior:'smooth'}); });
+  next.addEventListener('click', function(){ list.scrollBy({left: step(), behavior:'smooth'}); });
+  list.addEventListener('scroll', sync, {passive:true});
+  window.addEventListener('resize', sync);
+  sync();
+})();
+    </script>
+  </section>
+  
   </main>
 
   <footer class="foot">
